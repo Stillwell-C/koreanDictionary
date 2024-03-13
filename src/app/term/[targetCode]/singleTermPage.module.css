@@ -1,0 +1,40 @@
+.topLine {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 5px 0;
+}
+
+.entryTerm {
+  font-size: 1.3rem;
+  text-decoration: underline;
+  margin-right: 10px;
+}
+
+.pronunciation {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.link {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.definitionList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-left: 1.5rem;
+  margin-top: 1rem;
+}
+
+.exampleList {
+  margin-top: 1rem;
+  display: flex;
+  margin-left: 2rem;
+  flex-direction: column;
+  gap: 8px;
+}

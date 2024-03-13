@@ -1,0 +1,76 @@
+type SearchDefinition = {
+  korean: string;
+  translation?: {
+    transWord: string;
+    transDfn: string;
+    transLang: string;
+  };
+};
+
+type SearchResultItem = {
+  targetCode: string;
+  word: string;
+  wordGrade?: string;
+  pronunciation?: string;
+  pos?: string;
+  origin?: string;
+  link?: string;
+  definitions?: SearchDefinition[];
+};
+
+type SearchResultSearchData = {
+  total: string;
+  start: string;
+  num: string;
+};
+
+type SearchResult = {
+  results: SearchResultItem[];
+  searchData: SearchResultSearchData;
+};
+
+type PronunciationInfoType = {
+  pronunciation: string;
+  pronunciationLink: string;
+};
+
+type TermDataDerivativeType = {
+  word: string;
+  targetCode: string;
+  link: string;
+};
+
+type TermDataExampleType = {
+  type: string;
+  example: string;
+};
+
+type TermDataDefinitionAndExamples = {
+  definition: string;
+  translation: {
+    transLang: string;
+    transWord: string;
+    transDfn: string;
+  };
+  examples: TermDataExampleType[];
+};
+
+type TermDataResult = {
+  targetCode: string;
+  word: string;
+  wordGrade?: string;
+  wordType?: string;
+  wordUnit?: string;
+  pos?: string;
+  categoryInfo?: {
+    type: string;
+    written_form: string;
+  };
+  pronunciationInfo?: PronunciationInfoType;
+  originalLanguage?: {
+    originalLanguage: string;
+    originalLanguageType: string;
+  };
+  derivativesData?: TermDerivativeType[];
+  definitionAndExamples: TermDataDefinitionAndExamples[];
+};

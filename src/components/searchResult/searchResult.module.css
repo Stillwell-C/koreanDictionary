@@ -1,0 +1,23 @@
+.topLine {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 5px;
+}
+
+.entryTerm {
+  font-size: 1.3rem;
+  text-decoration: underline;
+  margin-right: 10px;
+}
+
+.wordGrade {
+  margin-bottom: 5px;
+}
+
+.list {
+  margin-left: 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
