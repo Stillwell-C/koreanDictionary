@@ -21,22 +21,21 @@ const SingleTermPage = async ({
 }: Props) => {
   const data = await getTermData(targetCode, translation, transLang);
 
-  // console.log(data);
-
-  console.log(data.definitionAndExamples[0].examples);
-
   const content = (
     <div>
       <SearchLanguageToggle />
       <div className={styles.topLine}>
         <p className={styles.entryTerm}>{data.word}</p>
+        {/* Word Origin */}
         {data?.originalLanguage?.originalLanguage && (
           <span>({data?.originalLanguage?.originalLanguage})</span>
         )}
         {data?.originalLanguage?.originalLanguageType && (
           <span>Origin: {data.originalLanguage.originalLanguageType}</span>
         )}
+        {/* Part of Speech */}
         {data?.pos && <span>「{data?.pos}」</span>}
+        {/* Pronunciation */}
         <div className={styles.pronunciation}>
           {data?.pronunciationInfo?.pronunciation && (
             <span>[{data.pronunciationInfo.pronunciation}]</span>
@@ -51,7 +50,10 @@ const SingleTermPage = async ({
             </a>
           )}
         </div>
-        {data?.wordGrade && <span>등급: {data?.wordGrade}</span>}
+        {/* Word Level */}
+        {data?.wordGrade && data?.wordGrade !== "없음" && (
+          <span>등급: {data?.wordGrade}</span>
+        )}
       </div>
       <ol className={styles.definitionList}>
         {data?.definitionAndExamples?.map((item, i) => (
