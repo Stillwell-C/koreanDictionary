@@ -34,7 +34,9 @@ const SearchLanguageToggle = () => {
 
   const handleChangeLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value === transLang) return;
-
+    //Change site language preference to new language
+    localStorage.setItem("langPreference", e.target.value);
+    //Change url to fulfill new query
     router.push(
       `${pathname}${
         e.target.value !== "0"
