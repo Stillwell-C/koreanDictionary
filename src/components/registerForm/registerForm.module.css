@@ -1,0 +1,34 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 2rem;
+}
+
+.form input {
+  padding: 1.5rem;
+  color: var(--text);
+  background-color: var(--bg);
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+}
+
+.form input:-webkit-autofill,
+.form input:-webkit-autofill:hover,
+.form input:-webkit-autofill:focus {
+  border: none;
+  -webkit-text-fill-color: var(--text);
+  -webkit-box-shadow: 0 0 0px 1000px var(--bg) inset;
+  transition: var(--bg) 5000s ease-in-out 0s;
+}
+
+.form button {
+  padding: 1.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background-color: var(--btn);
+  font-weight: bold;
+  color: var(--text);
+  border: none;
+  border-radius: 0.25rem;
+}
