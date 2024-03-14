@@ -3,8 +3,14 @@
 import React, { useState } from "react";
 import NavLink from "./navLink/NavLink";
 import styles from "./links.module.css";
+import { Session } from "next-auth";
+import { handleLogout } from "@/lib/action";
 
-const Links = () => {
+type Props = {
+  userSession: Session | null;
+};
+
+const Links = ({ userSession }: Props) => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const linksList = [
@@ -22,12 +28,20 @@ const Links = () => {
     },
   ];
 
+  const authLink = userSession ? (
+    <form action={handleLogout}>
+      <button className={styles.logout}>Logout</button>
+    </form>
+  ) : (
+    <NavLink linkData={{ name: "Login", path: "/login" }} />
+  );
+
   const links = (
     <>
       {linksList.map((link) => (
         <NavLink linkData={link} key={link.name} />
       ))}
-      <NavLink linkData={{ name: "Login", path: "/login" }} />
+      {authLink}
     </>
   );
 
