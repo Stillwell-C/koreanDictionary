@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./searchForm.module.css";
 
 const SearchForm = () => {
@@ -17,6 +17,16 @@ const SearchForm = () => {
         selectValue !== "0" ? `?translation=true&transLang=${selectValue}` : ""
       }`
     );
+  };
+
+  useEffect(() => {
+    const languagePreference = localStorage.getItem("langPreference");
+    if (languagePreference) setSelectValue(languagePreference);
+  }, []);
+
+  const handleChangeLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectValue(e.target.value);
+    localStorage.setItem("langPreference", e.target.value);
   };
 
   const languages = [
@@ -61,7 +71,7 @@ const SearchForm = () => {
           </button>
         </div>
         <div className={styles.select}>
-          <select onChange={(e) => setSelectValue(e.target.value)}>
+          <select value={selectValue || "0"} onChange={handleChangeLanguage}>
             {options}
           </select>
         </div>
