@@ -74,3 +74,8 @@ type TermDataResult = {
   derivativesData?: TermDerivativeType[];
   definitionAndExamples: TermDataDefinitionAndExamples[];
 };
+
+type LoginWithCredentialsType = {
+  username: string;
+  password: string;
+};
