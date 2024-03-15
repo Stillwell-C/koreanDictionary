@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema(
     },
     preferredLanguage: {
       type: String,
+      default: "0",
     },
     isAdmin: {
       type: Boolean,
@@ -42,6 +43,10 @@ const termCollectionSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+    },
+    shared: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }
