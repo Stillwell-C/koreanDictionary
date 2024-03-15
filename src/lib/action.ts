@@ -1,10 +1,10 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { signIn, signOut } from "./auth";
 import { connectDB } from "./utils";
-import { User } from "./models";
+import { SavedTerm, TermCollection, User } from "./models";
 import bcrypt from "bcryptjs";
+import { CredentialsSignin } from "@auth/core/errors";
 
 // export const handleSearch = (formData: FormData) => {
 //   console.log(formData);
@@ -26,6 +26,10 @@ export const registerUser = async (
 ) => {
   const { username, email, password, passwordConfirmation } =
     Object.fromEntries(formData);
+
+  if (!username || !email || !password || !passwordConfirmation) {
+    return { error: true, errorMsg: "Must inclue all fields" };
+  }
 
   if (password !== passwordConfirmation) {
     return { error: true, errorMsg: "Passwords do not match" };
@@ -49,11 +53,21 @@ export const registerUser = async (
       password: hashedPassword,
     });
 
-    await newUser.save();
+    const createdUser = await newUser.save();
+
+    const myTermsList = new TermCollection({
+      userId: createdUser._id,
+      name: "My Terms",
+    });
+
+    myTermsList.save();
 
     return { success: true };
   } catch (err) {
-    return { error: true, errorMsg: "Something went wrong" };
+    if (err instanceof Error && err.message.startsWith("E11000")) {
+      return { error: true, errorMsg: "Email already in use." };
+    }
+    return { error: true, errorMsg: "Something went wrong." };
   }
 };
 
@@ -63,10 +77,61 @@ export const credentialsLogin = async (
 ) => {
   const { username, password } = Object.fromEntries(formData);
 
+  if (!username || !password) {
+    return { error: true, errorMsg: "Please input username and password." };
+  }
+
   try {
     await signIn("credentials", { username, password });
     return { success: true };
   } catch (err) {
-    return { error: true, errorMsg: "Something went wrong" };
+    if (err instanceof CredentialsSignin && err?.code === "credentials") {
+      return { error: true, errorMsg: "Invalid username or password" };
+    }
+    throw err;
   }
+};
+
+export const addTermToList = async (
+  prevState: FormStateType | null,
+  formData: FormData
+) => {
+  const { userId, targetCode } = Object.fromEntries(formData);
+
+  if (!userId || !targetCode) {
+    return {
+      error: true,
+      errorMsg: "Must submit userId and term's target_code.",
+    };
+  }
+
+  const termCollection = await TermCollection.findOne({ userId });
+  let termCollectionId = termCollection?._id || "";
+
+  if (!termCollection) {
+    const newCollection = await TermCollection.create({
+      userId: userId,
+      name: "My Terms",
+    });
+    termCollectionId = newCollection._id;
+  }
+
+  const existingTermCheck = await SavedTerm.findOne({
+    termCollectionId,
+    targetCode,
+  });
+
+  if (existingTermCheck) {
+    return {
+      error: true,
+      errorMsg: "Already in collection",
+    };
+  }
+
+  await SavedTerm.create({
+    termCollectionId,
+    targetCode,
+  });
+
+  return { success: true };
 };
