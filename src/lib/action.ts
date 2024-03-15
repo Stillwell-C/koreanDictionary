@@ -28,7 +28,7 @@ export const registerUser = async (
     Object.fromEntries(formData);
 
   if (password !== passwordConfirmation) {
-    return { error: "Passwords do not match" };
+    return { error: true, errorMsg: "Passwords do not match" };
   }
 
   try {
@@ -37,7 +37,7 @@ export const registerUser = async (
     const user = await User.findOne({ username });
 
     if (user) {
-      return { error: "Username already in use." };
+      return { error: true, errorMsg: "Username already in use." };
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -50,9 +50,10 @@ export const registerUser = async (
     });
 
     await newUser.save();
-    return null;
+
+    return { success: true };
   } catch (err) {
-    return { error: "Something went wrong" };
+    return { error: true, errorMsg: "Something went wrong" };
   }
 };
 
@@ -64,8 +65,8 @@ export const credentialsLogin = async (
 
   try {
     await signIn("credentials", { username, password });
-    return null;
+    return { success: true };
   } catch (err) {
-    return { error: "Something went wrong" };
+    return { error: true, errorMsg: "Something went wrong" };
   }
 };
