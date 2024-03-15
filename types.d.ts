@@ -81,5 +81,7 @@ type LoginWithCredentialsType = {
 };
 
 type FormStateType = {
-  error?: string | null;
+  error?: boolean;
+  errorMsg?: string;
+  success?: boolean;
 };
