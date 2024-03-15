@@ -1,17 +1,17 @@
-import { credentialsLogin, handleGitHubLogin } from "@/lib/action";
-import React from "react";
+import LoginForm from "@/components/loginForm/LoginForm";
+import { handleGitHubLogin } from "@/lib/action";
+import styles from "./loginpage.module.css";
 
 const LoginPage = () => {
   return (
-    <div>
-      <form action={handleGitHubLogin}>
-        <button>Log in with GitHub</button>
-      </form>
-      <form action={credentialsLogin}>
-        <input type='text' placeholder='username' name='username' />
-        <input type='password' placeholder='password' name='password' />
-        <button>Login</button>
-      </form>
+    <div className={styles.container}>
+      <div className={styles.formWrapper}>
+        <h2>Login</h2>
+        <form className={styles.oAuthForm} action={handleGitHubLogin}>
+          <button className={styles.oAuthBtn}>Log in with GitHub</button>
+        </form>
+        <LoginForm />
+      </div>
     </div>
   );
 };
