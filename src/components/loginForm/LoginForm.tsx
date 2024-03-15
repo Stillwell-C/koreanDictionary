@@ -5,15 +5,23 @@ import { useFormState } from "react-dom";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { credentialsLogin } from "@/lib/action";
+import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
   const errorRef = useRef<HTMLParagraphElement>(null);
+  const router = useRouter();
 
   const [state, formAction] = useFormState(credentialsLogin, null);
 
   useEffect(() => {
     if (state?.error) {
       errorRef?.current?.focus();
+    }
+  }, [state]);
+
+  useEffect(() => {
+    if (state?.success) {
+      router.push("/");
     }
   }, [state]);
 
@@ -30,7 +38,7 @@ const LoginForm = () => {
       </p>
       {state?.error && (
         <p className={styles.formError} ref={errorRef}>
-          {state.error}
+          {state?.errorMsg}
         </p>
       )}
     </form>
