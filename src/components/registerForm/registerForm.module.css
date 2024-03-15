@@ -32,3 +32,12 @@
   border: none;
   border-radius: 0.25rem;
 }
+
+.formError {
+  color: red;
+}
+
+.formLink {
+  font-weight: 600;
+  color: var(--btn);
+}
