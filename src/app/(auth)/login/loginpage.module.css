@@ -1,0 +1,41 @@
+.container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.formWrapper {
+  background-color: var(--bgSoft);
+  padding: 3rem;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 2rem;
+  border-radius: 0.25rem;
+}
+
+.formWrapper h2 {
+  font-size: 1.5rem;
+}
+
+.oAuthForm {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.oAuthBtn {
+  padding: 1.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background-color: #333;
+  font-weight: bold;
+  color: var(--text);
+  border: none;
+  border-radius: 0.25rem;
+}
