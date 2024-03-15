@@ -79,6 +79,8 @@ export const {
         }
       }
 
+      //TODO determine whether to update language from server
+
       return true;
     },
     ...authConfig.callbacks,
