@@ -5,23 +5,15 @@ import styles from "./registerForm.module.css";
 import { useFormState } from "react-dom";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 const RegisterForm = () => {
   const errorRef = useRef<HTMLParagraphElement>(null);
-  const router = useRouter();
 
   const [state, formAction] = useFormState(registerUser, null);
 
   useEffect(() => {
     if (state?.error) {
       errorRef?.current?.focus();
-    }
-  }, [state]);
-
-  useEffect(() => {
-    if (state?.success) {
-      router.push("/");
     }
   }, [state]);
 
