@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import styles from "./searchResult.module.css";
+import AddTermContainer from "../addTermContainer/AddTermContainer";
 
 type Props = {
   resultData: SearchResultItem;
@@ -26,6 +27,7 @@ const SearchResult = ({ resultData, transLang, translation }: Props) => {
           <span>[{resultData?.pronunciation}]</span>
         )}
         {resultData?.wordGrade && <span>등급: {resultData?.wordGrade}</span>}
+        <AddTermContainer targetCode={resultData.targetCode} />
       </div>
 
       <ol className={styles.list}>
