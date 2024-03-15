@@ -79,3 +79,7 @@ type LoginWithCredentialsType = {
   username: string;
   password: string;
 };
+
+type FormStateType = {
+  error?: string | null;
+};
