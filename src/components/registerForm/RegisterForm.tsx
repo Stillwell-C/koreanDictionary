@@ -3,9 +3,19 @@
 import { registerUser } from "@/lib/action";
 import styles from "./registerForm.module.css";
 import { useFormState } from "react-dom";
+import { useEffect, useRef } from "react";
+import Link from "next/link";
 
 const RegisterForm = () => {
+  const errorRef = useRef<HTMLParagraphElement>(null);
+
   const [state, formAction] = useFormState(registerUser, null);
+
+  useEffect(() => {
+    if (state?.error) {
+      errorRef?.current?.focus();
+    }
+  }, [state]);
 
   return (
     <form className={styles.form} action={formAction}>
@@ -18,6 +28,17 @@ const RegisterForm = () => {
         name='passwordConfirmation'
       />
       <button type='submit'>Register</button>
+      <p>
+        Already have an Account?{" "}
+        <Link className={styles.formLink} href='/login'>
+          Login here.
+        </Link>
+      </p>
+      {state?.error && (
+        <p className={styles.formError} ref={errorRef}>
+          {state.error}
+        </p>
+      )}
     </form>
   );
 };
