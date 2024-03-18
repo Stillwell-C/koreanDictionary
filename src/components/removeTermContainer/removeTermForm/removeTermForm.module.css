@@ -1,0 +1,45 @@
+.form {
+  position: relative;
+}
+
+.button {
+  border: 1px solid var(--text);
+  background-color: transparent;
+  color: var(--text);
+  padding: 3px;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: var(--text);
+  color: var(--bg);
+}
+
+.button:disabled:hover {
+  background-color: transparent;
+  color: var(--text);
+  cursor: default;
+}
+
+.message {
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  text-align: center;
+  background-color: white;
+  color: black;
+  white-space: nowrap;
+  margin-top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 4px;
+  border-radius: 0.25rem;
+  transition: opacity 0.5s ease-in-out, visibility 0s 0.5s;
+}
+
+.displayMessage {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
