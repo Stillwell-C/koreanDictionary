@@ -43,6 +43,7 @@ a {
 .child-container {
   min-height: calc(100vh - 150px);
   display: flex;
+  padding-bottom: 2rem;
 }
 
 @media (max-width: 1536px) {
