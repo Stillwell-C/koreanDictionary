@@ -28,10 +28,13 @@ const Links = ({ userSession }: Props) => {
     },
   ];
 
-  const authLink = userSession ? (
-    <form action={handleLogout}>
-      <button className={styles.logout}>Logout</button>
-    </form>
+  const authenticatedUserLinks = userSession ? (
+    <>
+      <NavLink linkData={{ name: "Profile", path: "/userpage" }} />
+      <form action={handleLogout}>
+        <button className={styles.logout}>Logout</button>
+      </form>
+    </>
   ) : (
     <NavLink linkData={{ name: "Login", path: "/login" }} />
   );
@@ -41,7 +44,7 @@ const Links = ({ userSession }: Props) => {
       {linksList.map((link) => (
         <NavLink linkData={link} key={link.name} />
       ))}
-      {authLink}
+      {authenticatedUserLinks}
     </>
   );
 
