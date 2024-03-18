@@ -42,7 +42,7 @@ const SearchLanguageToggle = () => {
         e.target.value !== "0"
           ? `?translation=true&transLang=${e.target.value}`
           : ""
-      }`
+      }${start ? `&start=${start}` : ""}`
     );
   };
 
