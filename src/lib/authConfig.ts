@@ -10,6 +10,7 @@ export const authConfig: NextAuthConfig = {
       //Get data from user and add to JWT
       if (user) {
         token.id = user.id || "";
+        token.username = user.username || "";
         token.isAdmin = user.isAdmin || false;
         token.preferredLanguage = user.preferredLanguage || null;
       }
@@ -19,6 +20,7 @@ export const authConfig: NextAuthConfig = {
       //Get same data from JWT and add to session so it is accessible within app
       if (token) {
         session.user.id = token.id;
+        session.user.username = token.username;
         session.user.isAdmin = token.isAdmin;
         session.user.preferredLanguage = token.preferredLanguage;
       }
@@ -30,7 +32,7 @@ export const authConfig: NextAuthConfig = {
       const currentURL = request?.nextUrl?.pathname?.toString();
 
       //TODO: ADD conditions for only logged in users
-      const isOnUserPage = currentURL.startsWith("/myPage");
+      const isOnUserPage = currentURL.startsWith("/userpage");
       if (isOnUserPage && !user) {
         return false;
       }
