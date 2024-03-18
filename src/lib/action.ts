@@ -96,12 +96,13 @@ export const addTermToList = async (
   prevState: FormStateType | null,
   formData: FormData
 ) => {
+  //Keep error messages short as they will appear on one line on front end.
   const { userId, targetCode } = Object.fromEntries(formData);
 
   if (!userId || !targetCode) {
     return {
       error: true,
-      errorMsg: "Must submit userId and term's target_code.",
+      errorMsg: "Must submit userId and target_code.",
     };
   }
 
