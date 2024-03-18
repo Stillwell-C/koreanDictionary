@@ -1,0 +1,17 @@
+.container {
+  width: 100%;
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.container button {
+  padding: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  color: var(--text);
+  background-color: var(--darkBtn);
+  border: 1px solid var(--darkBtn);
+  border-radius: 0.25rem;
+}
