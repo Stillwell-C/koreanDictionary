@@ -8,6 +8,10 @@
   flex-direction: column;
 }
 
+.resultsContainer h2 {
+  margin-bottom: 0.5rem;
+}
+
 .results {
   margin: 2rem 0;
   display: flex;
