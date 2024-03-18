@@ -155,17 +155,38 @@ export const getTermData = async (
   };
 };
 
-export const getTermCollections = async (userId: string) => {
+export const getTermCollections = async (
+  userId: string,
+  start: string = "1",
+  results: string = "10"
+) => {
+  const startNum = parseInt(start);
+  const resultsNum = parseInt(results);
+  const skipNum = (startNum - 1) * resultsNum;
+
   if (!userId) {
     throw new Error("User ID must be provided");
   }
 
   try {
     const termCollections = await TermCollection.find({ userId })
+      .limit(resultsNum)
+      .skip(skipNum)
       .select("_id name")
       .sort("-updatedAt");
 
-    return termCollections;
+    const termCollectionsTotal = await TermCollection.countDocuments({
+      userId,
+    });
+
+    return {
+      results: termCollections,
+      searchData: {
+        total: termCollectionsTotal.toString(),
+        start,
+        num: results,
+      },
+    };
   } catch (err) {
     throw new Error("Failed to fetch collections");
   }
@@ -179,8 +200,6 @@ export const getSavedTerms = async (
   const startNum = parseInt(start);
   const resultsNum = parseInt(results);
   const skipNum = (startNum - 1) * resultsNum;
-
-  console.log(resultsNum);
 
   if (!termCollectionId) {
     throw new Error("User ID must be provided");
@@ -202,7 +221,7 @@ export const getSavedTerms = async (
       results: savedTerms,
       searchData: {
         total: savedTermsTotal.toString(),
-        start: start,
+        start,
         num: results,
       },
     };
