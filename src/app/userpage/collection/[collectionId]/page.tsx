@@ -41,6 +41,11 @@ const CollectionPage = async ({
           <span>Translation language: </span>
           <SearchLanguageToggle />
         </div>
+        <p>
+          {`This list has ${data.searchData.total} ${
+            data.searchData.total !== "1" ? "terms" : "term"
+          }.`}
+        </p>
         <div className={styles.results}>
           {!data?.results?.length && <p>No terms found</p>}
           {terms}
