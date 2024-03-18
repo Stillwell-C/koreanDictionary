@@ -29,7 +29,7 @@ const page = async ({ searchParams: { translation, transLang } }: Props) => {
     ));
 
   return (
-    <div>
+    <div className={styles.container}>
       <div className={styles.results}>
         <h2>My Info</h2>
         <div>
