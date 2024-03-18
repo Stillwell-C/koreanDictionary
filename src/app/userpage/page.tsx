@@ -40,6 +40,11 @@ const page = async ({ searchParams: { start } }: Props) => {
       <Suspense fallback={<p>Retrieving collections...</p>}>
         <div className={styles.resultsContainer}>
           <h2>Collections</h2>
+          <p>
+            {`You have ${data.searchData.total} ${
+              data.searchData.total !== "1" ? "collections" : "collection"
+            }.`}
+          </p>
           <div className={styles.results}>
             {!data?.results?.length && <p>No collections found</p>}
             {collections}
