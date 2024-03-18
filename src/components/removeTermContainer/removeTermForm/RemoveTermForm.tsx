@@ -12,14 +12,13 @@ type Props = {
 };
 
 const RemoveTermForm = ({ targetCode, termCollectionId }: Props) => {
-  const router = useRouter();
   const messageRef = useRef<HTMLParagraphElement>(null);
 
   const [state, formAction] = useFormState(removeTermFromList, null);
   const [displayMessage, setDisplayMessage] = useState(false);
 
   useEffect(() => {
-    if (state?.error || state?.success) {
+    if (state?.error) {
       setDisplayMessage(true);
       messageRef?.current?.focus();
       const displayTimeout = setTimeout(() => {
@@ -30,9 +29,7 @@ const RemoveTermForm = ({ targetCode, termCollectionId }: Props) => {
     }
   }, [state]);
 
-  const message = state?.success
-    ? "Removed from List"
-    : state?.errorMsg || "Error. Try again.";
+  const message = state?.errorMsg || "Error. Try again.";
 
   return (
     <form className={styles.form} action={formAction}>
