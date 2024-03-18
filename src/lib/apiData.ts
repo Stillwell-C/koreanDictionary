@@ -171,7 +171,17 @@ export const getTermCollections = async (userId: string) => {
   }
 };
 
-export const getSavedTerms = async (termCollectionId: string) => {
+export const getSavedTerms = async (
+  termCollectionId: string,
+  start: string = "1",
+  results: string = "10"
+) => {
+  const startNum = parseInt(start);
+  const resultsNum = parseInt(results);
+  const skipNum = (startNum - 1) * resultsNum;
+
+  console.log(resultsNum);
+
   if (!termCollectionId) {
     throw new Error("User ID must be provided");
   }
@@ -180,10 +190,22 @@ export const getSavedTerms = async (termCollectionId: string) => {
     const savedTerms = await SavedTerm.find({
       termCollectionId,
     })
+      .limit(resultsNum)
+      .skip(skipNum)
       .select("_id targetCode")
       .sort("-createdAt");
+    const savedTermsTotal = await SavedTerm.countDocuments({
+      termCollectionId,
+    });
 
-    return savedTerms;
+    return {
+      results: savedTerms,
+      searchData: {
+        total: savedTermsTotal.toString(),
+        start: start,
+        num: results,
+      },
+    };
   } catch (err) {
     throw new Error("Failed to fetch terms");
   }
