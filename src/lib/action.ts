@@ -5,6 +5,7 @@ import { connectDB } from "./utils";
 import { SavedTerm, TermCollection, User } from "./models";
 import bcrypt from "bcryptjs";
 import { CredentialsSignin } from "@auth/core/errors";
+import { revalidatePath } from "next/cache";
 
 // export const handleSearch = (formData: FormData) => {
 //   console.log(formData);
@@ -133,6 +134,35 @@ export const addTermToList = async (
     termCollectionId,
     targetCode,
   });
+
+  return { success: true };
+};
+
+export const removeTermFromList = async (
+  prevState: FormStateType | null,
+  formData: FormData
+) => {
+  console.log(formData);
+
+  const { termCollectionId, targetCode } = Object.fromEntries(formData);
+
+  if (!termCollectionId || !targetCode) {
+    throw new Error("Must submit termCollectionId and target_code");
+  }
+
+  const deletedTerm = await SavedTerm.findOneAndDelete({
+    termCollectionId,
+    targetCode,
+  });
+
+  if (!deletedTerm) {
+    return {
+      error: true,
+      errorMsg: "Term not found",
+    };
+  }
+
+  revalidatePath(`/userpage/collection/${termCollectionId}`);
 
   return { success: true };
 };
