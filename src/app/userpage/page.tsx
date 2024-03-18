@@ -4,23 +4,22 @@ import { auth } from "@/lib/auth";
 import styles from "./userpage.module.css";
 import { Suspense } from "react";
 import TermList from "@/components/termList/TermList";
+import SearchResultPaginationMenu from "@/components/searchResultPagination/SearchResultPaginationMenu";
 
 type Props = {
   searchParams: {
-    translation?: string;
-    transLang?: string;
+    start?: string;
   };
 };
 
-const page = async ({ searchParams: { translation, transLang } }: Props) => {
+const page = async ({ searchParams: { start } }: Props) => {
   const session = await auth();
-  const data: { _id: string; name: string }[] | [] = session?.user?.id
-    ? await getTermCollections(session.user.id)
-    : [];
+  const userId = session?.user?.id || "";
+  const data = await getTermCollections(userId, start);
 
   const collections =
-    data?.length &&
-    data.map((collection) => (
+    data?.results?.length &&
+    data.results.map((collection) => (
       <TermList
         key={collection._id}
         collectionId={collection._id.toString()}
@@ -39,11 +38,14 @@ const page = async ({ searchParams: { translation, transLang } }: Props) => {
       </div>
 
       <Suspense fallback={<p>Retrieving collections...</p>}>
-        <h2>Collections</h2>
-        <div className={styles.results}>
-          {!data?.length && <p>No collections found</p>}
-          {collections}
+        <div className={styles.resultsContainer}>
+          <h2>Collections</h2>
+          <div className={styles.results}>
+            {!data?.results?.length && <p>No collections found</p>}
+            {collections}
+          </div>
         </div>
+        <SearchResultPaginationMenu searchData={data.searchData} />
       </Suspense>
     </div>
   );
