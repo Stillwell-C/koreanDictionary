@@ -3,6 +3,7 @@ import TermListResult from "@/components/termListResult/TermListResult";
 import { getSavedTerms } from "@/lib/apiData";
 import styles from "./collectionPage.module.css";
 import { Suspense } from "react";
+import SearchResultPaginationMenu from "@/components/searchResultPagination/SearchResultPaginationMenu";
 
 type Props = {
   params: {
@@ -11,20 +12,19 @@ type Props = {
   searchParams: {
     translation?: string;
     transLang?: string;
+    start?: string;
   };
 };
 
 const CollectionPage = async ({
   params: { collectionId },
-  searchParams: { translation, transLang },
+  searchParams: { translation, transLang, start },
 }: Props) => {
-  const data: { _id: string; targetCode: string }[] = await getSavedTerms(
-    collectionId
-  );
+  const data = await getSavedTerms(collectionId, start);
 
   const terms =
-    data?.length &&
-    data.map((term) => (
+    data?.results?.length &&
+    data.results.map((term) => (
       <TermListResult
         key={term._id}
         resultData={term}
@@ -42,9 +42,10 @@ const CollectionPage = async ({
           <SearchLanguageToggle />
         </div>
         <div className={styles.results}>
-          {!data?.length && <p>No terms found</p>}
+          {!data?.results?.length && <p>No terms found</p>}
           {terms}
         </div>
+        <SearchResultPaginationMenu searchData={data.searchData} />
       </Suspense>
     </div>
   );
