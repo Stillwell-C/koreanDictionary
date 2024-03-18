@@ -155,12 +155,36 @@ export const getTermData = async (
   };
 };
 
-export const getSavedTerms = async (userId: string) => {
-  const termCollection = await TermCollection.findOne({ userId });
+export const getTermCollections = async (userId: string) => {
+  if (!userId) {
+    throw new Error("User ID must be provided");
+  }
 
-  const savedTerms = await SavedTerm.find({
-    termCollectionId: termCollection._id,
-  });
+  try {
+    const termCollections = await TermCollection.find({ userId })
+      .select("_id name")
+      .sort("-updatedAt");
 
-  return savedTerms;
+    return termCollections;
+  } catch (err) {
+    throw new Error("Failed to fetch collections");
+  }
+};
+
+export const getSavedTerms = async (termCollectionId: string) => {
+  if (!termCollectionId) {
+    throw new Error("User ID must be provided");
+  }
+
+  try {
+    const savedTerms = await SavedTerm.find({
+      termCollectionId,
+    })
+      .select("_id targetCode")
+      .sort("-createdAt");
+
+    return savedTerms;
+  } catch (err) {
+    throw new Error("Failed to fetch terms");
+  }
 };
