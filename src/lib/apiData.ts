@@ -1,4 +1,5 @@
 import * as cheerio from "cheerio";
+import { SavedTerm, TermCollection } from "./models";
 
 export const searchWord = async (
   word: string,
@@ -152,4 +153,14 @@ export const getTermData = async (
     categoryInfo,
     definitionAndExamples,
   };
+};
+
+export const getSavedTerms = async (userId: string) => {
+  const termCollection = await TermCollection.findOne({ userId });
+
+  const savedTerms = await SavedTerm.find({
+    termCollectionId: termCollection._id,
+  });
+
+  return savedTerms;
 };
