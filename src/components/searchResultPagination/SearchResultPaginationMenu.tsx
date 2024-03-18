@@ -1,5 +1,9 @@
-import React from "react";
+"use client";
+
+import { usePathname, useSearchParams } from "next/navigation";
 import SearchResultPaginationButton from "./components/SearchResultPaginationButton";
+import Link from "next/link";
+import styles from "./SearchResultPaginationMenu.module.css";
 
 type Props = {
   searchData: SearchResultSearchData;
@@ -12,6 +16,16 @@ const SearchResultPaginationMenu = ({
   const queriedNum = parseInt(num);
   const currentPageNum = parseInt(start);
 
+  const pathname = usePathname();
+  let currentURL = pathname;
+  const searchParamsString = useSearchParams().toString();
+  const editableSearchParams = new URLSearchParams(searchParamsString);
+  editableSearchParams.delete("start");
+  const currentSearchParamStringWithoutPage = editableSearchParams.toString();
+  if (currentSearchParamStringWithoutPage.length)
+    currentURL += `?${currentSearchParamStringWithoutPage}`;
+  console.log(decodeURI(currentURL));
+
   if (totalNum <= 10) return;
 
   const totalPages = Math.ceil(totalNum / queriedNum);
@@ -23,78 +37,81 @@ const SearchResultPaginationMenu = ({
       key={key}
       pageNum={pageNum}
       currentPageNum={currentPageNum}
+      currentURL={currentURL}
     />
   );
 
-  if (totalPages <= 5 || currentPageNum <= 3) {
-    const displayCount = totalPages > 5 ? 5 : totalPages;
+  if (totalPages <= 10 || currentPageNum <= 6) {
+    const displayCount = totalPages > 10 ? 10 : totalPages;
     for (let i = 1; i <= displayCount; i++) {
       menuButtons.push(generatePaginationButton(i, i));
     }
-  } else if (totalPages - currentPageNum === 1) {
-    for (let i = currentPageNum - 3; i <= totalPages; i++) {
-      menuButtons.push(generatePaginationButton(i, i));
-    }
-  } else if (totalPages === currentPageNum) {
-    for (let i = currentPageNum - 4; i <= totalPages; i++) {
+  } else if (totalPages - currentPageNum <= 9) {
+    for (let i = totalPages - 9; i <= totalPages; i++) {
       menuButtons.push(generatePaginationButton(i, i));
     }
   } else {
-    for (let i = currentPageNum - 2; i <= currentPageNum + 2; i++) {
+    for (let i = currentPageNum - 4; i <= currentPageNum + 5; i++) {
       menuButtons.push(generatePaginationButton(i, i));
     }
   }
 
   const paginationMenu = (
     <nav
-      className='post-pagination-nav gap-5p flex-container margin-top-1 margin-btm-2'
+      className={styles.container}
       aria-label='Search Results Pagination Navigation'
     >
-      <button
-        type='button'
-        className='posts-pagination-btn posts-pagination-btn-small basic-button'
-        disabled={currentPageNum <= 1 ? true : false}
-        aria-disabled={currentPageNum <= 1 ? true : false}
-        aria-label='Skip to page 1.'
-        // onClick={() => setCurrentPage(1)}
+      <Link href={currentURL}>
+        <button
+          type='button'
+          disabled={currentPageNum <= 1 ? true : false}
+          aria-disabled={currentPageNum <= 1 ? true : false}
+          aria-label='Skip to page 1.'
+        >
+          &laquo;
+        </button>
+      </Link>
+      <Link
+        href={
+          currentPageNum <= 2
+            ? currentURL
+            : `${currentURL}&start=${currentPageNum - 1}`
+        }
       >
-        &laquo;
-      </button>
-      <button
-        type='button'
-        className='posts-pagination-btn posts-pagination-btn-small basic-button'
-        disabled={currentPageNum <= 1 ? true : false}
-        aria-disabled={currentPageNum <= 1 ? true : false}
-        aria-label={`Move one page back ${
-          currentPageNum !== 1 ? `to page ${currentPageNum - 1}` : ""
-        }`}
-        // onClick={() => setCurrentPage((prev) => prev - 1)}
-      >
-        &lsaquo;
-      </button>
+        <button
+          type='button'
+          disabled={currentPageNum <= 1 ? true : false}
+          aria-disabled={currentPageNum <= 1 ? true : false}
+          aria-label={`Move one page back ${
+            currentPageNum !== 1 ? `to page ${currentPageNum - 1}` : ""
+          }`}
+        >
+          &lsaquo;
+        </button>
+      </Link>
       {menuButtons}
-      <button
-        type='button'
-        className='posts-pagination-btn posts-pagination-btn-small basic-button'
-        disabled={currentPageNum === totalPages ? true : false}
-        aria-disabled={currentPageNum === totalPages ? true : false}
-        aria-label={`Move one page forward ${
-          currentPageNum !== totalPages ? `to page ${currentPageNum + 1}` : ""
-        }`}
-        // onClick={() => setCurrentPage((prev) => prev + 1)}
-      >
-        &rsaquo;
-      </button>
-      <button
-        type='button'
-        className='posts-pagination-btn posts-pagination-btn-small basic-button'
-        disabled={currentPageNum === totalPages ? true : false}
-        aria-disabled={currentPageNum === totalPages ? true : false}
-        aria-label={`Skip to last page, page ${totalPages}`}
-        // onClick={() => setCurrentPage(totalPages)}
-      >
-        &raquo;
-      </button>
+      <Link href={`${currentURL}&start=${currentPageNum + 1}`}>
+        <button
+          type='button'
+          disabled={currentPageNum === totalPages ? true : false}
+          aria-disabled={currentPageNum === totalPages ? true : false}
+          aria-label={`Move one page forward ${
+            currentPageNum !== totalPages ? `to page ${currentPageNum + 1}` : ""
+          }`}
+        >
+          &rsaquo;
+        </button>
+      </Link>
+      <Link href={`${currentURL}&start=${totalPages}`}>
+        <button
+          type='button'
+          disabled={currentPageNum === totalPages ? true : false}
+          aria-disabled={currentPageNum === totalPages ? true : false}
+          aria-label={`Skip to last page, page ${totalPages}`}
+        >
+          &raquo;
+        </button>
+      </Link>
     </nav>
   );
 
