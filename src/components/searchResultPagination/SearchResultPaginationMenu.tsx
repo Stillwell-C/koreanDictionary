@@ -16,6 +16,7 @@ const SearchResultPaginationMenu = ({
   const queriedNum = parseInt(num);
   const currentPageNum = parseInt(start);
 
+  //Get string of pathname & searchparams without start searchparam
   const pathname = usePathname();
   let currentURL = pathname;
   const searchParamsString = useSearchParams().toString();
