@@ -4,6 +4,7 @@ import { getSavedTerms } from "@/lib/apiData";
 import styles from "./collectionPage.module.css";
 import { Suspense } from "react";
 import SearchResultPaginationMenu from "@/components/searchResultPagination/SearchResultPaginationMenu";
+import Link from "next/link";
 
 type Props = {
   params: {
@@ -41,6 +42,9 @@ const CollectionPage = async ({
           <span>Translation language: </span>
           <SearchLanguageToggle />
         </div>
+        <Link href={`/api/termCollection/${collectionId}?language=1`}>
+          <button>Download</button>
+        </Link>
         <p>
           {`This list has ${data.searchData.total} ${
             data.searchData.total !== "1" ? "terms" : "term"
