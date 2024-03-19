@@ -17,8 +17,7 @@
 }
 
 .button:disabled:hover {
-  background-color: transparent;
-  color: var(--text);
+  background-color: var(--btnLight);
   cursor: default;
 }
 
