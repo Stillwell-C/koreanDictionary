@@ -20,6 +20,7 @@ const SingleTermPage = async ({
   searchParams: { translation, transLang },
 }: Props) => {
   const data = await getTermData(targetCode, translation, transLang);
+  console.log(data);
 
   const content = (
     <div>
@@ -64,7 +65,14 @@ const SingleTermPage = async ({
               <p>{item.translation.transDfn}</p>
             </div>
             <ul className={styles.exampleList}>
-              <SingleTermExamples examples={item.examples} />
+              <SingleTermExamples
+                examples={item.examples}
+                wordInfo={{
+                  word: data.word,
+                  pos: data?.pos,
+                  origin: data?.originalLanguage?.originalLanguageType,
+                }}
+              />
             </ul>
           </li>
         ))}
