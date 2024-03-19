@@ -42,8 +42,11 @@ const CollectionPage = async ({
           <span>Translation language: </span>
           <SearchLanguageToggle />
         </div>
-        <Link href={`/api/termCollection/${collectionId}?language=1`}>
-          <button>Download</button>
+        <Link
+          className={styles.link}
+          href={`/api/termCollection/${collectionId}?language=1`}
+        >
+          Download
         </Link>
         <p>
           {`This list has ${data.searchData.total} ${
