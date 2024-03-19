@@ -12,3 +12,9 @@
   gap: 1.5rem;
   flex: 1;
 }
+
+.link {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--btn);
+}
