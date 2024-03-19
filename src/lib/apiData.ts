@@ -155,6 +155,22 @@ export const getTermData = async (
   };
 };
 
+export const getTermCollection = async (termCollectionId: string) => {
+  if (!termCollectionId) {
+    throw new Error("Term collection ID must be provided");
+  }
+
+  try {
+    const termCollection = await TermCollection.findOne({
+      _id: termCollectionId,
+    });
+
+    return termCollection;
+  } catch (err) {
+    throw new Error("Failed to fetch collection");
+  }
+};
+
 export const getTermCollections = async (
   userId: string,
   start: string = "1",
@@ -202,7 +218,7 @@ export const getSavedTerms = async (
   const skipNum = (startNum - 1) * resultsNum;
 
   if (!termCollectionId) {
-    throw new Error("User ID must be provided");
+    throw new Error("term collection ID must be provided");
   }
 
   try {
@@ -225,6 +241,27 @@ export const getSavedTerms = async (
         num: results,
       },
     };
+  } catch (err) {
+    throw new Error("Failed to fetch terms");
+  }
+};
+
+export const getAllSavedTerms = async (termCollectionId: string) => {
+  if (!termCollectionId) {
+    throw new Error("term collection ID must be provided");
+  }
+
+  try {
+    const savedTerms = await SavedTerm.find({
+      termCollectionId,
+    })
+      .select("_id targetCode")
+      .sort("-createdAt");
+    const savedTermsTotal = await SavedTerm.countDocuments({
+      termCollectionId,
+    });
+
+    return savedTerms;
   } catch (err) {
     throw new Error("Failed to fetch terms");
   }
