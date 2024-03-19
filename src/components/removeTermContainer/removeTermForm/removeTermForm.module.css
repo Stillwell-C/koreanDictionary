@@ -3,17 +3,17 @@
 }
 
 .button {
-  border: 1px solid var(--text);
-  background-color: transparent;
+  border: 1px solid var(--btn);
+  background-color: var(--btn);
   color: var(--text);
+  font-weight: bold;
   padding: 3px;
   border-radius: 0.25rem;
   cursor: pointer;
 }
 
 .button:hover {
-  background-color: var(--text);
-  color: var(--bg);
+  background-color: var(--btnLight);
 }
 
 .button:disabled:hover {
