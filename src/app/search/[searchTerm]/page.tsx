@@ -4,6 +4,7 @@ import SearchResultPaginationMenu from "@/components/searchResultPagination/Sear
 import styles from "./wordSearch.module.css";
 import { searchWord } from "@/lib/apiData";
 import { Suspense } from "react";
+import SmallSearchForm from "@/components/smallSearchForm/smallSearchForm";
 
 type Props = {
   params: {
@@ -31,6 +32,7 @@ const WordSearch = async ({
 
   return (
     <div className={styles.container}>
+      <SmallSearchForm />
       <Suspense fallback={<p>Searching for: {decodeURI(searchTerm)}...</p>}>
         <div>
           <p className={styles.resultData}>

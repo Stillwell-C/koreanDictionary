@@ -4,6 +4,8 @@ import React from "react";
 import styles from "./singleTermPage.module.css";
 import Image from "next/image";
 import SingleTermExamples from "@/components/singleTermExamples/SingleTermExamples";
+import AddTermContainer from "@/components/addTermContainer/AddTermContainer";
+import SmallSearchForm from "@/components/smallSearchForm/smallSearchForm";
 
 type Props = {
   params: {
@@ -24,6 +26,7 @@ const SingleTermPage = async ({
 
   const content = (
     <div>
+      <SmallSearchForm />
       <SearchLanguageToggle />
       <div className={styles.topLine}>
         <p className={styles.entryTerm}>{data.word}</p>
@@ -55,6 +58,7 @@ const SingleTermPage = async ({
         {data?.wordGrade && data?.wordGrade !== "없음" && (
           <span>등급: {data?.wordGrade}</span>
         )}
+        <AddTermContainer targetCode={targetCode} />
       </div>
       <ol className={styles.definitionList}>
         {data?.definitionAndExamples?.map((item, i) => (
