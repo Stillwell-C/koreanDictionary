@@ -53,7 +53,6 @@ const CollectionPage = async ({
             </Link>
           </div>
           <div>
-            <span>Translation language: </span>
             <SearchLanguageToggle />
           </div>
           <p>
