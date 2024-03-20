@@ -40,6 +40,7 @@ const LanguageSelect = ({ currentLanguage, handleChangeLanguage }: Props) => {
 
   return (
     <Listbox value={currentLanguage} onChange={handleChangeLanguage}>
+      <Listbox.Label hidden>Translation Language:</Listbox.Label>
       <div className={styles.listboxContent}>
         <Listbox.Button className={styles.listboxButton}>
           <span>{languages[currentLanguage].display}</span>
