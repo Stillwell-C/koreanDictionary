@@ -2,31 +2,33 @@
 
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { Listbox } from "@headlessui/react";
 import styles from "./searchForm.module.css";
+import { FiCheck, FiChevronDown } from "react-icons/fi";
 
 const SearchForm = () => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectValue, setSelectValue] = useState("0");
+  const [selectValue, setSelectValue] = useState(0);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!searchTerm.length) return;
     router.push(
       `/search/${searchTerm}${
-        selectValue !== "0" ? `?translation=true&transLang=${selectValue}` : ""
+        selectValue !== 0 ? `?translation=true&transLang=${selectValue}` : ""
       }`
     );
   };
 
   useEffect(() => {
     const languagePreference = localStorage.getItem("langPreference");
-    if (languagePreference) setSelectValue(languagePreference);
+    if (languagePreference) setSelectValue(parseInt(languagePreference));
   }, []);
 
-  const handleChangeLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectValue(e.target.value);
-    localStorage.setItem("langPreference", e.target.value);
+  const handleChangeLanguage = (e: number) => {
+    setSelectValue(e);
+    localStorage.setItem("langPreference", e.toString());
   };
 
   const languages = [
@@ -45,9 +47,21 @@ const SearchForm = () => {
   ];
 
   const options = languages.map((language) => (
-    <option key={language.value} value={language.value}>
-      {language.display}
-    </option>
+    // <option key={language.value} value={language.value}>
+    //   {language.display}
+    // </option>
+    <Listbox.Option
+      className={({ active }) =>
+        active ? `${styles.option} ${styles.optionActive}` : styles.option
+      }
+      key={language.value}
+      value={language.value}
+    >
+      <span className={styles.optionCheck}>
+        {language.value === selectValue && <FiCheck />}
+      </span>
+      <span>{language.display}</span>
+    </Listbox.Option>
   ));
 
   return (
@@ -71,9 +85,22 @@ const SearchForm = () => {
           </button>
         </div>
         <div className={styles.select}>
-          <select value={selectValue || "0"} onChange={handleChangeLanguage}>
+          {/* <select value={selectValue || "0"} onChange={handleChangeLanguage}>
             {options}
-          </select>
+          </select> */}
+          <Listbox value={selectValue} onChange={handleChangeLanguage}>
+            <div className={styles.listboxContent}>
+              <Listbox.Button className={styles.listboxButton}>
+                <span>{languages[selectValue].display}</span>
+                <span>
+                  <FiChevronDown />
+                </span>
+              </Listbox.Button>
+              <Listbox.Options className={styles.listboxOptions}>
+                {options}
+              </Listbox.Options>
+            </div>
+          </Listbox>
         </div>
       </form>
     </div>
