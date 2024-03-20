@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.18",
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^2.4.3",
     "cheerio": "^1.0.0-rc.12",
@@ -18,6 +19,7 @@
     "node-html-parser": "^6.1.12",
     "react": "^18",
     "react-dom": "^18",
+    "react-icons": "^5.0.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz"
   },
   "devDependencies": {
