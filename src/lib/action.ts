@@ -118,6 +118,13 @@ export const addTermToList = async (
     termCollectionId = newCollection._id;
   }
 
+  if (!termCollectionId.length) {
+    return {
+      error: true,
+      errorMsg: "Collection not found",
+    };
+  }
+
   const existingTermCheck = await SavedTerm.findOne({
     termCollectionId,
     targetCode,
@@ -134,6 +141,8 @@ export const addTermToList = async (
     termCollectionId,
     targetCode,
   });
+
+  revalidatePath(`/userpage/collection/${termCollectionId}`);
 
   return { success: true };
 };
