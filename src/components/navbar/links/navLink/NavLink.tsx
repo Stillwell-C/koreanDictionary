@@ -13,11 +13,14 @@ type Props = {
 
 const NavLink = ({ linkData: { path, name } }: Props) => {
   const pathName = usePathname();
+  const addActiveClass =
+    (path === "/" && pathName === "/") ||
+    (path !== "/" && pathName.startsWith(path));
 
   return (
     <Link
       href={path}
-      className={`${styles.container} ${pathName === path && styles.active}`}
+      className={`${styles.container} ${addActiveClass && styles.active}`}
     >
       {name}
     </Link>
