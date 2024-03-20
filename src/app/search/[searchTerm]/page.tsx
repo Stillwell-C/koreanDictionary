@@ -41,7 +41,6 @@ const WordSearch = async ({
           </p>
         </div>
         <div>
-          <span>Translation language: </span>
           <SearchLanguageToggle />
         </div>
         <div className={styles.results}>
