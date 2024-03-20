@@ -1,7 +1,7 @@
 "use server";
 
 import { signIn, signOut } from "./auth";
-import { connectDB } from "./utils";
+import { connectDB } from "./dbUtils";
 import { SavedTerm, TermCollection, User } from "./models";
 import bcrypt from "bcryptjs";
 import { CredentialsSignin } from "@auth/core/errors";
