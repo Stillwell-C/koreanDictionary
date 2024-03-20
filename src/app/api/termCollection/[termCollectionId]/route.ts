@@ -3,6 +3,7 @@ import {
   getTermCollection,
   getTermData,
 } from "@/lib/apiData";
+import { organizeExamples } from "@/lib/utils";
 import { NextRequest } from "next/server";
 import * as XLSX from "xlsx";
 
@@ -47,24 +48,38 @@ export const GET = async (
       );
       const front = wordData.word;
       const back = wordData.definitionAndExamples
-        .map((item) => [item.translation.transWord, item.definition])
-        .join("\r\n");
+        .map((item) =>
+          [item.translation.transWord, item.definition].join("<br>")
+        )
+        .join("<br><br>");
+      const origin = wordData?.originalLanguage?.originalLanguage;
       const examples = wordData.definitionAndExamples
-        .map((item) => [
-          item.translation.transWord,
-          item.definition,
-          item.examples.map((example) => example.example).join("\r\n"),
-        ])
-        .join("\r\n");
+        .map((item) =>
+          [
+            item.translation.transWord,
+            item.definition,
+            //This will provide single return between word/def and examples
+            "",
+            organizeExamples(item.examples, {
+              word: wordData.word,
+              origin: wordData?.originalLanguage?.originalLanguageType,
+              pos: wordData?.pos,
+            }),
+          ].join("<br>")
+        )
+        .join("<br><br>");
+
+      const cardContent = [origin, examples].join("<br>");
+
       savedTermData.push({
         front,
         back,
-        examples,
+        cardContent,
       });
     }
     const cardData = JSON.parse(JSON.stringify(savedTermData));
 
-    console.log(cardData);
+    // console.log(cardData);
 
     const ws = XLSX.utils.json_to_sheet(cardData);
 
