@@ -92,7 +92,7 @@ const SearchForm = () => {
             <div className={styles.listboxContent}>
               <Listbox.Button className={styles.listboxButton}>
                 <span>{languages[selectValue].display}</span>
-                <span>
+                <span className={styles.listboxButtonIcon}>
                   <FiChevronDown />
                 </span>
               </Listbox.Button>
