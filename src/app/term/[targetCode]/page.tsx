@@ -6,6 +6,7 @@ import Image from "next/image";
 import SingleTermExamples from "@/components/singleTermExamples/SingleTermExamples";
 import AddTermContainer from "@/components/addTermContainer/AddTermContainer";
 import SmallSearchForm from "@/components/smallSearchForm/smallSearchForm";
+import { Metadata } from "next";
 
 type Props = {
   params: {
@@ -14,6 +15,18 @@ type Props = {
   searchParams: {
     translation?: string;
     transLang?: string;
+  };
+};
+
+export const generateMetadata = async ({
+  params: { targetCode },
+  searchParams: { translation, transLang },
+}: Props): Promise<Metadata> => {
+  const data = await getTermData(targetCode, translation, transLang);
+
+  return {
+    title: `Definition for ${data.word}`,
+    description: `Definition, information, and examples for ${data.word}`,
   };
 };
 

@@ -5,6 +5,7 @@ import styles from "./wordSearch.module.css";
 import { searchWord } from "@/lib/apiData";
 import { Suspense } from "react";
 import SmallSearchForm from "@/components/smallSearchForm/smallSearchForm";
+import { Metadata } from "next";
 
 type Props = {
   params: {
@@ -14,6 +15,23 @@ type Props = {
     translation?: string;
     transLang?: string;
     start?: string;
+  };
+};
+
+export const generateMetadata = async ({
+  params: { searchTerm },
+  searchParams: { translation, transLang, start },
+}: Props): Promise<Metadata> => {
+  const data = await searchWord(
+    decodeURI(searchTerm),
+    translation,
+    transLang,
+    start
+  );
+
+  return {
+    title: `Search results for ${decodeURI(searchTerm)}`,
+    description: `${data.searchData.total} search results found`,
   };
 };
 

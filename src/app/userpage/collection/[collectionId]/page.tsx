@@ -5,6 +5,8 @@ import styles from "./collectionPage.module.css";
 import { Suspense } from "react";
 import SearchResultPaginationMenu from "@/components/searchResultPagination/SearchResultPaginationMenu";
 import Link from "next/link";
+import { Metadata } from "next";
+import { auth } from "@/lib/auth";
 
 type Props = {
   params: {
@@ -14,6 +16,19 @@ type Props = {
     translation?: string;
     transLang?: string;
     start?: string;
+  };
+};
+
+export const generateMetadata = async ({
+  params: { collectionId },
+  searchParams: { translation, transLang, start },
+}: Props): Promise<Metadata> => {
+  const collection = await getTermCollection(collectionId);
+  const session = await auth();
+
+  return {
+    title: `${collection?.name}`,
+    description: `User ${session?.user?.username}'s collection ${collection?.name}`,
   };
 };
 

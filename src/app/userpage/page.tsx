@@ -5,10 +5,20 @@ import styles from "./userpage.module.css";
 import { Suspense } from "react";
 import TermList from "@/components/termList/TermList";
 import SearchResultPaginationMenu from "@/components/searchResultPagination/SearchResultPaginationMenu";
+import { Metadata } from "next";
 
 type Props = {
   searchParams: {
     start?: string;
+  };
+};
+
+export const generateMetadata = async (): Promise<Metadata> => {
+  const session = await auth();
+
+  return {
+    title: `${session?.user?.username}'s Profile`,
+    description: `Profile page for ${session?.user?.username}`,
   };
 };
 
