@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import { connectDB } from "./dbUtils";
-import { User } from "./models";
+import { TermCollection, User } from "./models";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { authConfig } from "./authConfig";
@@ -57,12 +57,21 @@ export const {
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
+      // console.log(user, account, profile);
       if (account?.provider === "github") {
         connectDB();
         try {
           if (!profile) return false;
 
+          //Check for user in db
           const existingUser = await User.findOne({ email: profile.email });
+          //If exists, reassign Oauth ID to DB ID & assign username
+          if (existingUser) {
+            user.id = existingUser._id;
+            user.username = existingUser.username;
+          }
+
+          //If no user exists, create new one
           if (!existingUser) {
             const newUser = new User({
               username: profile.login,
@@ -71,6 +80,17 @@ export const {
             });
 
             const createdUser = await newUser.save();
+            //Reassign Oauth ID to DB ID & assign username
+            user.id = createdUser.id;
+            user.username = createdUser.username;
+
+            //Create a term list for new user
+            const myTermsList = new TermCollection({
+              userId: createdUser._id,
+              name: "My Terms",
+            });
+
+            myTermsList.save();
           }
         } catch (err) {
           return false;
