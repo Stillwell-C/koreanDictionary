@@ -25,6 +25,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "0",
     },
+    providerId: {
+      type: String,
+    },
     isAdmin: {
       type: Boolean,
       default: false,
