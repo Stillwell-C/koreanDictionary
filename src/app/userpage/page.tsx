@@ -41,8 +41,9 @@ const page = async ({ searchParams: { start, modal } }: Props) => {
     ));
 
   const addCollectionLink = start
-    ? `/userpage/?start=${start}${showModal ? "" : `&modal=true`}`
-    : `/userpage/${showModal ? "" : `?modal=true`}`;
+    ? `/userpage?start=${start}&modal=true`
+    : "/userpage?modal=true";
+  const closeModalLink = start ? `/userpage?start=${start}` : "/userpage/";
 
   return (
     <div className={styles.container}>
@@ -56,10 +57,10 @@ const page = async ({ searchParams: { start, modal } }: Props) => {
 
       <Suspense fallback={<p>Retrieving collections...</p>}>
         <div className={styles.resultsContainer}>
-          <div>
+          <div className={styles.collectionsHeading}>
             <h2>Collections</h2>
-            <Link href={addCollectionLink}>
-              <div>Add New Collection</div>
+            <Link className={styles.newCollectionLink} href={addCollectionLink}>
+              Add New Collection
             </Link>
           </div>
           <p>
@@ -74,7 +75,11 @@ const page = async ({ searchParams: { start, modal } }: Props) => {
         </div>
         <SearchResultPaginationMenu searchData={data.searchData} />
       </Suspense>
-      <AddCollectionDialog isOpen={showModal} closeLink={addCollectionLink} />
+      <AddCollectionDialog
+        isOpen={showModal}
+        closeLink={closeModalLink}
+        userId={session?.user?.id || ""}
+      />
     </div>
   );
 };
