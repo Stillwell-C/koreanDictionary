@@ -59,6 +59,7 @@ export const registerUser = async (
     const myTermsList = new TermCollection({
       userId: createdUser._id,
       name: "My Terms",
+      canDelete: false,
     });
 
     myTermsList.save();
@@ -209,4 +210,34 @@ export const createNewTermCollection = async (
   }
 
   return { success: true };
+};
+
+export const deleteCollection = async (
+  prevState: FormStateType | null,
+  formData: FormData
+) => {
+  const { termCollectionId } = Object.fromEntries(formData);
+
+  if (!termCollectionId) {
+    return {
+      error: true,
+      errorMsg: "Must submit collection ID",
+    };
+  }
+
+  const termCollection = await TermCollection.findById(termCollectionId);
+
+  if (!termCollection) {
+    return {
+      error: true,
+      errorMsg: "Error. Collection not found.",
+    };
+  }
+
+  if (!termCollection) {
+    return {
+      error: true,
+      errorMsg: "Error. Collection not found.",
+    };
+  }
 };
