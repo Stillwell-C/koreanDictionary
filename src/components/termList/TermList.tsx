@@ -23,9 +23,11 @@ const TermList = ({ collectionId, name }: Props) => {
       : `/userpage/collection/${collectionId}`;
 
   return (
-    <Link className={styles.collection} href={collectionLink}>
-      {name}
-    </Link>
+    <div>
+      <Link className={styles.collection} href={collectionLink}>
+        {name}
+      </Link>
+    </div>
   );
 };
 
