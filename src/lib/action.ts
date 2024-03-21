@@ -59,7 +59,7 @@ export const registerUser = async (
     const myTermsList = new TermCollection({
       userId: createdUser._id,
       name: "My Terms",
-      canDelete: false,
+      noDelete: true,
     });
 
     myTermsList.save();
@@ -234,7 +234,7 @@ export const deleteCollection = async (
     };
   }
 
-  if (!termCollection) {
+  if (termCollection?.canDelete) {
     return {
       error: true,
       errorMsg: "Error. Collection not found.",

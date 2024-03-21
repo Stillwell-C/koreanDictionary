@@ -89,7 +89,7 @@ export const {
             const myTermsList = new TermCollection({
               userId: createdUser._id,
               name: "My Terms",
-              canDelete: false,
+              noDelete: true,
             });
 
             myTermsList.save();
