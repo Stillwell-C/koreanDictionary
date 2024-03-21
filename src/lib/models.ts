@@ -51,7 +51,7 @@ const termCollectionSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    canDelete: {
+    noDelete: {
       type: Boolean,
     },
   },
