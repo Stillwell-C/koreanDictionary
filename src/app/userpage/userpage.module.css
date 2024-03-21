@@ -8,8 +8,21 @@
   flex-direction: column;
 }
 
-.resultsContainer h2 {
+.collectionsHeading {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   margin-bottom: 0.5rem;
+}
+
+.newCollectionLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--btn);
+  color: var(--btn);
 }
 
 .results {
