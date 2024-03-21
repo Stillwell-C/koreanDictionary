@@ -64,7 +64,7 @@ export const {
           if (!profile) return false;
 
           //Check for user in db
-          const existingUser = await User.findOne({ email: profile.email });
+          const existingUser = await User.findOne({ providerId: profile.id });
           //If exists, reassign Oauth ID to DB ID & assign username
           if (existingUser) {
             user.id = existingUser._id;
@@ -77,6 +77,7 @@ export const {
               username: profile.login,
               email: profile.email,
               image: profile.avatar_url,
+              providerId: profile.id,
             });
 
             const createdUser = await newUser.save();
