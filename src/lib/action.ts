@@ -151,8 +151,6 @@ export const removeTermFromList = async (
   prevState: FormStateType | null,
   formData: FormData
 ) => {
-  console.log(formData);
-
   const { termCollectionId, targetCode } = Object.fromEntries(formData);
 
   if (!termCollectionId || !targetCode) {
@@ -172,6 +170,43 @@ export const removeTermFromList = async (
   }
 
   revalidatePath(`/userpage/collection/${termCollectionId}`);
+
+  return { success: true };
+};
+
+export const createNewTermCollection = async (
+  prevState: FormStateType | null,
+  formData: FormData
+) => {
+  const { userId, collectionName } = Object.fromEntries(formData);
+
+  console.log(collectionName);
+
+  if (!collectionName) {
+    return {
+      error: true,
+      errorMsg: "Must submit name.",
+    };
+  }
+
+  if (!userId) {
+    return {
+      error: true,
+      errorMsg: "Must submit user ID.",
+    };
+  }
+
+  const createdList = await TermCollection.create({
+    userId,
+    name: collectionName,
+  });
+
+  if (!createdList) {
+    return {
+      error: true,
+      errorMsg: "Failed to create List",
+    };
+  }
 
   return { success: true };
 };
