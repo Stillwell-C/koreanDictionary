@@ -1,6 +1,6 @@
 import SearchLanguageToggle from "@/components/searchLanguageToggle/SearchLanguageToggle";
 import TermListResult from "@/components/termListResult/TermListResult";
-import { getSavedTerms, getTermCollection } from "@/lib/apiData";
+import { getSavedTerms, getTermCollection } from "@/lib/dbData";
 import styles from "./collectionPage.module.css";
 import { Suspense } from "react";
 import SearchResultPaginationMenu from "@/components/searchResultPagination/SearchResultPaginationMenu";

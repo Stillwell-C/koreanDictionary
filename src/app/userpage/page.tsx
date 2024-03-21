@@ -1,15 +1,17 @@
-import TermListResult from "@/components/termListResult/TermListResult";
-import { getTermCollections } from "@/lib/apiData";
+import { getTermCollections } from "@/lib/dbData";
 import { auth } from "@/lib/auth";
 import styles from "./userpage.module.css";
 import { Suspense } from "react";
 import TermList from "@/components/termList/TermList";
 import SearchResultPaginationMenu from "@/components/searchResultPagination/SearchResultPaginationMenu";
 import { Metadata } from "next";
+import Link from "next/link";
+import AddCollectionDialog from "@/components/addCollectionDialog/AddCollectionDialog";
 
 type Props = {
   searchParams: {
     start?: string;
+    modal?: string;
   };
 };
 
@@ -22,10 +24,11 @@ export const generateMetadata = async (): Promise<Metadata> => {
   };
 };
 
-const page = async ({ searchParams: { start } }: Props) => {
+const page = async ({ searchParams: { start, modal } }: Props) => {
   const session = await auth();
   const userId = session?.user?.id || "";
   const data = await getTermCollections(userId, start);
+  const showModal = modal === "true";
 
   const collections =
     data?.results?.length &&
@@ -36,6 +39,10 @@ const page = async ({ searchParams: { start } }: Props) => {
         name={collection.name}
       />
     ));
+
+  const addCollectionLink = start
+    ? `/userpage/?start=${start}${showModal ? "" : `&modal=true`}`
+    : `/userpage/${showModal ? "" : `?modal=true`}`;
 
   return (
     <div className={styles.container}>
@@ -49,7 +56,12 @@ const page = async ({ searchParams: { start } }: Props) => {
 
       <Suspense fallback={<p>Retrieving collections...</p>}>
         <div className={styles.resultsContainer}>
-          <h2>Collections</h2>
+          <div>
+            <h2>Collections</h2>
+            <Link href={addCollectionLink}>
+              <div>Add New Collection</div>
+            </Link>
+          </div>
           <p>
             {`You have ${data.searchData.total} ${
               data.searchData.total !== "1" ? "collections" : "collection"
@@ -62,6 +74,7 @@ const page = async ({ searchParams: { start } }: Props) => {
         </div>
         <SearchResultPaginationMenu searchData={data.searchData} />
       </Suspense>
+      <AddCollectionDialog isOpen={showModal} closeLink={addCollectionLink} />
     </div>
   );
 };

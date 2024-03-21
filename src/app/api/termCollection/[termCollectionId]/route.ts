@@ -1,8 +1,5 @@
-import {
-  getAllSavedTerms,
-  getTermCollection,
-  getTermData,
-} from "@/lib/apiData";
+import { getAllSavedTerms, getTermCollection } from "@/lib/dbData";
+import { getTermData } from "@/lib/apiData";
 import { organizeExamples } from "@/lib/utils";
 import { NextRequest } from "next/server";
 import * as XLSX from "xlsx";
