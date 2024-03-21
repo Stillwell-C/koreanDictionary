@@ -7,6 +7,7 @@ import SearchResultPaginationMenu from "@/components/searchResultPagination/Sear
 import Link from "next/link";
 import { Metadata } from "next";
 import { auth } from "@/lib/auth";
+import DeleteCollectionDialog from "@/components/deleteCollectionDialog/DeleteCollectionDialog";
 
 type Props = {
   params: {
@@ -16,6 +17,7 @@ type Props = {
     translation?: string;
     transLang?: string;
     start?: string;
+    modal?: string;
   };
 };
 
@@ -34,10 +36,12 @@ export const generateMetadata = async ({
 
 const CollectionPage = async ({
   params: { collectionId },
-  searchParams: { translation, transLang, start },
+  searchParams: { translation, transLang, start, modal },
 }: Props) => {
+  const session = await auth();
   const collection = await getTermCollection(collectionId);
   const data = await getSavedTerms(collectionId, start);
+  const showModal = modal === "true";
 
   const terms =
     data?.results?.length &&
@@ -51,11 +55,31 @@ const CollectionPage = async ({
       />
     ));
 
+  const searchParamObj = { translation, transLang, start };
+  let searchParamString = "";
+  for (const [key, value] of Object.entries(searchParamObj)) {
+    if (value) {
+      searchParamString += searchParamString.length
+        ? `&${key}=${value}`
+        : `?${key}=${value}`;
+    }
+  }
+
+  const openModalLink = searchParamString.length
+    ? `/userpage/collection/${collectionId}?${searchParamString}&modal=true`
+    : `/userpage/collection/${collectionId}?modal=true`;
+  const closeModalLink = `/userpage/collection/${collectionId}${searchParamString}`;
+
   return (
     <div className={styles.container}>
       <Suspense fallback={<p>Retrieving terms...</p>}>
         <div className={styles.collectionTop}>
-          <h2>{collection.name}</h2>
+          <div className={styles.headingContainer}>
+            <h2>{collection.name}</h2>
+            <Link className={styles.deleteCollectionLink} href={openModalLink}>
+              Delete Collection
+            </Link>
+          </div>
           <div>
             <span>Download List: </span>
             <Link
@@ -82,6 +106,12 @@ const CollectionPage = async ({
         </div>
         <SearchResultPaginationMenu searchData={data.searchData} />
       </Suspense>
+      <DeleteCollectionDialog
+        isOpen={showModal}
+        closeLink={closeModalLink}
+        collectionId={collectionId}
+        userId={session?.user?.id || ""}
+      />
     </div>
   );
 };
