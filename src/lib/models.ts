@@ -51,6 +51,9 @@ const termCollectionSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    canDelete: {
+      type: Boolean,
+    },
   },
   { timestamps: true }
 );
