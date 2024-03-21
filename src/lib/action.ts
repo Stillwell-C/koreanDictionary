@@ -216,12 +216,19 @@ export const deleteCollection = async (
   prevState: FormStateType | null,
   formData: FormData
 ) => {
-  const { termCollectionId } = Object.fromEntries(formData);
+  const { termCollectionId, userId } = Object.fromEntries(formData);
 
   if (!termCollectionId) {
     return {
       error: true,
       errorMsg: "Must submit collection ID",
+    };
+  }
+
+  if (!userId) {
+    return {
+      error: true,
+      errorMsg: "Must user ID",
     };
   }
 
@@ -234,10 +241,30 @@ export const deleteCollection = async (
     };
   }
 
-  if (termCollection?.canDelete) {
+  if (termCollection?.noDelete) {
     return {
       error: true,
-      errorMsg: "Error. Collection not found.",
+      errorMsg: "Error. This collection cannot be deleted.",
     };
   }
+
+  if (termCollection.userId.toString() !== userId) {
+    return {
+      error: true,
+      errorMsg: "Error. Cannot delete another user's collection.",
+    };
+  }
+
+  const deletedCollection = await TermCollection.findByIdAndDelete(
+    termCollectionId
+  );
+
+  if (!deletedCollection) {
+    return {
+      error: true,
+      errorMsg: "Something went wrong.",
+    };
+  }
+
+  return { success: true };
 };
