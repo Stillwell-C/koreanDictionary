@@ -1,7 +1,6 @@
 "use client";
 
 import { createNewTermCollection } from "@/lib/action";
-import { auth } from "@/lib/auth";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
