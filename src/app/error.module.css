@@ -1,0 +1,45 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.textContainer {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.textContainer h2 {
+  font-size: 2.5rem;
+}
+
+.buttonDiv {
+  display: flex;
+  gap: 1rem;
+}
+
+.buttonDiv button {
+  padding: 0.8rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: bold;
+  color: var(--text);
+  border: none;
+  border-radius: 0.25rem;
+}
+
+.purpleBtn {
+  background-color: var(--btn);
+}
+
+.greyBtn {
+  background-color: var(--greyBtn);
+}
