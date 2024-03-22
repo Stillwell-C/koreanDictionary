@@ -1,3 +1,4 @@
+import { FailedToFetchError } from "./exceptions";
 import { SavedTerm, TermCollection } from "./models";
 
 export const getTermCollection = async (termCollectionId: string) => {
@@ -12,7 +13,7 @@ export const getTermCollection = async (termCollectionId: string) => {
 
     return termCollection;
   } catch (err) {
-    throw new Error("Failed to fetch collection");
+    throw new FailedToFetchError();
   }
 };
 
@@ -49,7 +50,7 @@ export const getTermCollections = async (
       },
     };
   } catch (err) {
-    throw new Error("Failed to fetch collections");
+    throw new FailedToFetchError();
   }
 };
 
@@ -87,7 +88,7 @@ export const getSavedTerms = async (
       },
     };
   } catch (err) {
-    throw new Error("Failed to fetch terms");
+    throw new FailedToFetchError();
   }
 };
 
