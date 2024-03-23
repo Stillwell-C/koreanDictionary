@@ -2,8 +2,12 @@
 
 import { usePathname, useSearchParams } from "next/navigation";
 import SearchResultPaginationButton from "./components/SearchResultPaginationButton";
-import Link from "next/link";
 import styles from "./SearchResultPaginationMenu.module.css";
+import SkipToFirstBtn from "./components/SkipToFirstBtn";
+import SkipToLastBtn from "./components/SkipToLastPage";
+import MoveBackBtn from "./components/MoveBackBtn";
+import MoveForwardBtn from "./components/MoveForwardBtn";
+import { useCallback } from "react";
 
 type Props = {
   searchData: SearchResultSearchData;
@@ -18,14 +22,20 @@ const SearchResultPaginationMenu = ({
 
   //Get string of pathname & searchparams without start searchparam
   const pathname = usePathname();
-  let currentURL = pathname;
-  const searchParamsString = useSearchParams().toString();
-  const editableSearchParams = new URLSearchParams(searchParamsString);
-  editableSearchParams.delete("start");
-  const currentSearchParamStringWithoutPage = editableSearchParams.toString();
-  if (currentSearchParamStringWithoutPage.length)
-    currentURL += `?${currentSearchParamStringWithoutPage}`;
-  console.log(decodeURI(currentURL));
+  const searchParams = useSearchParams();
+
+  const pageUrlGenerator = useCallback(
+    (start: number) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("start");
+      if (start !== 1) params.set("start", start.toString());
+
+      const paramString = params.toString();
+
+      return paramString.length ? `${pathname}?${paramString}` : pathname;
+    },
+    [searchParams]
+  );
 
   if (totalNum <= 10) return;
 
@@ -38,7 +48,7 @@ const SearchResultPaginationMenu = ({
       key={key}
       pageNum={pageNum}
       currentPageNum={currentPageNum}
-      currentURL={currentURL}
+      pageUrlGenerator={pageUrlGenerator}
     />
   );
 
@@ -62,57 +72,25 @@ const SearchResultPaginationMenu = ({
       className={styles.container}
       aria-label='Search Results Pagination Navigation'
     >
-      <Link href={currentURL}>
-        <button
-          type='button'
-          disabled={currentPageNum <= 1 ? true : false}
-          aria-disabled={currentPageNum <= 1 ? true : false}
-          aria-label='Skip to page 1.'
-        >
-          &laquo;
-        </button>
-      </Link>
-      <Link
-        href={
-          currentPageNum <= 2
-            ? currentURL
-            : `${currentURL}&start=${currentPageNum - 1}`
-        }
-      >
-        <button
-          type='button'
-          disabled={currentPageNum <= 1 ? true : false}
-          aria-disabled={currentPageNum <= 1 ? true : false}
-          aria-label={`Move one page back ${
-            currentPageNum !== 1 ? `to page ${currentPageNum - 1}` : ""
-          }`}
-        >
-          &lsaquo;
-        </button>
-      </Link>
+      <SkipToFirstBtn
+        currentPageNum={currentPageNum}
+        pageUrlGenerator={pageUrlGenerator}
+      />
+      <MoveBackBtn
+        currentPageNum={currentPageNum}
+        pageUrlGenerator={pageUrlGenerator}
+      />
       {menuButtons}
-      <Link href={`${currentURL}&start=${currentPageNum + 1}`}>
-        <button
-          type='button'
-          disabled={currentPageNum === totalPages ? true : false}
-          aria-disabled={currentPageNum === totalPages ? true : false}
-          aria-label={`Move one page forward ${
-            currentPageNum !== totalPages ? `to page ${currentPageNum + 1}` : ""
-          }`}
-        >
-          &rsaquo;
-        </button>
-      </Link>
-      <Link href={`${currentURL}&start=${totalPages}`}>
-        <button
-          type='button'
-          disabled={currentPageNum === totalPages ? true : false}
-          aria-disabled={currentPageNum === totalPages ? true : false}
-          aria-label={`Skip to last page, page ${totalPages}`}
-        >
-          &raquo;
-        </button>
-      </Link>
+      <MoveForwardBtn
+        currentPageNum={currentPageNum}
+        pageUrlGenerator={pageUrlGenerator}
+        totalPages={totalPages}
+      />
+      <SkipToLastBtn
+        currentPageNum={currentPageNum}
+        pageUrlGenerator={pageUrlGenerator}
+        totalPages={totalPages}
+      />
     </nav>
   );
 
