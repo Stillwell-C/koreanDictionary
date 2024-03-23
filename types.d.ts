@@ -85,3 +85,17 @@ type FormStateType = {
   errorMsg?: string;
   success?: boolean;
 };
+
+type TermCollection = {
+  _id: string;
+  name: string;
+};
+
+type TermCollectionResponse = {
+  results: TermCollection[];
+  searchData: {
+    total: string;
+    start: string;
+    num: string;
+  };
+};
