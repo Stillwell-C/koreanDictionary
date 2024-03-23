@@ -7,6 +7,9 @@ import SingleTermExamples from "@/components/singleTermExamples/SingleTermExampl
 import AddTermContainer from "@/components/addTermContainer/AddTermContainer";
 import SmallSearchForm from "@/components/smallSearchForm/smallSearchForm";
 import { Metadata } from "next";
+import { auth } from "@/lib/auth";
+import AddTermButton from "@/components/Buttons/AddTermButton/AddTermButton";
+import AddTermDialog from "@/components/AddTermDialog/AddTermDialog";
 
 type Props = {
   params: {
@@ -15,6 +18,7 @@ type Props = {
   searchParams: {
     translation?: string;
     transLang?: string;
+    modal?: string;
   };
 };
 
@@ -32,10 +36,30 @@ export const generateMetadata = async ({
 
 const SingleTermPage = async ({
   params: { targetCode },
-  searchParams: { translation, transLang },
+  searchParams: { translation, transLang, modal },
 }: Props) => {
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  const modalOpen = modal === "true";
+
   const data = await getTermData(targetCode, translation, transLang);
-  console.log(data);
+
+  const searchParamObj = { translation, transLang };
+  let searchParamString = "";
+  for (const [key, value] of Object.entries(searchParamObj)) {
+    if (value) {
+      searchParamString += searchParamString.length
+        ? `&${key}=${value}`
+        : `?${key}=${value}`;
+    }
+  }
+
+  const openModalLink = searchParamString.length
+    ? `/term/${targetCode}${searchParamString}&modal=true&modalTarget=${targetCode}`
+    : `/term/${targetCode}?modal=true&modalTarget=${targetCode}`;
+
+  const closeModalLink = `/term/${targetCode}${searchParamString}`;
 
   const content = (
     <div>
@@ -71,7 +95,8 @@ const SingleTermPage = async ({
         {data?.wordGrade && data?.wordGrade !== "없음" && (
           <span>등급: {data?.wordGrade}</span>
         )}
-        <AddTermContainer targetCode={targetCode} />
+        {/* <AddTermContainer targetCode={targetCode} /> */}
+        <AddTermButton userId={userId || ""} openModalLink={openModalLink} />
       </div>
       <ol className={styles.definitionList}>
         {data?.definitionAndExamples?.map((item, i) => (
@@ -94,6 +119,13 @@ const SingleTermPage = async ({
           </li>
         ))}
       </ol>
+      {userId && modalOpen && (
+        <AddTermDialog
+          isOpen={modalOpen}
+          closeLink={closeModalLink}
+          userId={userId}
+        />
+      )}
     </div>
   );
 
