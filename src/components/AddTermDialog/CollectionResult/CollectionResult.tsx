@@ -42,7 +42,6 @@ const CollectionResult = ({ result: { _id, name }, userId }: Props) => {
       <div className={styles.topLine}>
         <span className={styles.listname}>{name}</span>
         <div className={styles.formContainer}>
-          {/* <AddTermForm userId={userId} termCollectionId={_id} /> */}
           <form action={formAction}>
             <input
               type='text'
@@ -66,15 +65,6 @@ const CollectionResult = ({ result: { _id, name }, userId }: Props) => {
             >
               {state?.success ? "Saved" : "Save Term"}
             </button>
-            {/* <div
-              className={`${styles.message} ${
-                displayMessage ? styles.displayMessage : ""
-              }`}
-              className={`${styles.message} ${styles.displayMessage}`}
-              aria-hidden={!displayMessage}
-            >
-              <p ref={messageRef}>{message}</p>
-            </div> */}
           </form>
         </div>
       </div>
@@ -83,7 +73,6 @@ const CollectionResult = ({ result: { _id, name }, userId }: Props) => {
         className={`${styles.bottomLine} ${
           displayMessage ? styles.displayMessage : ""
         }`}
-        // className={`${styles.bottomLine} ${styles.displayMessage}`}
       >
         <div
           className={`${styles.messageDiv} ${
