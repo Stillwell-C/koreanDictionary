@@ -99,27 +99,20 @@ export const addTermToList = async (
   formData: FormData
 ) => {
   //Keep error messages short as they will appear on one line on front end.
-  const { userId, targetCode } = Object.fromEntries(formData);
+  const { userId, targetCode, termCollectionId } = Object.fromEntries(formData);
 
-  if (!userId || !targetCode) {
+  if (!userId || !targetCode || !termCollectionId) {
     return {
       error: true,
-      errorMsg: "Must submit userId and target_code.",
+      errorMsg: "Must submit userId, target code, and term collection ID.",
     };
   }
 
-  const termCollection = await TermCollection.findOne({ userId });
-  let termCollectionId = termCollection?._id || "";
+  const termCollection = await TermCollection.findOne({
+    _id: termCollectionId,
+  });
 
   if (!termCollection) {
-    const newCollection = await TermCollection.create({
-      userId: userId,
-      name: "My Terms",
-    });
-    termCollectionId = newCollection._id;
-  }
-
-  if (!termCollectionId.length) {
     return {
       error: true,
       errorMsg: "Collection not found",
