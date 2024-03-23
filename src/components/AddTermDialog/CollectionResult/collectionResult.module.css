@@ -1,0 +1,71 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 1rem;
+  position: relative;
+}
+
+.topLine {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.listname {
+  overflow-x: hidden;
+  align-self: center;
+}
+
+.button {
+  border: 1px solid var(--btn);
+  background-color: var(--btn);
+  color: var(--text);
+  font-weight: bold;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: var(--btnLight);
+}
+
+.button:disabled:hover {
+  background-color: var(--btnLight);
+  cursor: default;
+}
+
+.bottomLine {
+  margin-top: 5px;
+  display: flex;
+  justify-content: flex-end;
+  overflow: hidden;
+  max-height: 0;
+  transition: all 0.5s ease-in-out;
+}
+
+.bottomLine.displayMessage {
+  max-height: 2rem;
+}
+
+.messageDiv {
+  background-color: white;
+  color: black;
+  padding: 5px 7px;
+  border-radius: 0.25rem;
+  visibility: hidden;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out, visibility 0s 0.5s ease-in-out;
+}
+
+.messageDiv.displayMessage {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.formContainer {
+  flex-shrink: 0;
+}

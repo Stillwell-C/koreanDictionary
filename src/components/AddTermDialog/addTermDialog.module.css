@@ -1,0 +1,116 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 25;
+}
+
+.wrapper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+}
+
+.body {
+  background-color: var(--bgSoft);
+  padding: 2rem;
+  border-radius: 0.5rem;
+  width: clamp(300px, 95%, 400px);
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.heading h2 {
+  font-size: 1.3rem;
+}
+
+.heading button {
+  color: var(--text);
+  font-size: 1.5rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.bodyContent {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  overflow-y: auto;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.formInputDiv {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form input {
+  padding: 0.8rem;
+  color: var(--text);
+  background-color: var(--bg);
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+}
+
+.form input:-webkit-autofill,
+.form input:-webkit-autofill:hover,
+.form input:-webkit-autofill:focus {
+  border: none;
+  -webkit-text-fill-color: var(--text);
+  -webkit-box-shadow: 0 0 0px 1000px var(--bg) inset;
+  transition: var(--bg) 5000s ease-in-out 0s;
+}
+
+.btnDiv {
+  margin-top: 1.5rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.formButton {
+  background-color: var(--btn);
+}
+
+.closeButton {
+  background-color: var(--greyBtn);
+}
+
+.modalButton {
+  padding: 0.8rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: bold;
+  color: var(--text);
+  border: none;
+  border-radius: 0.25rem;
+}
+
+.formError {
+  margin-top: 1rem;
+  color: red;
+}
