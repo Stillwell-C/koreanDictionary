@@ -61,7 +61,7 @@ const CollectionPage = async ({
     if (value) {
       searchParamString += searchParamString.length
         ? `&${key}=${value}`
-        : `?${key}=${value}`;
+        : `${key}=${value}`;
     }
   }
 
