@@ -1,19 +1,25 @@
 import Link from "next/link";
 import React from "react";
 import styles from "./searchResult.module.css";
-import AddTermContainer from "../addTermContainer/AddTermContainer";
+import AddTermButton from "../Buttons/AddTermButton/AddTermButton";
+import { auth } from "@/lib/auth";
 
 type Props = {
   resultData: SearchResultItem;
-  transLang?: string;
-  translation?: string;
+  termLinkGenerator: (targetCode: string) => string;
+  openModalLinkGenerator: (targetCode: string) => string;
 };
 
-const SearchResult = ({ resultData, transLang, translation }: Props) => {
-  const termLink =
-    translation === "true"
-      ? `/term/${resultData.targetCode}?translation=true&transLang=${transLang}`
-      : `/term/${resultData.targetCode}`;
+const SearchResult = async ({
+  resultData,
+  termLinkGenerator,
+  openModalLinkGenerator,
+}: Props) => {
+  const termLink = termLinkGenerator(resultData.targetCode);
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  const openModalLink = openModalLinkGenerator(resultData.targetCode);
 
   return (
     <div>
@@ -27,7 +33,7 @@ const SearchResult = ({ resultData, transLang, translation }: Props) => {
           <span>[{resultData?.pronunciation}]</span>
         )}
         {resultData?.wordGrade && <span>등급: {resultData?.wordGrade}</span>}
-        <AddTermContainer targetCode={resultData.targetCode} />
+        <AddTermButton userId={userId || ""} openModalLink={openModalLink} />
       </div>
 
       <ol className={styles.list}>
