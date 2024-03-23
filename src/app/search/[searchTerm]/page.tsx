@@ -6,6 +6,8 @@ import { searchWord } from "@/lib/apiData";
 import { Suspense } from "react";
 import SmallSearchForm from "@/components/smallSearchForm/smallSearchForm";
 import { Metadata } from "next";
+import AddTermDialog from "@/components/AddTermDialog/AddTermDialog";
+import { auth } from "@/lib/auth";
 
 type Props = {
   params: {
@@ -15,6 +17,7 @@ type Props = {
     translation?: string;
     transLang?: string;
     start?: string;
+    modal?: string;
   };
 };
 
@@ -37,8 +40,13 @@ export const generateMetadata = async ({
 
 const WordSearch = async ({
   params: { searchTerm },
-  searchParams: { translation, transLang, start },
+  searchParams: { translation, transLang, start, modal },
 }: Props) => {
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  const modalOpen = modal === "true";
+
   const data = await searchWord(
     decodeURI(searchTerm),
     translation,
@@ -46,7 +54,29 @@ const WordSearch = async ({
     start
   );
 
-  console.log(data);
+  const termLinkGenerator = (targetCode: string) => {
+    return translation === "true"
+      ? `/term/${targetCode}?translation=true&transLang=${transLang}`
+      : `/term/${targetCode}`;
+  };
+
+  const searchParamObj = { translation, transLang, start };
+  let searchParamString = "";
+  for (const [key, value] of Object.entries(searchParamObj)) {
+    if (value) {
+      searchParamString += searchParamString.length
+        ? `&${key}=${value}`
+        : `?${key}=${value}`;
+    }
+  }
+
+  const openModalLinkGenerator = (targetCode: string) => {
+    return searchParamString.length
+      ? `/search/${searchTerm}${searchParamString}&modal=true&modalTarget=${targetCode}`
+      : `/search/${searchTerm}?modal=true&modalTarget=${targetCode}`;
+  };
+
+  const closeModalLink = `/search/${searchTerm}${searchParamString}`;
 
   return (
     <div className={styles.container}>
@@ -66,13 +96,20 @@ const WordSearch = async ({
             <SearchResult
               key={searchResult.targetCode}
               resultData={searchResult}
-              translation={translation}
-              transLang={transLang}
+              termLinkGenerator={termLinkGenerator}
+              openModalLinkGenerator={openModalLinkGenerator}
             />
           ))}
         </div>
         {<SearchResultPaginationMenu searchData={data.searchData} />}
       </Suspense>
+      {userId && modalOpen && (
+        <AddTermDialog
+          isOpen={modalOpen}
+          closeLink={closeModalLink}
+          userId={userId}
+        />
+      )}
     </div>
   );
 };
