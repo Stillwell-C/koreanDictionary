@@ -1,11 +1,14 @@
 .container {
   width: 100%;
   padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .resultsContainer {
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
 .collectionsHeading {
@@ -30,5 +33,4 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  flex: 1;
 }
