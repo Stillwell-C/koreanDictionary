@@ -201,6 +201,7 @@ export const createNewTermCollection = async (
       errorMsg: "Failed to create List",
     };
   }
+  revalidatePath("/userpage");
 
   return { success: true };
 };
@@ -258,6 +259,8 @@ export const deleteCollection = async (
       errorMsg: "Something went wrong.",
     };
   }
+
+  revalidatePath("/userpage");
 
   return { success: true };
 };
