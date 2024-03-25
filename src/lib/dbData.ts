@@ -53,9 +53,9 @@ export const getTermCollections = async (
     return {
       results: [],
       searchData: {
-        total: 0,
-        start: 1,
-        num: 0,
+        total: "0",
+        start: "1",
+        num: "0",
       },
     };
     // throw new FailedToFetchError();
