@@ -1,0 +1,9 @@
+.deleteCollectionLink {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid red;
+  background-color: red;
+  color: var(--text);
+  font-weight: bold;
+  cursor: pointer;
+}
