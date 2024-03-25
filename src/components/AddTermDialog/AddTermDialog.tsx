@@ -75,7 +75,12 @@ const AddTermDialog = ({ isOpen, closeLink, userId }: Props) => {
               )}
               {isLoading && "Loading..."}
               {displayMoreButton && (
-                <button onClick={() => setSize(size + 1)}>More</button>
+                <button
+                  className={styles.moreBtn}
+                  onClick={() => setSize(size + 1)}
+                >
+                  More
+                </button>
               )}
             </div>
           </div>
