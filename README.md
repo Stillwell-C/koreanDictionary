@@ -1,36 +1,23 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 꼬박꼬박 - Korean Dictionary and Flashcards
 
-## Getting Started
+This repository is the front end for a dictionary application that can be used to generate flashcards in programs such as Anki.
 
-First, run the development server:
+This project is currently under development, and I am working to improve it whenever I have time. Feel free to contact me about bugs or improvements you think could be made.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This is a Next.js project. There is currently no back end being used, but I may create one if I need to integrate data from multiple sources. For now, all calls to APIs and databases are being handled by Next.js with sever actions and API endpoints.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Once users make an account, they will be able to add words to collections which can be viewed on their profile page. If they navigate to the collection, they will see a link to download definitions and example sentences for each word as a CSV file. This file can be directly imported into Anki and will generate a flashcard for each word. The information in this file includes html, so be sure to toggle the option for html when importing the file. This will ensure that the word is bold in the example sentences. (The API does not provide information for which word in the example sentence should be bold, and due to the complex conjugation of Korean, I have made a very basic way for bolding most words, but hope to continue developing this. Please contact me if you know of a package that can assist with this.)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+All data is from the open API provided by the [National Institute of Korean Language](https://krdict.korean.go.kr/openApi/openApiInfo)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Demo
 
-## Learn More
+The application is live [here](https://korean-dictionary.vercel.app/).
 
-To learn more about Next.js, take a look at the following resources:
+### Overview
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- TypeScript
+- Next.js
+- SWR (for client side data fetching)
+- NextAuth.js
+- CSS modules
