@@ -62,12 +62,12 @@ const CollectionPage = async ({
     if (value) {
       searchParamString += searchParamString.length
         ? `&${key}=${value}`
-        : `${key}=${value}`;
+        : `?${key}=${value}`;
     }
   }
 
   const openModalLink = searchParamString.length
-    ? `/userpage/collection/${collectionId}?${searchParamString}&modal=true`
+    ? `/userpage/collection/${collectionId}${searchParamString}&modal=true`
     : `/userpage/collection/${collectionId}?modal=true`;
   const closeModalLink = `/userpage/collection/${collectionId}${searchParamString}`;
 
