@@ -1,7 +1,9 @@
+import { connectDB } from "./dbUtils";
 import { FailedToFetchError } from "./exceptions";
 import { SavedTerm, TermCollection } from "./models";
 
 export const getTermCollection = async (termCollectionId: string) => {
+  connectDB();
   if (!termCollectionId) {
     throw new Error("Term collection ID must be provided");
   }
@@ -22,6 +24,7 @@ export const getTermCollections = async (
   start: string = "1",
   results: string = "10"
 ) => {
+  connectDB();
   const startNum = parseInt(start);
   const resultsNum = parseInt(results);
   const skipNum = (startNum - 1) * resultsNum;
@@ -67,6 +70,7 @@ export const getSavedTerms = async (
   start: string = "1",
   results: string = "10"
 ) => {
+  connectDB();
   const startNum = parseInt(start);
   const resultsNum = parseInt(results);
   const skipNum = (startNum - 1) * resultsNum;
@@ -106,6 +110,7 @@ export const getAllSavedTerms = async (termCollectionId: string) => {
   }
 
   try {
+    connectDB();
     const savedTerms = await SavedTerm.find({
       termCollectionId,
     })
