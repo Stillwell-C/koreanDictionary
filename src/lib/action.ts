@@ -98,169 +98,193 @@ export const addTermToList = async (
   prevState: FormStateType | null,
   formData: FormData
 ) => {
-  //Keep error messages short as they will appear on one line on front end.
-  const { userId, targetCode, termCollectionId } = Object.fromEntries(formData);
+  try {
+    connectDB();
+    //Keep error messages short as they will appear on one line on front end.
+    const { userId, targetCode, termCollectionId } =
+      Object.fromEntries(formData);
 
-  if (!userId || !targetCode || !termCollectionId) {
-    return {
-      error: true,
-      errorMsg: "Must submit userId, target code, and term collection ID.",
-    };
+    if (!userId || !targetCode || !termCollectionId) {
+      return {
+        error: true,
+        errorMsg: "Must submit userId, target code, and term collection ID.",
+      };
+    }
+
+    const termCollection = await TermCollection.findOne({
+      _id: termCollectionId,
+    });
+
+    if (!termCollection) {
+      return {
+        error: true,
+        errorMsg: "Collection not found",
+      };
+    }
+
+    const existingTermCheck = await SavedTerm.findOne({
+      termCollectionId,
+      targetCode,
+    });
+
+    if (existingTermCheck) {
+      return {
+        error: true,
+        errorMsg: "Already in collection",
+      };
+    }
+
+    await SavedTerm.create({
+      termCollectionId,
+      targetCode,
+    });
+
+    revalidatePath(`/userpage/collection/${termCollectionId}`);
+
+    return { success: true };
+  } catch (err) {
+    throw new Error("Something went wrong");
   }
-
-  const termCollection = await TermCollection.findOne({
-    _id: termCollectionId,
-  });
-
-  if (!termCollection) {
-    return {
-      error: true,
-      errorMsg: "Collection not found",
-    };
-  }
-
-  const existingTermCheck = await SavedTerm.findOne({
-    termCollectionId,
-    targetCode,
-  });
-
-  if (existingTermCheck) {
-    return {
-      error: true,
-      errorMsg: "Already in collection",
-    };
-  }
-
-  await SavedTerm.create({
-    termCollectionId,
-    targetCode,
-  });
-
-  revalidatePath(`/userpage/collection/${termCollectionId}`);
-
-  return { success: true };
 };
 
 export const removeTermFromList = async (
   prevState: FormStateType | null,
   formData: FormData
 ) => {
-  const { termCollectionId, targetCode } = Object.fromEntries(formData);
+  try {
+    connectDB();
 
-  if (!termCollectionId || !targetCode) {
-    throw new Error("Must submit termCollectionId and target_code");
+    const { termCollectionId, targetCode } = Object.fromEntries(formData);
+
+    if (!termCollectionId || !targetCode) {
+      throw new Error("Must submit termCollectionId and target_code");
+    }
+
+    const deletedTerm = await SavedTerm.findOneAndDelete({
+      termCollectionId,
+      targetCode,
+    });
+
+    if (!deletedTerm) {
+      return {
+        error: true,
+        errorMsg: "Term not found",
+      };
+    }
+
+    revalidatePath(`/userpage/collection/${termCollectionId}`);
+
+    return { success: true };
+  } catch (err) {
+    throw new Error("Something went wrong");
   }
-
-  const deletedTerm = await SavedTerm.findOneAndDelete({
-    termCollectionId,
-    targetCode,
-  });
-
-  if (!deletedTerm) {
-    return {
-      error: true,
-      errorMsg: "Term not found",
-    };
-  }
-
-  revalidatePath(`/userpage/collection/${termCollectionId}`);
-
-  return { success: true };
 };
 
 export const createNewTermCollection = async (
   prevState: FormStateType | null,
   formData: FormData
 ) => {
-  const { userId, collectionName } = Object.fromEntries(formData);
+  try {
+    connectDB();
 
-  console.log(collectionName);
+    const { userId, collectionName } = Object.fromEntries(formData);
 
-  if (!collectionName) {
-    return {
-      error: true,
-      errorMsg: "Must submit name.",
-    };
+    console.log(collectionName);
+
+    if (!collectionName) {
+      return {
+        error: true,
+        errorMsg: "Must submit name.",
+      };
+    }
+
+    if (!userId) {
+      return {
+        error: true,
+        errorMsg: "Must submit user ID.",
+      };
+    }
+
+    const createdList = await TermCollection.create({
+      userId,
+      name: collectionName,
+    });
+
+    if (!createdList) {
+      return {
+        error: true,
+        errorMsg: "Failed to create List",
+      };
+    }
+    revalidatePath("/userpage");
+
+    return { success: true };
+  } catch (err) {
+    throw new Error("Something went wrong");
   }
-
-  if (!userId) {
-    return {
-      error: true,
-      errorMsg: "Must submit user ID.",
-    };
-  }
-
-  const createdList = await TermCollection.create({
-    userId,
-    name: collectionName,
-  });
-
-  if (!createdList) {
-    return {
-      error: true,
-      errorMsg: "Failed to create List",
-    };
-  }
-  revalidatePath("/userpage");
-
-  return { success: true };
 };
 
 export const deleteCollection = async (
   prevState: FormStateType | null,
   formData: FormData
 ) => {
-  const { termCollectionId, userId } = Object.fromEntries(formData);
+  try {
+    connectDB();
 
-  if (!termCollectionId) {
-    return {
-      error: true,
-      errorMsg: "Must submit collection ID",
-    };
+    const { termCollectionId, userId } = Object.fromEntries(formData);
+
+    if (!termCollectionId) {
+      return {
+        error: true,
+        errorMsg: "Must submit collection ID",
+      };
+    }
+
+    if (!userId) {
+      return {
+        error: true,
+        errorMsg: "Must user ID",
+      };
+    }
+
+    const termCollection = await TermCollection.findById(termCollectionId);
+
+    if (!termCollection) {
+      return {
+        error: true,
+        errorMsg: "Error. Collection not found.",
+      };
+    }
+
+    if (termCollection?.noDelete) {
+      return {
+        error: true,
+        errorMsg: "Error. This collection cannot be deleted.",
+      };
+    }
+
+    if (termCollection.userId.toString() !== userId) {
+      return {
+        error: true,
+        errorMsg: "Error. Cannot delete another user's collection.",
+      };
+    }
+
+    const deletedCollection = await TermCollection.findByIdAndDelete(
+      termCollectionId
+    );
+
+    if (!deletedCollection) {
+      return {
+        error: true,
+        errorMsg: "Something went wrong.",
+      };
+    }
+
+    revalidatePath("/userpage");
+
+    return { success: true };
+  } catch (err) {
+    throw new Error("Something went wrong");
   }
-
-  if (!userId) {
-    return {
-      error: true,
-      errorMsg: "Must user ID",
-    };
-  }
-
-  const termCollection = await TermCollection.findById(termCollectionId);
-
-  if (!termCollection) {
-    return {
-      error: true,
-      errorMsg: "Error. Collection not found.",
-    };
-  }
-
-  if (termCollection?.noDelete) {
-    return {
-      error: true,
-      errorMsg: "Error. This collection cannot be deleted.",
-    };
-  }
-
-  if (termCollection.userId.toString() !== userId) {
-    return {
-      error: true,
-      errorMsg: "Error. Cannot delete another user's collection.",
-    };
-  }
-
-  const deletedCollection = await TermCollection.findByIdAndDelete(
-    termCollectionId
-  );
-
-  if (!deletedCollection) {
-    return {
-      error: true,
-      errorMsg: "Something went wrong.",
-    };
-  }
-
-  revalidatePath("/userpage");
-
-  return { success: true };
 };
