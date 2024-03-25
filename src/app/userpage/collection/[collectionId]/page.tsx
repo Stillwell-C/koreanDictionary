@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import DeleteCollectionDialog from "@/components/deleteCollectionDialog/DeleteCollectionDialog";
+import DeleteCollectionButton from "@/components/Buttons/deleteCollectionButton/DeleteCollectionButton";
 
 type Props = {
   params: {
@@ -76,9 +77,7 @@ const CollectionPage = async ({
         <div className={styles.collectionTop}>
           <div className={styles.headingContainer}>
             <h2>{collection.name}</h2>
-            <Link className={styles.deleteCollectionLink} href={openModalLink}>
-              Delete Collection
-            </Link>
+            <DeleteCollectionButton deleteCollectionLink={openModalLink} />
           </div>
           <div>
             <span>Download List: </span>
