@@ -50,15 +50,15 @@ export const getTermCollections = async (
       },
     };
   } catch (err) {
-    return {
-      results: [],
-      searchData: {
-        total: "0",
-        start: "1",
-        num: "0",
-      },
-    };
-    // throw new FailedToFetchError();
+    // return {
+    //   results: [],
+    //   searchData: {
+    //     total: "0",
+    //     start: "1",
+    //     num: "0",
+    //   },
+    // };
+    throw new FailedToFetchError();
   }
 };
 
