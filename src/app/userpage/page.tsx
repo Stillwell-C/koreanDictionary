@@ -7,6 +7,7 @@ import SearchResultPaginationMenu from "@/components/searchResultPagination/Sear
 import { Metadata } from "next";
 import Link from "next/link";
 import AddCollectionDialog from "@/components/addCollectionDialog/AddCollectionDialog";
+import AddCollectionButton from "@/components/Buttons/addCollectionButton/AddCollectionButton";
 
 type Props = {
   searchParams: {
@@ -59,9 +60,7 @@ const page = async ({ searchParams: { start, modal } }: Props) => {
         <div className={styles.resultsContainer}>
           <div className={styles.collectionsHeading}>
             <h2>Collections</h2>
-            <Link className={styles.newCollectionLink} href={addCollectionLink}>
-              Add New Collection
-            </Link>
+            <AddCollectionButton addCollectionLink={addCollectionLink} />
           </div>
           <p>
             {`You have ${data.searchData.total} ${
