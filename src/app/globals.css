@@ -36,6 +36,7 @@ a {
   width: 1536px;
   margin: auto;
   min-height: 100vh;
+  min-height: 100svh;
   height: 100%;
   position: relative;
 }
