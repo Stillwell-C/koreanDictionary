@@ -7,7 +7,7 @@
 }
 
 .textWrapper {
-  width: clamp(250px, 90vw, 500px);
+  max-width: 500px;
 }
 
 .paragraphWrapper {
