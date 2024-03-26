@@ -24,16 +24,31 @@ const SearchResult = async ({
   return (
     <div>
       <div className={styles.topLine}>
-        <Link href={termLink}>
-          <p className={styles.entryTerm}>{resultData.word}</p>
-        </Link>
-        {resultData?.origin && <span>({resultData?.origin})</span>}
-        {resultData?.pos && <span>「{resultData?.pos}」</span>}
-        {resultData?.pronunciation && (
-          <span>[{resultData?.pronunciation}]</span>
-        )}
-        {resultData?.wordGrade && <span>등급: {resultData?.wordGrade}</span>}
-        <AddTermButton userId={userId || ""} openModalLink={openModalLink} />
+        <div className={styles.wordLine}>
+          <Link href={termLink}>
+            <p className={styles.entryTerm}>{resultData.word}</p>
+          </Link>
+          <div className={styles.addBtnMobile}>
+            <AddTermButton
+              userId={userId || ""}
+              openModalLink={openModalLink}
+            />
+          </div>
+        </div>
+        <div className={styles.wordData}>
+          {resultData?.origin && <span>({resultData?.origin})</span>}
+          {resultData?.pos && <span>「{resultData?.pos}」</span>}
+          {resultData?.pronunciation && (
+            <span>[{resultData?.pronunciation}]</span>
+          )}
+          {resultData?.wordGrade && <span>등급: {resultData?.wordGrade}</span>}
+          <div className={styles.addBtnDesktop}>
+            <AddTermButton
+              userId={userId || ""}
+              openModalLink={openModalLink}
+            />
+          </div>
+        </div>
       </div>
 
       <ol className={styles.list}>
