@@ -47,7 +47,7 @@ a {
 .child-container {
   flex: 1;
   display: flex;
-  padding: 0 20px;
+  padding: 0 50px;
   padding-bottom: 2rem;
 }
 
@@ -78,6 +78,11 @@ a {
 @media (max-width: 768px) {
   .container {
     width: 640px;
+  }
+
+  .child-container {
+    padding: 0 20px;
+    padding-bottom: 2rem;
   }
 }
 
