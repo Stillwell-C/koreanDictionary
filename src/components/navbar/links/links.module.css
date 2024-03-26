@@ -24,7 +24,7 @@
   top: 0;
   right: -100vw;
   width: 50%;
-  height: 100vh;
+  height: 100%;
   background-color: var(--bgSoft);
   display: none;
   transition: right 0.5s ease-in-out;
@@ -62,5 +62,11 @@
 
   .mobileMenu {
     display: flex;
+  }
+}
+
+@media (max-width: 475px) {
+  .mobileMenu {
+    width: 75%;
   }
 }
