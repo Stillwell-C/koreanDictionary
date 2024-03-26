@@ -18,7 +18,7 @@
   background-color: var(--bgSoft);
   padding: 2rem;
   border-radius: 0.5rem;
-  width: clamp(300px, 95%, 400px);
+  width: clamp(200px, 95%, 400px);
   height: 350px;
   display: flex;
   flex-direction: column;
