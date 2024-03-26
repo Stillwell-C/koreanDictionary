@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 10px 0;
+  margin-top: 10px;
 }
 
 .wordLine {
@@ -49,6 +49,10 @@
   margin-left: 2rem;
   flex-direction: column;
   gap: 8px;
+}
+
+.addBtnMobile {
+  display: none;
 }
 
 @media (max-width: 640px) {
