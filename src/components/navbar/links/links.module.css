@@ -1,3 +1,9 @@
+.buttonContainer {
+  position: relative;
+  z-index: 30;
+  display: none;
+}
+
 .links {
   display: flex;
   align-items: center;
@@ -13,57 +19,36 @@
   outline: transparent;
 }
 
-.mobileMenu,
-.mobileMenuBtn {
+.mobileMenu {
+  position: fixed;
+  top: 0;
+  right: -100vw;
+  width: 50%;
+  height: 100vh;
+  background-color: var(--bgSoft);
   display: none;
+  transition: right 0.5s ease-in-out;
+  z-index: 20;
 }
 
-.mobileLinks {
-  position: fixed;
-  top: 100px;
+.mobileMenuOpen {
   right: 0;
-  width: 50%;
-  height: calc(100vh - 100px);
-  background-color: var(--bg);
-  display: none;
+  transition: right 0.5s ease-in-out;
+}
+
+.mobileMenuContent {
+  width: 100%;
+  margin-top: 120px;
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: start;
   gap: 10px;
+  font-size: 1.5rem;
 }
 
-.menuBtn {
-  margin-right: 1rem;
-  display: none;
-  background-color: transparent;
-  border: none;
-  width: 2rem;
-  height: 2rem;
-  justify-content: space-around;
-  flex-flow: column nowrap;
-  z-index: 10;
-}
-
-.menuLine {
-  width: 2rem;
-  height: 0.25rem;
-  border-radius: 10px;
-  background-color: #fff;
-  transform-origin: 1px;
-  transition: all 0.3s linear;
-}
-
-.menuLine1 {
-  transform: rotate(45deg);
-}
-
-.menuLine2 {
-  opacity: 0;
-  transition: 0.15s;
-}
-
-.menuLine3 {
-  transform: rotate(-45deg);
+.mobileMenuContent button {
+  font-size: 1.5rem;
 }
 
 @media (max-width: 768px) {
@@ -71,16 +56,11 @@
     display: none;
   }
 
-  .menuBtnContainer {
+  .buttonContainer {
     display: block;
   }
 
-  .mobileLinks {
+  .mobileMenu {
     display: flex;
-  }
-
-  .menuBtn {
-    display: flex;
-    cursor: pointer;
   }
 }
