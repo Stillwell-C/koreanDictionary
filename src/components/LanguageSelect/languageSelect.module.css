@@ -1,6 +1,7 @@
 .listboxContent {
   position: relative;
   width: 180px;
+  z-index: 10;
 }
 
 .listboxButton {
