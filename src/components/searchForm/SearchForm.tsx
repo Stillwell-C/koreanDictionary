@@ -36,7 +36,7 @@ const SearchForm = () => {
         <div className={styles.label}>
           <label htmlFor='searchTerm'>Search</label>
         </div>
-        <div>
+        <div className={styles.inputDiv}>
           <input
             id='searchTerm'
             name='searchTerm'
