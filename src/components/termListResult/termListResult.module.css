@@ -5,6 +5,18 @@
   margin-bottom: 5px;
 }
 
+.wordLine {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.wordData {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
 .entryTerm {
   font-size: 1.3rem;
   text-decoration: underline;
@@ -20,4 +32,27 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.rmvTermMobile {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .topLine {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .wordData {
+    margin-bottom: 1rem;
+  }
+
+  .rmvTermMobile {
+    display: block;
+  }
+
+  .rmvTermDesktop {
+    display: none;
+  }
 }
