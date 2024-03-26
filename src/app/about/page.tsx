@@ -24,18 +24,33 @@ const AboutPage = () => {
           <p>This project was made with Next.js.</p>
           <p>
             Using the open dictionary API provided by the{" "}
-            <a href='https://krdict.korean.go.kr/openApi/openApiInfo'>
+            <a
+              href='https://krdict.korean.go.kr/openApi/openApiInfo'
+              target='_blank'
+            >
               National Institute of Korean Language
             </a>
             , users can search words in multiple languages and, after creating
             an account, save words to their word lists. They can then download
             this data - words, definitions, example sentences, etc. - as a CSV
             file which can be imported into flash card applications like{" "}
-            <a href='https://apps.ankiweb.net/'>Anki</a>. This currently works,
-            but I will continue to work on improving this feature. I will add
-            more detailed information on importing this into Anki in a future
-            blog posts. I may also add some kind of built-in flashcard feature
-            in the future.
+            <a href='https://apps.ankiweb.net/' target='_blank'>
+              Anki
+            </a>
+            . This currently works, but I will continue to work on improving
+            this feature. I will add more detailed information on importing this
+            into Anki in a future blog posts. I may also add some kind of
+            built-in flashcard feature in the future.
+          </p>
+          <p>
+            Visit the GitHub repo for this project{" "}
+            <a
+              href='https://github.com/Stillwell-C/koreanDictionary'
+              target='_blank'
+            >
+              here
+            </a>
+            .
           </p>
         </div>
       </div>
