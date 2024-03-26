@@ -28,17 +28,14 @@
 
 .heading span {
   display: inline-block;
-  transition: all ease-in-out 0.7s;
 }
 
-.headingText:hover span:nth-child(even) {
-  transform: translateY(1px);
-  transition: all ease-in-out 0.7s;
+.headingText span:nth-child(even) {
+  transform: translateY(1.5px);
 }
 
-.headingText:hover span:nth-child(odd) {
-  transform: translateY(-1px);
-  transition: all ease-in-out 0.7s;
+.headingText span:nth-child(odd) {
+  transform: translateY(-1.5px);
 }
 
 .subheading {
