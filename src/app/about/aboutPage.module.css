@@ -3,16 +3,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 }
 
 .textWrapper {
-  width: max(500px, 80%);
+  width: clamp(250px, 90vw, 500px);
 }
 
 .paragraphWrapper {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  align-items: flex-start;
+  gap: 1rem;
 }
 
 .paragraphWrapper a {
