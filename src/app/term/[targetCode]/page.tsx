@@ -68,7 +68,12 @@ const SingleTermPage = async ({
       <div className={styles.topLine}>
         <div className={styles.wordLine}>
           <p className={styles.entryTerm}>{data.word}</p>
-          <AddTermButton userId={userId || ""} openModalLink={openModalLink} />
+          <div className={styles.addBtnMobile}>
+            <AddTermButton
+              userId={userId || ""}
+              openModalLink={openModalLink}
+            />
+          </div>
         </div>
         <div className={styles.wordData}>
           {/* Word Origin */}
