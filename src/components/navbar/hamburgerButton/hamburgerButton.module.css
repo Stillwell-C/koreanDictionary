@@ -1,0 +1,34 @@
+.menuBtn {
+  margin-right: 1rem;
+  display: flex;
+  background-color: transparent;
+  border: none;
+  width: 2rem;
+  height: 2rem;
+  justify-content: space-around;
+  flex-flow: column nowrap;
+  z-index: 25;
+  cursor: pointer;
+}
+
+.menuLine {
+  width: 2rem;
+  height: 0.25rem;
+  border-radius: 10px;
+  background-color: #fff;
+  transform-origin: 1px;
+  transition: all 0.3s linear;
+}
+
+.menuLine1 {
+  transform: rotate(45deg);
+}
+
+.menuLine2 {
+  opacity: 0;
+  transition: 0.15s;
+}
+
+.menuLine3 {
+  transform: rotate(-45deg);
+}
