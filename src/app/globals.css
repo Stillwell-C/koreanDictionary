@@ -35,14 +35,17 @@ a {
 .container {
   width: 1536px;
   margin: auto;
-  min-height: 100vh;
-  min-height: 100svh;
+  min-height: calc(100vh - 100px);
+  min-height: calc(100svh - 100px);
+  margin-top: 100px;
   height: 100%;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .child-container {
-  min-height: calc(100vh - 150px);
+  flex: 1;
   display: flex;
   padding: 0 20px;
   padding-bottom: 2rem;
