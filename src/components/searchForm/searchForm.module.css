@@ -2,13 +2,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  width: clamp(250px, 90vw, 400px);
 }
 
 .form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  width: clamp(250px, 90vw, 400px);
 }
 
 .inputDiv {
