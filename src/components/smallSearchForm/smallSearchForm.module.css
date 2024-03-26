@@ -3,7 +3,7 @@
   justify-content: flex-start;
   align-items: center;
   margin-bottom: 2rem;
-  width: clamp(250px, 90vw, 400px);
+  max-width: 400px;
 }
 
 .form {
@@ -40,7 +40,6 @@
 }
 
 .label {
-  width: 100%;
   text-align: center;
   font-size: 1.5rem;
   font-weight: 600;
