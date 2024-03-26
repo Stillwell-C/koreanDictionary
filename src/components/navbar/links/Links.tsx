@@ -5,6 +5,7 @@ import NavLink from "./navLink/NavLink";
 import styles from "./links.module.css";
 import { Session } from "next-auth";
 import { handleLogout } from "@/lib/action";
+import HamburgerButton from "../hamburgerButton/HamburgerButton";
 
 type Props = {
   userSession: Session | null;
@@ -30,56 +31,56 @@ const Links = ({ userSession }: Props) => {
 
   const authenticatedUserLinks = userSession ? (
     <>
-      <NavLink linkData={{ name: "Profile", path: "/userpage" }} />
+      <NavLink
+        linkData={{ name: "Profile", path: "/userpage" }}
+        setMobileOpen={setMobileOpen}
+      />
       <form action={handleLogout}>
-        <button className={styles.logout}>Logout</button>
+        <button onClick={() => setMobileOpen(false)} className={styles.logout}>
+          Logout
+        </button>
       </form>
     </>
   ) : (
-    <NavLink linkData={{ name: "Login", path: "/login" }} />
+    <NavLink
+      linkData={{ name: "Login", path: "/login" }}
+      setMobileOpen={setMobileOpen}
+    />
   );
 
   const links = (
     <>
       {linksList.map((link) => (
-        <NavLink linkData={link} key={link.name} />
+        <NavLink
+          linkData={link}
+          key={link.name}
+          setMobileOpen={setMobileOpen}
+        />
       ))}
       {authenticatedUserLinks}
     </>
   );
 
   return (
-    <>
+    <div className={styles.container}>
       <nav className={styles.links}>{links}</nav>
-      <div>
-        <button
-          className={styles.menuBtn}
-          onClick={() => setMobileOpen((prev) => !prev)}
-          aria-label={`${mobileOpen ? "Open" : "Close"} mobile menu`}
-        >
-          <div
-            className={`${styles.menuLine} ${
-              mobileOpen ? `${styles.menuLine1}` : ""
-            }`}
-          ></div>
-          <div
-            className={`${styles.menuLine} ${
-              mobileOpen ? `${styles.menuLine2}` : ""
-            }`}
-          ></div>
-          <div
-            className={`${styles.menuLine} ${
-              mobileOpen ? `${styles.menuLine3}` : ""
-            }`}
-          ></div>
-        </button>
+      <div className={styles.buttonContainer}>
+        <HamburgerButton
+          mobileOpen={mobileOpen}
+          setMobileOpen={setMobileOpen}
+        />
       </div>
-      {mobileOpen && (
-        <nav aria-label='mobile menu' className={styles.mobileLinks}>
-          {links}
-        </nav>
-      )}
-    </>
+
+      <nav
+        aria-label='mobile menu'
+        aria-hidden={!mobileOpen}
+        className={`${styles.mobileMenu} ${
+          mobileOpen && `${styles.mobileMenuOpen}`
+        }`}
+      >
+        <div className={styles.mobileMenuContent}>{links}</div>
+      </nav>
+    </div>
   );
 };
 
