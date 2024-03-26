@@ -1,8 +1,6 @@
 .container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: clamp(250px, 90vw, 400px);
+  margin: auto;
+  max-width: 400px;
 }
 
 .form {
