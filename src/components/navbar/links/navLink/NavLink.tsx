@@ -9,9 +9,10 @@ type Props = {
     path: string;
     name: string;
   };
+  setMobileOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const NavLink = ({ linkData: { path, name } }: Props) => {
+const NavLink = ({ linkData: { path, name }, setMobileOpen }: Props) => {
   const pathName = usePathname();
   const addActiveClass =
     (path === "/" && pathName === "/") ||
@@ -21,6 +22,7 @@ const NavLink = ({ linkData: { path, name } }: Props) => {
     <Link
       href={path}
       className={`${styles.container} ${addActiveClass && styles.active}`}
+      onClick={() => setMobileOpen(false)}
     >
       {name}
     </Link>
