@@ -9,18 +9,24 @@ const SearchLanguageToggle = () => {
   const searchParams = useSearchParams();
 
   const transLang = parseInt(searchParams.get("transLang") || "0");
-  const start = searchParams.get("start");
 
   const handleChangeLanguage = (e: number) => {
     if (e === transLang) return;
     //Change site language preference to new language
     localStorage.setItem("langPreference", e.toString());
     //Change url to fulfill new query
-    router.push(
-      `${pathname}${e !== 0 ? `?translation=true&transLang=${e}` : ""}${
-        start ? `&start=${start}` : ""
-      }`
-    );
+    const params = new URLSearchParams(searchParams.toString());
+    //If e is 0, no need to use search params
+    if (!e) {
+      params.delete("translation");
+      params.delete("transLang");
+    }
+    if (e) {
+      params.set("translation", "true");
+      params.set("transLang", e.toString());
+    }
+    const paramString = params.toString();
+    router.push(paramString.length ? `${pathname}?${paramString}` : pathname);
   };
 
   return (
