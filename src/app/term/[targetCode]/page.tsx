@@ -1,16 +1,12 @@
 import SearchLanguageToggle from "@/components/searchLanguageToggle/SearchLanguageToggle";
 import { getTermData } from "@/lib/apiData";
 import React from "react";
-import styles from "./singleTermPage.module.css";
-import Image from "next/image";
-import SingleTermExamples from "@/components/singleTermExamples/SingleTermExamples";
-import AddTermContainer from "@/components/addTermContainer/AddTermContainer";
 import SmallSearchForm from "@/components/smallSearchForm/smallSearchForm";
 import { Metadata } from "next";
 import { auth } from "@/lib/auth";
-import AddTermButton from "@/components/Buttons/AddTermButton/AddTermButton";
 import AddTermDialog from "@/components/AddTermDialog/AddTermDialog";
 import SingleTermDefinitionExamples from "@/components/singleTermDefinitionExamples/SingleTermDefinitionExamples";
+import SingleTermTopline from "@/components/singleTermTopline/SingleTermTopline";
 
 type Props = {
   params: {
@@ -66,53 +62,7 @@ const SingleTermPage = async ({
     <div>
       <SmallSearchForm />
       <SearchLanguageToggle />
-      <div className={styles.topLine}>
-        <div className={styles.wordLine}>
-          <p className={styles.entryTerm}>{data.word}</p>
-          <div className={styles.addBtnMobile}>
-            <AddTermButton
-              userId={userId || ""}
-              openModalLink={openModalLink}
-            />
-          </div>
-        </div>
-        <div className={styles.wordData}>
-          {/* Word Origin */}
-          {data?.originalLanguage?.originalLanguage && (
-            <span>({data?.originalLanguage?.originalLanguage})</span>
-          )}
-          {data?.originalLanguage?.originalLanguageType && (
-            <span>Origin: {data.originalLanguage.originalLanguageType}</span>
-          )}
-          {/* Part of Speech */}
-          {data?.pos && <span>「{data?.pos}」</span>}
-          {/* Pronunciation */}
-          <div className={styles.pronunciation}>
-            {data?.pronunciationInfo?.pronunciation && (
-              <span>[{data.pronunciationInfo.pronunciation}]</span>
-            )}
-            {data?.pronunciationInfo?.pronunciationLink && (
-              <a
-                href={data.pronunciationInfo.pronunciationLink}
-                target='_blank'
-                className={styles.link}
-              >
-                <Image height={20} width={20} src={"/audio.svg"} alt='' />
-              </a>
-            )}
-          </div>
-          {/* Word Level */}
-          {data?.wordGrade && data?.wordGrade !== "없음" && (
-            <span>등급: {data?.wordGrade}</span>
-          )}
-          <div className={styles.addBtnDesktop}>
-            <AddTermButton
-              userId={userId || ""}
-              openModalLink={openModalLink}
-            />
-          </div>
-        </div>
-      </div>
+      <SingleTermTopline openModalLink={openModalLink} data={data} />
       <SingleTermDefinitionExamples
         definitionAndExamples={data?.definitionAndExamples}
         wordInfo={{
