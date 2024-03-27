@@ -10,6 +10,7 @@ import { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import AddTermButton from "@/components/Buttons/AddTermButton/AddTermButton";
 import AddTermDialog from "@/components/AddTermDialog/AddTermDialog";
+import SingleTermDefinitionExamples from "@/components/singleTermDefinitionExamples/SingleTermDefinitionExamples";
 
 type Props = {
   params: {
@@ -112,27 +113,14 @@ const SingleTermPage = async ({
           </div>
         </div>
       </div>
-      <ol className={styles.definitionList}>
-        {data?.definitionAndExamples?.map((item, i) => (
-          <li key={item.definition}>
-            <div>
-              <p>{item.translation.transWord}</p>
-              <p>{item.definition}</p>
-              <p>{item.translation.transDfn}</p>
-            </div>
-            <ul className={styles.exampleList}>
-              <SingleTermExamples
-                examples={item.examples}
-                wordInfo={{
-                  word: data.word,
-                  pos: data?.pos,
-                  origin: data?.originalLanguage?.originalLanguageType,
-                }}
-              />
-            </ul>
-          </li>
-        ))}
-      </ol>
+      <SingleTermDefinitionExamples
+        definitionAndExamples={data?.definitionAndExamples}
+        wordInfo={{
+          word: data.word,
+          pos: data?.pos,
+          origin: data?.originalLanguage?.originalLanguageType,
+        }}
+      />
       {userId && modalOpen && (
         <AddTermDialog
           isOpen={modalOpen}
