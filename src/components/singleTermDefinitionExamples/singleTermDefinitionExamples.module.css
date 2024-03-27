@@ -1,0 +1,15 @@
+.definitionList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-left: 1.5rem;
+  margin-top: 1rem;
+}
+
+.exampleList {
+  margin-top: 1rem;
+  display: flex;
+  margin-left: 2rem;
+  flex-direction: column;
+  gap: 8px;
+}
