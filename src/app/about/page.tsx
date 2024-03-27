@@ -21,26 +21,27 @@ const AboutPage = () => {
             learners to use flashcards more regularly by automating often
             time-consuming process of making them one by one.
           </p>
-          <p>This project was made with Next.js.</p>
           <p>
-            Using the open dictionary API provided by the{" "}
+            This project was made with Next.js and uses an{" "}
             <a
               href='https://krdict.korean.go.kr/openApi/openApiInfo'
               target='_blank'
             >
-              National Institute of Korean Language
-            </a>
-            , users can search words in multiple languages and, after creating
-            an account, save words to their word lists. They can then download
-            this data - words, definitions, example sentences, etc. - as a CSV
-            file which can be imported into flash card applications like{" "}
+              open dictionary API
+            </a>{" "}
+            provided by the National Institute of Korean Language. Users can
+            search words for Korean words only, but are able to get results in
+            11 different languages. After creating an account and logging in,
+            you can save words to term collections. These collections can be
+            viewed on a user&apos;s profile page and can be studied as
+            flashcards in this app or downloaded as a CSV file which can be
+            imported into flash card applications like{" "}
             <a href='https://apps.ankiweb.net/' target='_blank'>
               Anki
             </a>
-            . This currently works, but I will continue to work on improving
-            this feature. I will add more detailed information on importing this
-            into Anki in a future blog posts. I may also add some kind of
-            built-in flashcard feature in the future.
+            . This currently works, but I am still working on improving this
+            feature. I will add more detailed information on importing this into
+            Anki in a future blog posts.
           </p>
           <p>
             Visit the GitHub repo for this project{" "}
