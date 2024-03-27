@@ -1,5 +1,5 @@
 type SearchDefinition = {
-  korean: string;
+  definition: string;
   translation?: {
     transWord: string;
     transDfn: string;
