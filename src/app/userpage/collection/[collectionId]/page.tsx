@@ -9,6 +9,7 @@ import { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import DeleteCollectionDialog from "@/components/deleteCollectionDialog/DeleteCollectionDialog";
 import DeleteCollectionButton from "@/components/Buttons/deleteCollectionButton/DeleteCollectionButton";
+import StudyCollectionButton from "@/components/Buttons/studyCollectionButton/StudyCollectionButton";
 
 type Props = {
   params: {
@@ -75,8 +76,9 @@ const CollectionPage = async ({
     <div className={styles.container}>
       <Suspense fallback={<p>Retrieving terms...</p>}>
         <div className={styles.collectionTop}>
-          <div className={styles.headingContainer}>
-            <h2>{collection.name}</h2>
+          <h2>{collection.name}</h2>
+          <div className={styles.btnContainer}>
+            <StudyCollectionButton collectionName={collection.name} />
             <DeleteCollectionButton deleteCollectionLink={openModalLink} />
           </div>
           <div>
