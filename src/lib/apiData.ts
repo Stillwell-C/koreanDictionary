@@ -38,7 +38,7 @@ export const searchWord = async (
     const sense = $(item).find("sense");
     const definitions: SearchDefinition[] = [];
     sense.each((i, senseEntry) => {
-      const korean = $(senseEntry).find("definition").text();
+      const definition = $(senseEntry).find("definition").text();
       const transLang = $(item)
         .find("translation trans_lang")
         .first()
@@ -47,7 +47,7 @@ export const searchWord = async (
       const transWord = $(senseEntry).find("translation trans_word").text();
       const transDfn = $(senseEntry).find("translation trans_dfn").text();
       definitions.push({
-        korean,
+        definition,
         translation: { transWord, transDfn, transLang },
       });
     });
