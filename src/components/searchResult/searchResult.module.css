@@ -27,13 +27,6 @@
   margin-bottom: 5px;
 }
 
-.list {
-  margin-left: 1.8rem;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
 .addBtnMobile {
   display: none;
 }
