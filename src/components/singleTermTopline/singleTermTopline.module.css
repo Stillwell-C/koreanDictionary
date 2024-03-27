@@ -1,0 +1,59 @@
+.topLine {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.wordLine {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.wordData {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.entryTerm {
+  font-size: 1.3rem;
+  text-decoration: underline;
+  margin-right: 10px;
+}
+
+.pronunciation {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.link {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.addBtnMobile {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .topLine {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .wordData {
+    margin-bottom: 1rem;
+  }
+
+  .addBtnMobile {
+    display: block;
+  }
+
+  .addBtnDesktop {
+    display: none;
+  }
+}
