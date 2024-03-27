@@ -3,6 +3,7 @@ import React from "react";
 import styles from "./searchResult.module.css";
 import AddTermButton from "../Buttons/AddTermButton/AddTermButton";
 import { auth } from "@/lib/auth";
+import TermDefinitions from "../termDefinitions/TermDefinitions";
 
 type Props = {
   resultData: SearchResultItem;
@@ -50,16 +51,7 @@ const SearchResult = async ({
           </div>
         </div>
       </div>
-
-      <ol className={styles.list}>
-        {resultData.definitions?.map((definition) => (
-          <li key={definition.korean}>
-            <p>{definition.translation?.transWord}</p>
-            <p>{definition.korean}</p>
-            <p>{definition.translation?.transDfn}</p>
-          </li>
-        ))}
-      </ol>
+      <TermDefinitions definitions={resultData.definitions} />
     </div>
   );
 };
