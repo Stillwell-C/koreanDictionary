@@ -23,6 +23,36 @@ type Props = {
   };
 };
 
+export const generateMetadata = async ({
+  params: { collectionId },
+  searchParams: { card, reveal, translation, transLang, collectionName },
+}: Props) => {
+  const cardInfo = await getSavedTerms(collectionId, card, "1");
+  const cardData = await getTermData(
+    cardInfo?.results[0]?.targetCode,
+    translation,
+    transLang
+  );
+
+  if (!cardData?.word) {
+    return {
+      title: collectionName ? collectionName : "User Flashcards",
+      description: collectionName
+        ? `Flashcards for ${collectionName}`
+        : "User Flashcards",
+    };
+  }
+
+  return {
+    title: `${cardData.word} | ${
+      collectionName ? collectionName : "User Flashcards"
+    }`,
+    description: `Flashcard for word ${cardData.word}${
+      collectionName ? ` in collection ${collectionName}` : ""
+    }`,
+  };
+};
+
 const page = async ({
   params: { collectionId },
   searchParams: { card, reveal, translation, transLang, collectionName },
