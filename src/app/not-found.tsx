@@ -1,11 +1,15 @@
 "use client";
 
+import { Metadata } from "next";
 import styles from "./error.module.css";
 import { useRouter } from "next/navigation";
 
-type Props = {};
+export const metadata: Metadata = {
+  title: "Not Found",
+  description: "The page your requested was not found",
+};
 
-const NotFound = (props: Props) => {
+const NotFound = () => {
   const router = useRouter();
 
   return (
