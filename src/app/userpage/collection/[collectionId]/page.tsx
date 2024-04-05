@@ -10,6 +10,7 @@ import { auth } from "@/lib/auth";
 import DeleteCollectionDialog from "@/components/deleteCollectionDialog/DeleteCollectionDialog";
 import DeleteCollectionButton from "@/components/Buttons/deleteCollectionButton/DeleteCollectionButton";
 import StudyCollectionButton from "@/components/Buttons/studyCollectionButton/StudyCollectionButton";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: {
@@ -25,10 +26,16 @@ type Props = {
 
 export const generateMetadata = async ({
   params: { collectionId },
-  searchParams: { translation, transLang, start },
 }: Props): Promise<Metadata> => {
   const collection = await getTermCollection(collectionId);
   const session = await auth();
+
+  if (!collection?.name) {
+    return {
+      title: "Collection not found.",
+      description: "The collection you requested could not be found.",
+    };
+  }
 
   return {
     title: `${collection?.name}`,
@@ -44,6 +51,10 @@ const CollectionPage = async ({
   const collection = await getTermCollection(collectionId);
   const data = await getSavedTerms(collectionId, start);
   const showModal = modal === "true";
+
+  if (!collection?.name) {
+    notFound();
+  }
 
   const terms =
     data?.results?.length &&
