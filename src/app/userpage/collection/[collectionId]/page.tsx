@@ -89,7 +89,7 @@ const CollectionPage = async ({
         <div className={styles.collectionTop}>
           <h2>{collection.name}</h2>
           <div className={styles.btnContainer}>
-            <StudyCollectionButton collectionName={collection.name} />
+            <StudyCollectionButton />
             <DeleteCollectionButton deleteCollectionLink={openModalLink} />
           </div>
           <div>
