@@ -16,6 +16,7 @@ const NotFound = () => {
     <div className={styles.container}>
       <div className={styles.textContainer}>
         <h2>Page Not Found</h2>
+        <p>The page your requested could not be found</p>
       </div>
       <div className={styles.buttonDiv}>
         <button className={styles.purpleBtn} onClick={() => router.push("/")}>
