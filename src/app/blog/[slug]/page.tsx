@@ -1,6 +1,7 @@
 import { getAllBlogPostIds, getBlogPost } from "@/lib/dbData";
 import Markdown from "markdown-to-jsx";
 import styles from "./singleBlogPage.module.css";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: {
@@ -19,6 +20,13 @@ export const generateStaticParams = async () => {
 export const generateMetadata = async ({ params: { slug } }: Props) => {
   const blogPost = await getBlogPost(slug);
 
+  if (!blogPost?.title) {
+    return {
+      title: "Blog post not found",
+      description: "The blog post you requested could not be located",
+    };
+  }
+
   return {
     title: `${blogPost.title} | Blog`,
     description: `Blog post: ${blogPost.title}`,
@@ -27,6 +35,10 @@ export const generateMetadata = async ({ params: { slug } }: Props) => {
 
 const page = async ({ params: { slug } }: Props) => {
   const blogPost = await getBlogPost(slug);
+
+  if (!blogPost) {
+    notFound();
+  }
 
   return (
     <div className={styles.container}>
