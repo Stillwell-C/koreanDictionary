@@ -14,7 +14,7 @@ const Navbar = async () => {
       <div>
         <Link className={styles.headerLink} href='/'>
           <div className={styles.imgDiv}>
-            <Image src='./Taegeuk.svg' alt='' height='40' width='40' />
+            <Image src='/Taegeuk.svg' alt='' height='40' width='40' />
           </div>
           <div className={styles.headingText}>
             <h1 className={styles.heading}>
