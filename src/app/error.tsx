@@ -1,11 +1,17 @@
 "use client";
 
+import { Metadata } from "next";
 import styles from "./error.module.css";
 import { useRouter } from "next/navigation";
 
 type Props = {
   error: Error & { digest?: string };
   reset: () => void;
+};
+
+export const metadata: Metadata = {
+  title: "Error",
+  description: "An error occurred",
 };
 
 const Error = ({ error, reset }: Props) => {
