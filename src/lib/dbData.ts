@@ -188,10 +188,6 @@ export const getBlogPost = async (id: string) => {
   try {
     const blogPost: BlogPost | null = await BlogPost.findById(id);
 
-    if (!blogPost) {
-      throw new FailedToFetchError();
-    }
-
     return blogPost;
   } catch (err) {
     throw new FailedToFetchError();
