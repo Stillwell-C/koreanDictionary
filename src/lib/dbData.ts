@@ -1,6 +1,6 @@
 import { connectDB } from "./dbUtils";
 import { FailedToFetchError } from "./exceptions";
-import { SavedTerm, TermCollection } from "./models";
+import { BlogPost, SavedTerm, TermCollection } from "./models";
 
 export const getTermCollection = async (termCollectionId: string) => {
   connectDB();
@@ -135,4 +135,65 @@ export const createTermCollection = async (userId: string, name: string) => {
     userId,
     name,
   });
+};
+
+//Get title, thumbnail, and id for each blog post
+//Allows for pagination, but not currently implemented on blog page
+export const getBlogPostsInfo = async (
+  start: string = "1",
+  results: string = "10"
+) => {
+  connectDB();
+  const startNum = parseInt(start);
+  const resultsNum = parseInt(results);
+  const skipNum = (startNum - 1) * resultsNum;
+  try {
+    const blogPostsInfo: BlogPostData[] = await BlogPost.find()
+      .limit(resultsNum)
+      .skip(skipNum)
+      .select("_id thumbnail title updatedAt")
+      .sort("-updatedAt");
+    const blogPostTotal = await BlogPost.countDocuments();
+
+    return {
+      results: blogPostsInfo,
+      searchData: {
+        total: blogPostTotal.toString(),
+        start,
+        num: results,
+      },
+    };
+  } catch (err) {
+    throw new FailedToFetchError();
+  }
+};
+
+export const getAllBlogPostIds = async () => {
+  connectDB();
+  try {
+    const blogPostIds: { _id: string }[] = await BlogPost.find()
+      .select("_id")
+      .sort("-updatedAt");
+
+    return blogPostIds;
+  } catch (err) {
+    throw new FailedToFetchError();
+  }
+};
+
+//Get all data from single blog post
+export const getBlogPost = async (id: string) => {
+  connectDB();
+
+  try {
+    const blogPost: BlogPost | null = await BlogPost.findById(id);
+
+    if (!blogPost) {
+      throw new FailedToFetchError();
+    }
+
+    return blogPost;
+  } catch (err) {
+    throw new FailedToFetchError();
+  }
 };
