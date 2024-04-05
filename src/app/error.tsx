@@ -17,13 +17,11 @@ export const metadata: Metadata = {
 const Error = ({ error, reset }: Props) => {
   const router = useRouter();
 
-  console.log(error.message);
-
   return (
     <div className={styles.container}>
       <div className={styles.textContainer}>
-        <p className={styles.bold}>There was a problem.</p>
-        <h2>{error.message || "Something went wrong!"}</h2>
+        <p>There was a problem.</p>
+        <h2>{"Something went wrong :("}</h2>
         <p>Please try again later and contact us if the problem persists.</p>
       </div>
       <div className={styles.buttonDiv}>
