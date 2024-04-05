@@ -63,3 +63,9 @@ export const organizeExamples = (
 
   return [...phrases, ...sentences, ...formattedDialog].join("<br>");
 };
+
+export const formatDate = (dateString: string) => {
+  return new Intl.DateTimeFormat("en-US", { dateStyle: "long" }).format(
+    new Date(dateString)
+  );
+};
