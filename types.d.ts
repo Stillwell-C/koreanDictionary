@@ -99,3 +99,15 @@ type TermCollectionResponse = {
     num: string;
   };
 };
+
+interface BlogPostData {
+  _id: string;
+  title: string;
+  thumbnail?: string;
+  updatedAt: string;
+}
+
+interface BlogPost extends BlogPostData {
+  createdAt: string;
+  postContent: string;
+}
