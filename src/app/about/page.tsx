@@ -40,8 +40,8 @@ const AboutPage = () => {
               Anki
             </a>
             . This currently works, but I am still working on improving this
-            feature. I will add more detailed information on importing this into
-            Anki in a future blog posts.
+            feature. You can read a blog post about it{" "}
+            <Link href={"/blog/660f53fc54470b31d329db59"}>here</Link>.
           </p>
           <p>
             Visit the GitHub repo for this project{" "}
