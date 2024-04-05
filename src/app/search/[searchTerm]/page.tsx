@@ -33,8 +33,10 @@ export const generateMetadata = async ({
   );
 
   return {
-    title: `Search results for ${decodeURI(searchTerm)}`,
-    description: `${data.searchData.total} search results found`,
+    title: `Results for ${decodeURI(searchTerm)}`,
+    description: `${data.searchData.total} search results found for ${decodeURI(
+      searchTerm
+    )}`,
   };
 };
 
