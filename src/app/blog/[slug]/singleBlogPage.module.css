@@ -1,0 +1,31 @@
+.container {
+  margin: 3rem auto 2rem;
+  width: 100%;
+}
+
+.mdContainer div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mdContainer p {
+  text-align: left;
+  align-self: flex-start;
+  margin-bottom: 10px;
+}
+
+.mdContainer h3,
+.mdContainer h4 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.mdContainer img {
+  max-width: 90%;
+  margin: 2rem 0;
+}
+
+.mdContainer a {
+  text-decoration: underline;
+}
