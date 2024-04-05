@@ -7,6 +7,7 @@ import { auth } from "@/lib/auth";
 import AddTermDialog from "@/components/AddTermDialog/AddTermDialog";
 import SingleTermDefinitionExamples from "@/components/singleTermDefinitionExamples/SingleTermDefinitionExamples";
 import SingleTermTopline from "@/components/singleTermTopline/SingleTermTopline";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: {
@@ -25,6 +26,13 @@ export const generateMetadata = async ({
 }: Props): Promise<Metadata> => {
   const data = await getTermData(targetCode, translation, transLang);
 
+  if (!data?.word) {
+    return {
+      title: "Term not found",
+      description: "The term you requested could not be located",
+    };
+  }
+
   return {
     title: `Definition for ${data.word}`,
     description: `Definition, information, and examples for ${data.word}`,
@@ -41,6 +49,10 @@ const SingleTermPage = async ({
   const modalOpen = modal === "true";
 
   const data = await getTermData(targetCode, translation, transLang);
+
+  if (!data?.word) {
+    notFound();
+  }
 
   const searchParamObj = { translation, transLang };
   let searchParamString = "";
