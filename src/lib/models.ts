@@ -73,9 +73,28 @@ const savedTermSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const blogPostSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    thumbnail: {
+      type: String,
+    },
+    postContent: {
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+
 export const User = mongoose.models?.User || mongoose.model("User", userSchema);
 export const TermCollection =
   mongoose.models.TermCollection ||
   mongoose.model("TermCollection", termCollectionSchema);
 export const SavedTerm =
   mongoose.models.SavedTerm || mongoose.model("SavedTerm", savedTermSchema);
+export const BlogPost =
+  mongoose.models?.BlogPost || mongoose.model("BlogPost", blogPostSchema);
