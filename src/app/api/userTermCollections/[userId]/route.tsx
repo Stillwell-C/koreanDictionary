@@ -14,7 +14,6 @@ export const GET = async (
   const searchParams = request.nextUrl.searchParams;
   const start = searchParams.get("start") || "1";
   const results = searchParams.get("results") || "10";
-  console.log(searchParams);
 
   if (!userId) {
     throw new Error("Unauthorized request. Please log in.");
