@@ -44,8 +44,6 @@ const AddTermDialog = ({ isOpen, closeLink, userId }: Props) => {
     fetcher
   );
 
-  useEffect(() => console.log(data), [data]);
-
   const displayMoreButton =
     !isLoading &&
     hasNextPage &&
