@@ -7,7 +7,6 @@ import Image from "next/image";
 
 const Navbar = async () => {
   const userSession = await auth();
-  console.log(userSession);
 
   return (
     <div className={styles.container}>
