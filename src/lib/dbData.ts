@@ -80,13 +80,15 @@ export const getSavedTerms = async (
   }
 
   try {
-    const savedTerms = await SavedTerm.find({
+    const savedTerms: SavedTermResponse[] = await SavedTerm.find({
       termCollectionId,
     })
       .limit(resultsNum)
       .skip(skipNum)
       .select("_id targetCode")
-      .sort("-createdAt");
+      .sort("-createdAt")
+      .populate("termCollectionId", "name -_id");
+
     const savedTermsTotal = await SavedTerm.countDocuments({
       termCollectionId,
     });
