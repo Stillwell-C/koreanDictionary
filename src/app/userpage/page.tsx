@@ -48,31 +48,33 @@ const page = async ({ searchParams: { start, modal } }: Props) => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.results}>
-        <h2>My Info</h2>
-        <div>
-          <p>Username: {session?.user?.username}</p>
-          <p>Email: {session?.user?.email}</p>
+      <Suspense fallback={<p>Retrieving page data...</p>}>
+        <div className={styles.results}>
+          <h2>My Info</h2>
+          <div>
+            <p>Username: {session?.user?.username}</p>
+            <p>Email: {session?.user?.email}</p>
+          </div>
         </div>
-      </div>
 
-      <Suspense fallback={<p>Retrieving collections...</p>}>
-        <div className={styles.resultsContainer}>
-          <div className={styles.collectionsHeading}>
-            <h2>Collections</h2>
-            <AddCollectionButton addCollectionLink={addCollectionLink} />
+        <Suspense fallback={<p>Retrieving collections...</p>}>
+          <div className={styles.resultsContainer}>
+            <div className={styles.collectionsHeading}>
+              <h2>Collections</h2>
+              <AddCollectionButton addCollectionLink={addCollectionLink} />
+            </div>
+            <p>
+              {`You have ${data.searchData.total} ${
+                data.searchData.total !== "1" ? "collections" : "collection"
+              }.`}
+            </p>
+            <div className={styles.results}>
+              {!data?.results?.length && <p>No collections found</p>}
+              {collections}
+            </div>
           </div>
-          <p>
-            {`You have ${data.searchData.total} ${
-              data.searchData.total !== "1" ? "collections" : "collection"
-            }.`}
-          </p>
-          <div className={styles.results}>
-            {!data?.results?.length && <p>No collections found</p>}
-            {collections}
-          </div>
-        </div>
-        <SearchResultPaginationMenu searchData={data.searchData} />
+          <SearchResultPaginationMenu searchData={data.searchData} />
+        </Suspense>
       </Suspense>
       <AddCollectionDialog
         isOpen={showModal}
