@@ -1,6 +1,6 @@
 import SearchLanguageToggle from "@/components/searchLanguageToggle/SearchLanguageToggle";
 import TermListResult from "@/components/termListResult/TermListResult";
-import { getSavedTerms, getTermCollection } from "@/lib/dbData";
+import { getSavedTerms } from "@/lib/dbData";
 import styles from "./collectionPage.module.css";
 import { Suspense } from "react";
 import SearchResultPaginationMenu from "@/components/searchResultPagination/SearchResultPaginationMenu";
@@ -26,11 +26,14 @@ type Props = {
 
 export const generateMetadata = async ({
   params: { collectionId },
+  searchParams: { start },
 }: Props): Promise<Metadata> => {
-  const collection = await getTermCollection(collectionId);
+  const data = await getSavedTerms(collectionId, start);
   const session = await auth();
 
-  if (!collection?.name) {
+  const collectionName = data?.results[0]?.termCollectionId?.name;
+
+  if (!collectionName) {
     return {
       title: "Collection not found.",
       description: "The collection you requested could not be found.",
@@ -38,8 +41,8 @@ export const generateMetadata = async ({
   }
 
   return {
-    title: `${collection?.name}`,
-    description: `User ${session?.user?.username}'s collection ${collection?.name}`,
+    title: `${collectionName}`,
+    description: `User ${session?.user?.username}'s collection ${collectionName}`,
   };
 };
 
@@ -48,11 +51,12 @@ const CollectionPage = async ({
   searchParams: { translation, transLang, start, modal },
 }: Props) => {
   const session = await auth();
-  const collection = await getTermCollection(collectionId);
   const data = await getSavedTerms(collectionId, start);
   const showModal = modal === "true";
 
-  if (!collection?.name) {
+  const collectionName = data?.results[0]?.termCollectionId?.name;
+
+  if (!collectionName) {
     notFound();
   }
 
@@ -87,7 +91,7 @@ const CollectionPage = async ({
     <div className={styles.container}>
       <Suspense fallback={<p>Retrieving terms...</p>}>
         <div className={styles.collectionTop}>
-          <h2>{collection.name}</h2>
+          <h2>{collectionName}</h2>
           <div className={styles.btnContainer}>
             <StudyCollectionButton />
             <DeleteCollectionButton deleteCollectionLink={openModalLink} />
