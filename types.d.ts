@@ -100,6 +100,12 @@ type TermCollectionResponse = {
   };
 };
 
+type SavedTermResponse = {
+  _id: string;
+  termCollectionId: { name: string };
+  targetCode: string;
+};
+
 interface BlogPostData {
   _id: string;
   title: string;
