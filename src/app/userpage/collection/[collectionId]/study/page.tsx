@@ -25,9 +25,8 @@ type Props = {
 
 export const generateMetadata = async ({
   params: { collectionId },
-  searchParams: { card, reveal, translation, transLang },
+  searchParams: { card, translation, transLang },
 }: Props) => {
-  const collection = await getTermCollection(collectionId);
   const cardInfo = await getSavedTerms(collectionId, card, "1");
   const cardData = await getTermData(
     cardInfo?.results[0]?.targetCode,
@@ -35,7 +34,9 @@ export const generateMetadata = async ({
     transLang
   );
 
-  if (!collection?.name) {
+  const collectionName = cardInfo?.results[0]?.termCollectionId?.name;
+
+  if (!collectionName) {
     return {
       title: "Collection not found",
       description:
@@ -45,14 +46,14 @@ export const generateMetadata = async ({
 
   if (!cardData?.word) {
     return {
-      title: collection.name,
-      description: `Flashcards for ${collection.name}`,
+      title: collectionName,
+      description: `Flashcards for ${collectionName}`,
     };
   }
 
   return {
-    title: `${cardData.word} | ${collection.name}`,
-    description: `Flashcard for word ${cardData.word} in collection ${collection.name}`,
+    title: `${cardData.word} | ${collectionName}`,
+    description: `Flashcard for word ${cardData.word} in collection ${collectionName}`,
   };
 };
 
@@ -62,7 +63,6 @@ const page = async ({
 }: Props) => {
   const revealBack = reveal === "true";
 
-  const collection = await getTermCollection(collectionId);
   const cardInfo = await getSavedTerms(collectionId, card, "1");
   const cardData = await getTermData(
     cardInfo?.results[0]?.targetCode,
@@ -70,7 +70,9 @@ const page = async ({
     transLang
   );
 
-  if (!collection?.name) {
+  const collectionName = cardInfo?.results[0]?.termCollectionId?.name;
+
+  if (!collectionName) {
     notFound();
   }
 
@@ -79,7 +81,7 @@ const page = async ({
     //TODO: add link somehwer
     return (
       <div className={styles.container}>
-        <h2 className={styles.heading}>{collection.name} - Flashcards</h2>
+        <h2 className={styles.heading}>{collectionName} - Flashcards</h2>
         <div className={styles.textDiv}>
           <h3>Empty Collection</h3>
           <p>To study, you need to add terms to this collection.</p>
@@ -94,7 +96,7 @@ const page = async ({
   if (parseInt(card) > parseInt(cardInfo?.searchData.total)) {
     return (
       <div className={styles.container}>
-        <h2 className={styles.heading}>{collection.name} - Flashcards</h2>
+        <h2 className={styles.heading}>{collectionName} - Flashcards</h2>
         <div className={styles.textDiv}>
           <h3>Congratulations!</h3>
           <p>You finished studying this collection.</p>
@@ -111,7 +113,7 @@ const page = async ({
   if (!revealBack) {
     return (
       <div className={styles.container}>
-        <h2 className={styles.heading}>{collection.name} - Flashcards</h2>
+        <h2 className={styles.heading}>{collectionName} - Flashcards</h2>
         <SearchLanguageToggle />
         <p className={styles.entryTerm}>{cardData.word}</p>
         <RevealCardBackButton />
@@ -122,7 +124,7 @@ const page = async ({
   if (revealBack) {
     return (
       <div className={styles.container}>
-        <h2 className={styles.heading}>{collection.name} - Flashcards</h2>
+        <h2 className={styles.heading}>{collectionName} - Flashcards</h2>
         <SearchLanguageToggle />
         <SingleTermTopline data={cardData} />
         <div className={styles.topDefinitions}>
