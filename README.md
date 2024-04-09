@@ -4,6 +4,12 @@ This repository is the front end for a dictionary application that can be used t
 
 This project is currently under development, and I am working to improve it whenever I have time. Feel free to contact me about bugs or improvements you think could be made.
 
+## Demo
+
+The application is live [here](https://korean-dictionary.vercel.app/).
+
+## Detailed Description
+
 This is a Next.js project. There is currently no back end being used, but I may create one if I need to integrate data from multiple sources. For now, all calls to APIs and databases are being handled by Next.js with sever actions and API endpoints.
 
 You can look up Korean words and see definitions in 11 different languages, but the API being used only allows you to search for words in Korean. If your interested in trying it out but don't know Korean, I will include some words at the bottom you can copy and paste into the searchbar.
@@ -12,11 +18,11 @@ Once users make an account, they will be able to add words to collections which 
 
 All data is from the open API provided by the [National Institute of Korean Language](https://krdict.korean.go.kr/openApi/openApiInfo)
 
-## Demo
+### Rendering Optimization
 
-The application is live [here](https://korean-dictionary.vercel.app/).
+Most of the routes in this project lead to pages that would not make sense to build as static SSG pages in NextJS like those that display API data for thousands of terms and user-specific data (While this would be fine for its current user base of only me, this would not make sense for an app with a growing user base). However, the blog page was made primarily to experiment with SSG since there are a limited number of posts that will ever be posted. The data for these blog posts are stored on MongoDB like all of the user data, and the pages for these posts are all static HTML that is generated at build time using the generateStaticParams function provided by NextJS.
 
-### Overview
+## Overview
 
 - TypeScript
 - Next.js
@@ -24,7 +30,9 @@ The application is live [here](https://korean-dictionary.vercel.app/).
 - NextAuth.js
 - CSS modules
 
-### Example Korean Words
+## Example Korean Words
+
+You can copy and paste the following terms into the search bar to see how this app works.
 
 - 쫄깃쫄깃
 - 밝다
