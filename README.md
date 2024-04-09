@@ -20,7 +20,7 @@ All data is from the open API provided by the [National Institute of Korean Lang
 
 ### Rendering Optimization
 
-Most of the routes in this project lead to pages that would not make sense to build as static SSG pages in NextJS like those that display API data for thousands of terms and user-specific data (While this would be fine for its current user base of only me, this would not make sense for an app with a growing user base). However, the blog page was made primarily to experiment with SSG since there are a limited number of posts that will ever be posted. The data for these blog posts are stored on MongoDB like all of the user data, and the pages for these posts are all static HTML that is generated at build time using the generateStaticParams function provided by NextJS.
+Most of the routes in this project lead to pages that would not make sense to build as static SSG pages in NextJS, such as those that display API data for thousands of terms or user data stored in the DB (While this would be fine for its current user base of only me, this would not make sense for an app with a large user base). However, the blog page was made primarily to experiment with SSG since there are a limited number of posts that will be posted. The data for these blog posts are stored on MongoDB like all of the user data, and the pages for these posts are all static HTML pages that are generated at build time using the generateStaticParams function provided by NextJS.
 
 ## Overview
 
