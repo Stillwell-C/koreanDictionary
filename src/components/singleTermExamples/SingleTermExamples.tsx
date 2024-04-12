@@ -39,14 +39,20 @@ const SingleTermExamples = ({
           wordRoot = wordRoot.slice(0, word.lastIndexOf(ending));
       }
 
-      //Add return for dialog sentences not containing word
-      if (!sentence.includes(wordRoot)) return sentence;
+      //Create regex for whole word from determined root
+      const wordRegex = new RegExp(
+        `(${wordRoot}[\u3131-\u314e|\u314f-\u3163|\uac00-\ud7a3]+)`
+      );
 
-      const location = sentence.split(wordRoot);
+      //Check for term & return for sentences not containing word
+      const wordInSentence = sentence.match(wordRegex);
+      if (!wordInSentence?.length) return sentence;
+
+      const location = sentence.split(wordInSentence[0]);
       return (
         <>
           <span>{location[0]}</span>
-          <span className={styles.bold}>{wordRoot}</span>
+          <span className={styles.bold}>{wordInSentence[0]}</span>
           <span>{location[1]}</span>
         </>
       );
@@ -55,14 +61,20 @@ const SingleTermExamples = ({
     if (pos === "형용사" || pos === "동사") {
       let wordRoot = word.slice(0, word.lastIndexOf("다"));
 
-      //Add return for dialog sentences not containing word
-      if (!sentence.includes(wordRoot)) return sentence;
+      //Create regex for whole word from determined root
+      const wordRegex = new RegExp(
+        `(${wordRoot}[\u3131-\u314e|\u314f-\u3163|\uac00-\ud7a3]+)`
+      );
 
-      const location = sentence.split(wordRoot);
+      //Check for term & return for sentences not containing word
+      const wordInSentence = sentence.match(wordRegex);
+      if (!wordInSentence?.length) return sentence;
+
+      const location = sentence.split(wordInSentence[0]);
       return (
         <>
           <span>{location[0]}</span>
-          <span className={styles.bold}>{wordRoot}</span>
+          <span className={styles.bold}>{wordInSentence[0]}</span>
           <span>{location[1]}</span>
         </>
       );
