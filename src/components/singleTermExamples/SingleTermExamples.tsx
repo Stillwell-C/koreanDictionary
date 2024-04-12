@@ -15,33 +15,19 @@ const SingleTermExamples = ({
   const dialog = examples.filter((item) => item.type === "대화");
 
   const formatSentence = (sentence: string) => {
-    if (pos === "명사" || pos === "관형사") {
-      //Add return for dialog sentences not containing word
-      if (!sentence.includes(word)) return sentence;
-
-      const location = sentence.split(word);
-      return (
-        <>
-          <span>{location[0]}</span>
-          <span className={styles.bold}>{word}</span>
-          <span>{location[1]}</span>
-        </>
-      );
+    if (pos === "접사") {
+      return <span className={styles.bold}>{sentence}</span>;
     }
 
-    //Find word root
-    if (origin === "한자고유어") {
-      let wordRoot = word;
-      //Remove verb ending
-      const verbEndings = ["하다", "되다", "시키다"];
-      for (const ending of verbEndings) {
-        if (wordRoot.includes(ending))
-          wordRoot = wordRoot.slice(0, word.lastIndexOf(ending));
-      }
+    if (pos === "조사" || pos === "어미") {
+      const parsedWord = word.replace(/-ㄴ|-ㄹ|-으|-/, "");
+
+      //Add return for dialog sentences not containing word
+      if (!sentence.includes(parsedWord)) return sentence;
 
       //Create regex for whole word from determined root
       const wordRegex = new RegExp(
-        `(${wordRoot}[\u3131-\u314e|\u314f-\u3163|\uac00-\ud7a3]+)`
+        `([\u3131-\u314e|\u314f-\u3163|\uac00-\ud7a3]+${parsedWord})`
       );
 
       //Check for term & return for sentences not containing word
@@ -58,8 +44,47 @@ const SingleTermExamples = ({
       );
     }
 
-    if (pos === "형용사" || pos === "동사") {
-      let wordRoot = word.slice(0, word.lastIndexOf("다"));
+    if (
+      pos === "명사" ||
+      pos === "관형사" ||
+      pos === "부사" ||
+      pos === "대명사" ||
+      pos === "수사" ||
+      pos === "관형사" ||
+      pos === "감탄사" ||
+      pos === "의존 명사"
+    ) {
+      //Add return for dialog sentences not containing word
+      if (!sentence.includes(word)) return sentence;
+
+      const location = sentence.split(word);
+      return (
+        <>
+          <span>{location[0]}</span>
+          <span className={styles.bold}>{word}</span>
+          <span>{location[1]}</span>
+        </>
+      );
+    }
+
+    if (
+      pos === "형용사" ||
+      pos === "동사" ||
+      pos === "보조 형용사" ||
+      pos === "보조 동사"
+    ) {
+      let wordRoot = word;
+
+      //Remove verb ending
+      if (origin === "한자고유어") {
+        const verbEndings = ["하다", "되다", "시키다"];
+        for (const ending of verbEndings) {
+          if (wordRoot.includes(ending))
+            wordRoot = wordRoot.slice(0, word.lastIndexOf(ending));
+        }
+      } else {
+        wordRoot = word.slice(0, word.lastIndexOf("다"));
+      }
 
       //Create regex for whole word from determined root
       const wordRegex = new RegExp(
