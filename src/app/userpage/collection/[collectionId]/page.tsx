@@ -101,7 +101,7 @@ const CollectionPage = async ({
             <Link
               className={styles.link}
               href={`/api/termCollection/${collectionId}?format=csv${
-                transLang ? `language=${transLang}` : ""
+                transLang ? `&language=${transLang}` : ""
               }`}
             >
               CSV
