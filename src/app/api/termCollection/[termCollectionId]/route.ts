@@ -46,27 +46,39 @@ export const GET = async (
       const front = wordData.word;
       const back = wordData.definitionAndExamples
         .map((item) =>
-          [item.translation.transWord, item.definition].join("<br>")
+          [item?.translation?.transWord, item.definition]
+            .filter((el) => el.length)
+            .join("<br>")
         )
         .join("<br><br>");
       const origin = wordData?.originalLanguage?.originalLanguage;
+      const displayNumber = wordData.definitionAndExamples.length > 1;
       const examples = wordData.definitionAndExamples
-        .map((item) =>
+        .map((item, i) =>
           [
-            item.translation.transWord,
-            item.definition,
+            //These two lines will provide a number on first definition line for multi-entry cards
+            `${
+              displayNumber && item?.translation?.transWord ? `${i + 1}. ` : ""
+            }${item?.translation?.transWord}`,
+            item?.translation?.transWord
+              ? item.definition
+              : `${displayNumber ? `${i + 1}. ` : ""}${item.definition}`,
             //This will provide single return between word/def and examples
-            "",
+            " ",
             organizeExamples(item.examples, {
               word: wordData.word,
               origin: wordData?.originalLanguage?.originalLanguageType,
               pos: wordData?.pos,
             }),
-          ].join("<br>")
+          ]
+            .filter((el) => el.length)
+            .join("<br>")
         )
         .join("<br><br>");
 
-      const cardContent = [origin, examples].join("<br>");
+      const cardContent = [origin, examples]
+        .filter((el) => el.length)
+        .join("<br><br>");
 
       savedTermData.push({
         front,
@@ -75,8 +87,6 @@ export const GET = async (
       });
     }
     const cardData = JSON.parse(JSON.stringify(savedTermData));
-
-    // console.log(cardData);
 
     const ws = XLSX.utils.json_to_sheet(cardData);
 
