@@ -25,21 +25,33 @@ export const organizeExamples = (
           wordRoot = wordRoot.slice(0, wordRoot.lastIndexOf(ending));
       }
 
-      //Add return for dialog sentences not containing word
-      if (!sentence.includes(wordRoot)) return sentence;
+      //Create regex for whole word from determined root
+      const wordRegex = new RegExp(
+        `(${wordRoot}[\u3131-\u314e|\u314f-\u3163|\uac00-\ud7a3]+)`
+      );
 
-      const location = sentence.split(wordRoot);
-      return `<span>${location[0]}</span> <strong>${wordRoot}</strong><span>${location[1]}</span>`;
+      //Check for term & return for sentences not containing word
+      const wordInSentence = sentence.match(wordRegex);
+      if (!wordInSentence?.length) return sentence;
+
+      const location = sentence.split(wordInSentence[0]);
+      return `<span>${location[0]}</span> <strong>${wordInSentence[0]}</strong><span>${location[1]}</span>`;
     }
 
     if (wordInfo?.pos === "형용사" || wordInfo?.pos === "동사") {
       let wordRoot = wordInfo.word.slice(0, wordInfo.word.lastIndexOf("다"));
 
-      //Add return for dialog sentences not containing word
-      if (!sentence.includes(wordRoot)) return sentence;
+      //Create regex for whole word from determined root
+      const wordRegex = new RegExp(
+        `(${wordRoot}[\u3131-\u314e|\u314f-\u3163|\uac00-\ud7a3]+)`
+      );
 
-      const location = sentence.split(wordRoot);
-      return `<span>${location[0]}</span> <strong>${wordRoot}</strong><span>${location[1]}</span>`;
+      //Check for term & return for sentences not containing word
+      const wordInSentence = sentence.match(wordRegex);
+      if (!wordInSentence?.length) return sentence;
+
+      const location = sentence.split(wordInSentence[0]);
+      return `<span>${location[0]}</span> <strong>${wordInSentence[0]}</strong><span>${location[1]}</span>`;
     }
 
     return sentence;
