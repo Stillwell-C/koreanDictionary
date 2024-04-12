@@ -16,7 +16,7 @@ You can look up Korean words and see definitions in 11 different languages, but 
 
 Once users make an account, they will be able to add words to collections which can be viewed on their profile page. If they navigate to the collection, they will see a link to download definitions and example sentences for each word as a CSV file. This file can be directly imported into Anki and will generate a flashcard for each word. The information in this file includes html tags, so be sure to toggle the option for html when importing the file. This will ensure that the word is bold in the example sentences.
 
-All data is from the open API provided by the [National Institute of Korean Language](https://krdict.korean.go.kr/openApi/openApiInfo)
+All data is from an open API provided by the [National Institute of Korean Language](https://krdict.korean.go.kr/openApi/openApiInfo)
 
 ### Making target words bold
 
