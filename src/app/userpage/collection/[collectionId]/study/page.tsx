@@ -1,5 +1,10 @@
 import { getTermData } from "@/lib/apiData";
-import { getSavedTerms, getTermCollection } from "@/lib/dbData";
+import {
+  checkStudySession,
+  getSavedTermForStudy,
+  getSavedTerms,
+  getTermCollection,
+} from "@/lib/dbData";
 import styles from "./studyPage.module.css";
 import SearchLanguageToggle from "@/components/searchLanguageToggle/SearchLanguageToggle";
 import SingleTermDefinitionExamples from "@/components/singleTermDefinitionExamples/SingleTermDefinitionExamples";
@@ -10,6 +15,7 @@ import ViewNextTermButton from "@/components/Buttons/viewNextTermButton/ViewNext
 import StudyAgainButton from "@/components/Buttons/studyAgainButton/StudyAgainButton";
 import MoveToCollectionsButton from "@/components/Buttons/moveToCollectionsButton/MoveToCollectionsButton";
 import { notFound } from "next/navigation";
+import StudyTermRepitionButtons from "@/components/studyTermRepititionButtons/StudyTermRepitionButtons";
 
 type Props = {
   params: {
@@ -27,14 +33,16 @@ export const generateMetadata = async ({
   params: { collectionId },
   searchParams: { card, translation, transLang },
 }: Props) => {
-  const cardInfo = await getSavedTerms(collectionId, card, "1");
+  // const cardInfo = await getSavedTerms(collectionId, card, "1");
+  // await checkStudySession(collectionId);
+  const cardInfo = await getSavedTermForStudy(collectionId, card);
   const cardData = await getTermData(
-    cardInfo?.results[0]?.targetCode,
+    cardInfo?.results?.targetCode,
     translation,
     transLang
   );
 
-  const collectionName = cardInfo?.results[0]?.termCollectionId?.name;
+  const collectionName = cardInfo?.results?.termCollectionId?.name;
 
   if (!collectionName) {
     return {
@@ -63,37 +71,41 @@ const page = async ({
 }: Props) => {
   const revealBack = reveal === "true";
 
-  const cardInfo = await getSavedTerms(collectionId, card, "1");
+  // const cardInfo = await getSavedTerms(collectionId, card, "1");
+  // await checkStudySession(collectionId);
+  const cardInfo = await getSavedTermForStudy(collectionId, card);
+
   const cardData = await getTermData(
-    cardInfo?.results[0]?.targetCode,
+    cardInfo?.results?.targetCode,
     translation,
     transLang
   );
 
-  const collectionName = cardInfo?.results[0]?.termCollectionId?.name;
+  const collectionName = cardInfo?.results?.termCollectionId?.name;
 
   if (!collectionName) {
     notFound();
   }
 
-  //Term has no terms
-  if (!parseInt(cardInfo?.searchData.total)) {
-    //TODO: add link somehwer
-    return (
-      <div className={styles.container}>
-        <h2 className={styles.heading}>{collectionName} - Flashcards</h2>
-        <div className={styles.textDiv}>
-          <h3>Empty Collection</h3>
-          <p>To study, you need to add terms to this collection.</p>
-        </div>
-        <div className={styles.buttonDiv}>
-          <MoveToCollectionsButton />
-        </div>
-      </div>
-    );
-  }
+  //Maybe readd this
+  // //Term has no terms
+  // if (!parseInt(cardInfo?.searchData.total)) {
+  //   //TODO: add link somehwer
+  //   return (
+  //     <div className={styles.container}>
+  //       <h2 className={styles.heading}>{collectionName} - Flashcards</h2>
+  //       <div className={styles.textDiv}>
+  //         <h3>Empty Collection</h3>
+  //         <p>To study, you need to add terms to this collection.</p>
+  //       </div>
+  //       <div className={styles.buttonDiv}>
+  //         <MoveToCollectionsButton />
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-  if (parseInt(card) > parseInt(cardInfo?.searchData.total)) {
+  if (!parseInt(cardInfo?.searchData.total)) {
     return (
       <div className={styles.container}>
         <h2 className={styles.heading}>{collectionName} - Flashcards</h2>
@@ -139,7 +151,9 @@ const page = async ({
           }}
         />
         <div className={styles.buttonDiv}>
-          <ViewNextTermButton />
+          {/* <ViewNextTermButton /> */}
+
+          {/* <StudyTermRepitionButtons term={cardInfo.results} /> */}
         </div>
       </div>
     );
