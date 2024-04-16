@@ -93,6 +93,7 @@ export const organizeExamples = (
   const formattedDialog = [];
   for (const item in dialog) {
     const itemInt = parseInt(item);
+    34;
     const marker = itemInt === 0 || itemInt % 2 === 0 ? "가: " : "나: ";
     formattedDialog.push(
       `${marker} ${formatSentence(dialog[itemInt].example)}`
@@ -106,4 +107,11 @@ export const formatDate = (dateString: string) => {
   return new Intl.DateTimeFormat("en-US", { dateStyle: "long" }).format(
     new Date(dateString)
   );
+};
+
+export const addIntervalToDate = (interval: number) => {
+  //Add number of days in interval to the date
+  let updatedDate = new Date();
+  updatedDate.setDate(updatedDate.getDate() + interval);
+  return updatedDate.getTime();
 };
