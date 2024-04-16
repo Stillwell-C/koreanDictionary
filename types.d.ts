@@ -104,6 +104,11 @@ type SavedTermResponse = {
   _id: string;
   termCollectionId: { name: string };
   targetCode: string;
+  easiness: number;
+  interval: number;
+  repititions: number;
+  nextReview: number;
+  completedForSession: boolean;
 };
 
 interface BlogPostData {
