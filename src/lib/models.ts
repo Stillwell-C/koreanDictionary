@@ -54,6 +54,10 @@ const termCollectionSchema = new mongoose.Schema(
     noDelete: {
       type: Boolean,
     },
+    lastReview: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { timestamps: true }
 );
@@ -68,6 +72,26 @@ const savedTermSchema = new mongoose.Schema(
     targetCode: {
       type: String,
       required: true,
+    },
+    easiness: {
+      type: Number,
+      default: 2.5,
+    },
+    interval: {
+      type: Number,
+      default: 0,
+    },
+    repititions: {
+      type: Number,
+      default: 0,
+    },
+    nextReview: {
+      type: Date,
+      default: Date.now,
+    },
+    completedForSession: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true }
