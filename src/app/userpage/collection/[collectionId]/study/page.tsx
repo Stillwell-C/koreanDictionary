@@ -2,7 +2,6 @@ import { getTermData } from "@/lib/apiData";
 import {
   checkStudySession,
   getSavedTermForStudy,
-  getSavedTerms,
   getTermCollection,
 } from "@/lib/dbData";
 import styles from "./studyPage.module.css";
@@ -11,11 +10,10 @@ import SingleTermDefinitionExamples from "@/components/singleTermDefinitionExamp
 import TermDefinitions from "@/components/termDefinitions/TermDefinitions";
 import SingleTermTopline from "@/components/singleTermTopline/SingleTermTopline";
 import RevealCardBackButton from "@/components/Buttons/revealCardBackButton/RevealCardBackButton";
-import ViewNextTermButton from "@/components/Buttons/viewNextTermButton/ViewNextTermButton";
 import StudyAgainButton from "@/components/Buttons/studyAgainButton/StudyAgainButton";
 import MoveToCollectionsButton from "@/components/Buttons/moveToCollectionsButton/MoveToCollectionsButton";
 import { notFound } from "next/navigation";
-import StudyTermRepitionButtons from "@/components/studyTermRepititionButtons/StudyTermRepitionButtons";
+import StudyTermRepitionForm from "@/components/studyTermRepititionForm/StudyTermRepitionForm";
 
 type Props = {
   params: {
@@ -33,8 +31,7 @@ export const generateMetadata = async ({
   params: { collectionId },
   searchParams: { card, translation, transLang },
 }: Props) => {
-  // const cardInfo = await getSavedTerms(collectionId, card, "1");
-  // await checkStudySession(collectionId);
+  const collection = await getTermCollection(collectionId);
   const cardInfo = await getSavedTermForStudy(collectionId, card);
   const cardData = await getTermData(
     cardInfo?.results?.targetCode,
@@ -42,7 +39,7 @@ export const generateMetadata = async ({
     transLang
   );
 
-  const collectionName = cardInfo?.results?.termCollectionId?.name;
+  const collectionName = collection?.name;
 
   if (!collectionName) {
     return {
@@ -71,17 +68,20 @@ const page = async ({
 }: Props) => {
   const revealBack = reveal === "true";
 
-  // const cardInfo = await getSavedTerms(collectionId, card, "1");
-  // await checkStudySession(collectionId);
-  const cardInfo = await getSavedTermForStudy(collectionId, card);
+  //TODO: Move this somewhere before this page
+  if (card === "1") {
+    await checkStudySession(collectionId);
+  }
 
+  const collection = await getTermCollection(collectionId);
+  const cardInfo = await getSavedTermForStudy(collectionId, card);
   const cardData = await getTermData(
     cardInfo?.results?.targetCode,
     translation,
     transLang
   );
 
-  const collectionName = cardInfo?.results?.termCollectionId?.name;
+  const collectionName = collection?.name;
 
   if (!collectionName) {
     notFound();
@@ -114,7 +114,7 @@ const page = async ({
           <p>You finished studying this collection.</p>
         </div>
         <div className={styles.buttonDiv}>
-          <StudyAgainButton />
+          <StudyAgainButton termCollectionId={collectionId} />
           <MoveToCollectionsButton />
         </div>
       </div>
@@ -127,8 +127,15 @@ const page = async ({
       <div className={styles.container}>
         <h2 className={styles.heading}>{collectionName} - Flashcards</h2>
         <SearchLanguageToggle />
-        <p className={styles.entryTerm}>{cardData.word}</p>
-        <RevealCardBackButton />
+        <div className={styles.cardCounter}>
+          <p>Review cards remaining: {cardInfo.searchData.total}</p>
+        </div>
+        <div className={styles.cardContentWrapper}>
+          <div className={styles.cardContent}>
+            <p className={styles.entryTerm}>{cardData.word}</p>
+            <RevealCardBackButton />
+          </div>
+        </div>
       </div>
     );
   }
@@ -138,23 +145,28 @@ const page = async ({
       <div className={styles.container}>
         <h2 className={styles.heading}>{collectionName} - Flashcards</h2>
         <SearchLanguageToggle />
-        <SingleTermTopline data={cardData} />
-        <div className={styles.topDefinitions}>
-          <TermDefinitions definitions={cardData.definitionAndExamples} />
+        <div className={styles.cardCounter}>
+          <p>Review cards remaining: {cardInfo.searchData.total}</p>
         </div>
-        <SingleTermDefinitionExamples
-          definitionAndExamples={cardData.definitionAndExamples}
-          wordInfo={{
-            word: cardData.word,
-            pos: cardData?.pos,
-            origin: cardData?.originalLanguage?.originalLanguageType,
-          }}
-        />
-        <div className={styles.buttonDiv}>
-          {/* <ViewNextTermButton /> */}
-
-          {/* <StudyTermRepitionButtons term={cardInfo.results} /> */}
+        <div className={styles.cardContentWrapper}>
+          <div className={styles.cardContent}>
+            <div className={styles.topLine}>
+              <SingleTermTopline data={cardData} />
+            </div>
+            <div className={styles.topDefinitions}>
+              <TermDefinitions definitions={cardData.definitionAndExamples} />
+            </div>
+            <SingleTermDefinitionExamples
+              definitionAndExamples={cardData.definitionAndExamples}
+              wordInfo={{
+                word: cardData.word,
+                pos: cardData?.pos,
+                origin: cardData?.originalLanguage?.originalLanguageType,
+              }}
+            />
+          </div>
         </div>
+        <StudyTermRepitionForm term={JSON.stringify(cardInfo.results)} />
       </div>
     );
   }
