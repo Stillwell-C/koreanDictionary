@@ -8,6 +8,7 @@ import { CredentialsSignin } from "@auth/core/errors";
 import { revalidatePath } from "next/cache";
 import { addIntervalToDate } from "./utils";
 import {
+  increaseTodaysCards,
   startNewStudySession,
   updateManySavedTerms,
   updateSavedTerm,
@@ -296,13 +297,13 @@ export const deleteCollection = async (
   }
 };
 
-export const startNewStudySessionAction = async (
+export const increaseTodaysCardsAction = async (
   prevState: FormStateType | null,
   formData: FormData
 ) => {
   const termCollectionId = formData.get("termCollectionId") as string;
 
-  await startNewStudySession(termCollectionId);
+  await increaseTodaysCards(termCollectionId);
 
   return { success: true };
 };
