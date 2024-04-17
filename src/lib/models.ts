@@ -91,7 +91,7 @@ const savedTermSchema = new mongoose.Schema(
     },
     completedForSession: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   { timestamps: true }
