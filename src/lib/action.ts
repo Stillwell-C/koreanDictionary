@@ -6,6 +6,13 @@ import { SavedTerm, TermCollection, User } from "./models";
 import bcrypt from "bcryptjs";
 import { CredentialsSignin } from "@auth/core/errors";
 import { revalidatePath } from "next/cache";
+import { addIntervalToDate } from "./utils";
+import {
+  startNewStudySession,
+  updateManySavedTerms,
+  updateSavedTerm,
+  updateTermCollection,
+} from "./dbData";
 
 // export const handleSearch = (formData: FormData) => {
 //   console.log(formData);
@@ -287,4 +294,76 @@ export const deleteCollection = async (
   } catch (err) {
     throw new Error("Something went wrong");
   }
+};
+
+export const startNewStudySessionAction = async (
+  prevState: FormStateType | null,
+  formData: FormData
+) => {
+  const termCollectionId = formData.get("termCollectionId") as string;
+
+  await startNewStudySession(termCollectionId);
+
+  return { success: true };
+};
+
+export const assessUserStudyResponse = async (
+  prevState: FormStateType | null,
+  formData: FormData
+) => {
+  const { formTerm, formResponseQuality } = Object.fromEntries(formData);
+
+  const term: SavedTermResponse = JSON.parse(formTerm as string);
+  const responseQuality = parseInt(formResponseQuality as string);
+
+  //Increase the number of times a flashcard has been viewed
+  term.repititions += 1;
+
+  //Create repition interval for n-th repetition in days
+  let interval;
+  if (term.repititions === 1) {
+    interval = 1;
+  } else if (term.repititions === 2) {
+    interval = 6;
+  } else {
+    //If interval is a fraction, round it up to the nearest integer.
+    interval = Math.ceil(term.interval * term.easiness);
+  }
+
+  //Calculate updated easiness
+  let updatedEasiness =
+    term.easiness +
+    (0.1 - (5 - responseQuality) * (0.08 + (5 - responseQuality) * 0.2));
+
+  //Min allowable easiness is 1.3
+  if (updatedEasiness < 1.3) {
+    updatedEasiness = 1.3;
+  }
+
+  //If response lower than 3, start repiritions from beginning without changing easiness
+  //Else modify the easiness to updated
+  if (responseQuality < 3) {
+    interval = 1;
+    term.repititions = 1;
+  } else {
+    term.easiness = updatedEasiness;
+  }
+
+  term.interval = interval;
+  //Update review date
+  term.nextReview = addIntervalToDate(interval);
+  term.completedForSession = responseQuality > 4;
+
+  //Update db
+  const updatedTerm = await updateSavedTerm(term._id, term);
+
+  //Check for successful update
+  if (!updatedTerm) {
+    return {
+      error: true,
+      errorMsg: "Something went wrong.",
+    };
+  }
+
+  return { success: true };
 };
