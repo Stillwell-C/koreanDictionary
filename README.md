@@ -20,9 +20,9 @@ All data is from an open API provided by the [National Institute of Korean Langu
 
 ### Spaced Repetition Flashcards
 
-The flashcards in this application rely on an implementation of the [SM-2](https://www.supermemo.com/en/blog/application-of-a-computer-to-improve-the-results-obtained-in-working-with-the-supermemo-method) spaced repetition algorithm similar to the spaced repetition algorithm used in applications like Anki to determine the which flashcards users will see.
+The flashcards in this application rely on an implementation of the [SM-2](https://www.supermemo.com/en/blog/application-of-a-computer-to-improve-the-results-obtained-in-working-with-the-supermemo-method) spaced repetition algorithm similar to the spaced repetition algorithm used in applications like Anki to determine which flashcards users will see.
 
-When users have completed their flashcards for the day, they are also given the option to increase the number of cards reviewed for the day if they wish to continue studying.
+When users have completed their flashcards for the day, they are given the option to increase the number of cards for the day if they wish to continue studying.
 
 The current implementation is not perfect, and I am currently working to improve the functionality of this feature.
 
