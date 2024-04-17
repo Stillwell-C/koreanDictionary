@@ -1,0 +1,27 @@
+.container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.container button {
+  width: 72px;
+}
+
+.btnEasy {
+  background-color: var(--btn);
+}
+
+.btnGood {
+  background-color: var(--btnLight);
+}
+
+.btnHard {
+  background-color: var(--bgSoft);
+}
+
+.btnRepeat {
+  background-color: red;
+}
