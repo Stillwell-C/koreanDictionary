@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import styles from "./studyAgainButton.module.css";
-import { startNewStudySessionAction } from "@/lib/action";
+import { increaseTodaysCardsAction } from "@/lib/action";
 import { useFormState } from "react-dom";
 import { useEffect } from "react";
 
@@ -13,7 +13,7 @@ type Props = {
 const StudyAgainButton = ({ termCollectionId }: Props) => {
   const router = useRouter();
 
-  const [state, formAction] = useFormState(startNewStudySessionAction, null);
+  const [state, formAction] = useFormState(increaseTodaysCardsAction, null);
 
   //Get string of pathname & searchparams without start searchparam
   const pathname = usePathname();
@@ -41,7 +41,7 @@ const StudyAgainButton = ({ termCollectionId }: Props) => {
         readOnly
       />
       <button className={styles.purpleBtn} type='submit'>
-        Start A New Session
+        Increase today&apos;s terms
       </button>
     </form>
   );
