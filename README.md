@@ -18,6 +18,12 @@ Once users make an account, they will be able to add words to collections which 
 
 All data is from an open API provided by the [National Institute of Korean Language](https://krdict.korean.go.kr/openApi/openApiInfo)
 
+### Spaced Repitition Flashcards
+
+The flashcards in this application rely on an implementation of the [SM-2](https://www.supermemo.com/en/blog/application-of-a-computer-to-improve-the-results-obtained-in-working-with-the-supermemo-method) spaced repition algorithm similar to the spaced repition algorithm used in applications like Anki to determine the order in which users will study flashcards.
+
+The current implementation is not perfect, and I am currently working to improve the functionality of this feature.
+
 ### Making target words bold
 
 The API does not provide information for which word in an example sentence should be bold, something which can be difficult due to the complex conjugation possible in Korean. The dictionary does, however, provide the part of speech and origin for words, which I have used to display the target word in bold. This seems accurate, but I'm sure it is far from perfect. I will continue trying to improve any errors I see with this. I have not extended it to cover terms classed as "품사 없음(어근, 줄어든 말 등)" (Part of speech not applicable (a root, an abbreviated word, etc.)) as there are a range of different parts of speech in this group, and I have not been able to figure out if they can be differentiated by API data alone. I may keep this current system going forward or create a back end and use an open-source package such as [OKT](https://github.com/open-korean-text/open-korean-text) for stemming (어근화).
