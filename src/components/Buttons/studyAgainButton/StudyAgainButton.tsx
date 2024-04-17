@@ -2,9 +2,18 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import styles from "./studyAgainButton.module.css";
+import { startNewStudySessionAction } from "@/lib/action";
+import { useFormState } from "react-dom";
+import { useEffect } from "react";
 
-const StudyAgainButton = () => {
+type Props = {
+  termCollectionId: string;
+};
+
+const StudyAgainButton = ({ termCollectionId }: Props) => {
   const router = useRouter();
+
+  const [state, formAction] = useFormState(startNewStudySessionAction, null);
 
   //Get string of pathname & searchparams without start searchparam
   const pathname = usePathname();
@@ -16,12 +25,25 @@ const StudyAgainButton = () => {
   const paramString = params.toString();
   const studyUrl = `${pathname}?${paramString}`;
 
-  const handleRouting = () => router.push(studyUrl);
+  useEffect(() => {
+    if (state?.success) {
+      router.push(studyUrl);
+    }
+  }, [state]);
 
   return (
-    <button className={styles.purpleBtn} onClick={handleRouting}>
-      Study Collection Again
-    </button>
+    <form action={formAction}>
+      <input
+        type='text'
+        name='termCollectionId'
+        value={termCollectionId}
+        hidden
+        readOnly
+      />
+      <button className={styles.purpleBtn} type='submit'>
+        Start A New Session
+      </button>
+    </form>
   );
 };
 
