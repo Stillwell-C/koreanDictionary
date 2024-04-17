@@ -224,17 +224,35 @@ export const updateManySavedTerms = async (
   }
 };
 
+export const updateTodaysStudyTerms = async (termCollectionId: string) => {
+  //Get date corresponding to the next 24 hours
+  const fullDayTime = new Date().getTime() + 24 * 60 * 60 * 1000;
+
+  try {
+    connectDB();
+
+    //Will only apply to cards due within the next 24 hours
+    return await SavedTerm.updateMany(
+      { termCollectionId, nextReview: { $lte: fullDayTime } },
+      { completedForSession: false }
+    );
+  } catch (err) {
+    throw new Error("Something went wrong");
+  }
+};
+
 export const checkStudySession = async (termCollectionId: string) => {
   try {
     connectDB();
 
-    const currentDate = new Date().getDate();
+    const currentDate = new Date().getTime();
     const { lastReview } = await TermCollection.findById(
       termCollectionId
     ).select("lastReview");
 
-    if (currentDate - lastReview > 86400000) {
-      startNewStudySession(termCollectionId);
+    //Check if last review occurred more than 24 hours ago
+    if (currentDate - lastReview > 24 * 60 * 60 * 1000) {
+      await startNewStudySession(termCollectionId);
     }
   } catch (err) {
     throw new Error("Something went wrong");
@@ -254,12 +272,32 @@ export const startNewStudySession = async (termCollectionId: string) => {
     { completedForSession: true }
   );
 
-  //Select terms for new session
-  //TODO: add way to select length for this
+  await updateTodaysStudyTerms(termCollectionId);
+};
+
+//TODO make separate function to increase review number to specific number of cards
+export const increaseTodaysCards = async (
+  termCollectionId: string,
+  cardLimit: number = 50
+) => {
+  //clear all terms from past sessions
   await updateManySavedTerms(
-    { termCollectionId },
-    { completedForSession: false }
+    { termCollectionId, completedForSession: false },
+    { completedForSession: true }
   );
+
+  try {
+    connectDB();
+
+    await SavedTerm.updateMany(
+      { termCollectionId },
+      { completedForSession: false }
+    )
+      .sort("-nextReview")
+      .limit(cardLimit);
+  } catch (err) {
+    throw new Error("Something went wrong");
+  }
 };
 
 //Get title, thumbnail, and id for each blog post
