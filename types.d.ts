@@ -89,6 +89,7 @@ type FormStateType = {
 type TermCollection = {
   _id: string;
   name: string;
+  lastReview: number;
 };
 
 type TermCollectionResponse = {
@@ -102,7 +103,7 @@ type TermCollectionResponse = {
 
 type SavedTermResponse = {
   _id: string;
-  termCollectionId: { name: string };
+  termCollectionId: string;
   targetCode: string;
   easiness: number;
   interval: number;
