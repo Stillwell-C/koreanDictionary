@@ -8,6 +8,13 @@
 
 .container button {
   width: 72px;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: bold;
+  color: var(--text);
+  border: none;
+  border-radius: 0.25rem;
 }
 
 .btnEasy {
