@@ -1,6 +1,6 @@
 import SearchLanguageToggle from "@/components/searchLanguageToggle/SearchLanguageToggle";
 import TermListResult from "@/components/termListResult/TermListResult";
-import { getSavedTerms } from "@/lib/dbData";
+import { getSavedTerms, getTermCollection } from "@/lib/dbData";
 import styles from "./collectionPage.module.css";
 import { Suspense } from "react";
 import SearchResultPaginationMenu from "@/components/searchResultPagination/SearchResultPaginationMenu";
@@ -29,9 +29,10 @@ export const generateMetadata = async ({
   searchParams: { start },
 }: Props): Promise<Metadata> => {
   const data = await getSavedTerms(collectionId, start);
+  const collection = await getTermCollection(collectionId);
   const session = await auth();
 
-  const collectionName = data?.results[0]?.termCollectionId?.name;
+  const collectionName = collection?.name;
 
   if (!collectionName) {
     return {
@@ -52,9 +53,10 @@ const CollectionPage = async ({
 }: Props) => {
   const session = await auth();
   const data = await getSavedTerms(collectionId, start);
+  const collection = await getTermCollection(collectionId);
   const showModal = modal === "true";
 
-  const collectionName = data?.results[0]?.termCollectionId?.name;
+  const collectionName = collection?.name;
 
   if (!collectionName) {
     notFound();
