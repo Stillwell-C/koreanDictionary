@@ -37,9 +37,6 @@ const DeleteCollectionDialog = ({
   };
 
   useEffect(() => {
-    if (state?.success) {
-      router.push("/userpage/");
-    }
     if (state?.error) {
       errRef?.current?.focus();
     }
