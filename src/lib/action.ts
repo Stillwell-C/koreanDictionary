@@ -255,6 +255,7 @@ export const deleteCollection = async (
       };
     }
 
+    //Locate term collection & make necessary checks before deletion
     const termCollection = await TermCollection.findById(termCollectionId);
 
     if (!termCollection) {
@@ -278,6 +279,7 @@ export const deleteCollection = async (
       };
     }
 
+    //Delete collection
     const deletedCollection = await TermCollection.findByIdAndDelete(
       termCollectionId
     );
@@ -288,6 +290,9 @@ export const deleteCollection = async (
         errorMsg: "Something went wrong.",
       };
     }
+
+    //Delete all terms from collection
+    await SavedTerm.deleteMany({ termCollectionId });
 
     revalidatePath("/userpage");
 
