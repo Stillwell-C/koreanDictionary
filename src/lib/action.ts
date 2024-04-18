@@ -296,10 +296,10 @@ export const deleteCollection = async (
     await SavedTerm.deleteMany({ termCollectionId });
 
     revalidatePath("/userpage");
-
-    redirect("/userpage");
   } catch (err) {
     throw new Error("Something went wrong");
+  } finally {
+    redirect("/userpage");
   }
 };
 
