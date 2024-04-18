@@ -16,7 +16,7 @@ const Links = ({ userSession }: Props) => {
 
   const linksList = [
     {
-      name: "Homepage",
+      name: "Search",
       path: "/",
     },
     {
