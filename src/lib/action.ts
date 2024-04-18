@@ -14,6 +14,7 @@ import {
   updateSavedTerm,
   updateTermCollection,
 } from "./dbData";
+import { redirect } from "next/navigation";
 
 // export const handleSearch = (formData: FormData) => {
 //   console.log(formData);
@@ -296,7 +297,7 @@ export const deleteCollection = async (
 
     revalidatePath("/userpage");
 
-    return { success: true };
+    redirect("/userpage");
   } catch (err) {
     throw new Error("Something went wrong");
   }
