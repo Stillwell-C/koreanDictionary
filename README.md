@@ -24,7 +24,7 @@ The flashcards in this application rely on an implementation of the [SM-2](https
 
 When users have completed their flashcards for the day, they are given the option to increase the number of cards for the day if they wish to continue studying.
 
-The current implementation is not perfect, and I am currently working to improve the functionality of this feature.
+A new study session will begin the following day at 3 a.m. in the user's timezone. No date management package is being used for these calculations. The Intl API is used to send the user's timezone from the front end (this is not perfect, but supported by over 95% of browsers). If the user cannot provide their local timezone, a new study session will start 24 hours after the previous study session was started.
 
 ### Making target words bold
 
