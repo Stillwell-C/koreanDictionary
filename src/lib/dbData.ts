@@ -141,14 +141,12 @@ export const getSavedTermForStudy = async (
   }
 
   try {
-    const savedTerms: SavedTermResponse = await SavedTerm.findOne({
+    const savedTerm: SavedTermResponse = await SavedTerm.findOne({
       termCollectionId,
       completedForSession: false,
     })
-      .limit(1)
-      .sort("-nextReview");
-    // .skip(skipNum)
-    // .sort("-");
+      .sort("nextReview")
+      .limit(1);
 
     const savedTermsTotal = await SavedTerm.countDocuments({
       termCollectionId,
@@ -156,7 +154,7 @@ export const getSavedTermForStudy = async (
     });
 
     return {
-      results: savedTerms,
+      results: savedTerm,
       searchData: {
         total: savedTermsTotal.toString(),
         start,
