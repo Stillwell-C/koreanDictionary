@@ -68,9 +68,12 @@ const page = async ({
 }: Props) => {
   const revealBack = reveal === "true";
 
-  //TODO: Move this somewhere before this page
+  // //TODO: Move this somewhere before this page
   if (card === "1") {
-    await checkStudySession(collectionId);
+    await checkStudySession(
+      collectionId,
+      Intl.DateTimeFormat().resolvedOptions().timeZone
+    );
   }
 
   const collection = await getTermCollection(collectionId);
@@ -106,6 +109,11 @@ const page = async ({
   // }
 
   if (!parseInt(cardInfo?.searchData.total)) {
+    await checkStudySession(
+      collectionId,
+      Intl.DateTimeFormat().resolvedOptions().timeZone
+    );
+
     return (
       <div className={styles.container}>
         <h2 className={styles.heading}>{collectionName} - Flashcards</h2>
