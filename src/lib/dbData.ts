@@ -1,7 +1,6 @@
 import { connectDB } from "./dbUtils";
 import { FailedToFetchError } from "./exceptions";
 import { BlogPost, SavedTerm, TermCollection } from "./models";
-import { addIntervalToDate } from "./utils";
 
 export const getTermCollection = async (termCollectionId: string) => {
   connectDB();
@@ -241,18 +240,45 @@ export const updateTodaysStudyTerms = async (termCollectionId: string) => {
   }
 };
 
-export const checkStudySession = async (termCollectionId: string) => {
+export const checkStudySession = async (
+  termCollectionId: string,
+  timeZone?: string
+) => {
   try {
     connectDB();
 
-    const currentDate = new Date().getTime();
     const { lastReview } = await TermCollection.findById(
       termCollectionId
     ).select("lastReview");
 
+    const currentDate = new Date();
+
     //Check if last review occurred more than 24 hours ago
-    if (currentDate - lastReview > 24 * 60 * 60 * 1000) {
+    if (currentDate.getTime() - lastReview > 24 * 60 * 60 * 1000) {
       await startNewStudySession(termCollectionId);
+    } else if (timeZone) {
+      //If less than 24 hours, check to see if day has changed for user
+      const userLocalDate = new Date(
+        currentDate.toLocaleString("en-US", { timeZone })
+      );
+      const lastReviewLocalDate = new Date(
+        currentDate.toLocaleString("en-US", { timeZone })
+      );
+
+      const dateDiff = lastReviewLocalDate.getDate() - userLocalDate.getDate();
+      const monthDiff =
+        lastReviewLocalDate.getMonth() > userLocalDate.getMonth();
+
+      // If session happened less than 24 hours ago, but date/month is different & it is past 3 a.m. on following date, start new session
+      if ((dateDiff || monthDiff) && userLocalDate.getHours() >= 3) {
+        await startNewStudySession(termCollectionId);
+      }
+    }
+
+    //If a timezone has been submitted, see if session was from previous day
+    if (timeZone) {
+    } else {
+      //If no timezone is submitted fallback to this
     }
   } catch (err) {
     throw new Error("Something went wrong");
