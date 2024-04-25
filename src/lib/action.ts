@@ -323,42 +323,44 @@ export const assessUserStudyResponse = async (
   const term: SavedTermResponse = JSON.parse(formTerm as string);
   const responseQuality = parseInt(formResponseQuality as string);
 
-  //Increase the number of times a flashcard has been viewed
-  term.repititions += 1;
-
-  //Create repition interval for n-th repetition in days
+  //Create repetition interval for n-th repetition in days
   let interval;
-  if (term.repititions === 1) {
-    interval = 1;
-  } else if (term.repititions === 2) {
-    interval = 6;
-  } else {
-    //If interval is a fraction, round it up to the nearest integer.
-    interval = Math.ceil(term.interval * term.easiness);
-  }
 
-  //Calculate updated easiness
-  let updatedEasiness =
-    term.easiness +
-    (0.1 - (5 - responseQuality) * (0.08 + (5 - responseQuality) * 0.2));
+  if (responseQuality >= 3) {
+    //Calculate & update updated easiness
+    //Min allowable easiness is 1.3
+    let updatedEasiness =
+      term.easiness +
+      (0.1 - (5 - responseQuality) * (0.08 + (5 - responseQuality) * 0.2));
 
-  //Min allowable easiness is 1.3
-  if (updatedEasiness < 1.3) {
-    updatedEasiness = 1.3;
-  }
+    if (updatedEasiness < 1.3) {
+      updatedEasiness = 1.3;
+    }
 
-  //If response lower than 3, start repiritions from beginning without changing easiness
-  //Else modify the easiness to updated
-  if (responseQuality < 3) {
-    interval = 1;
-    term.repititions = 1;
-  } else {
     term.easiness = updatedEasiness;
+
+    //Increase the number of times a flashcard has been viewed
+    term.repititions += 1;
+
+    //Calculate updated card interval
+    if (term.repititions === 1) {
+      interval = 1;
+    } else if (term.repititions === 2) {
+      interval = 6;
+    } else {
+      //If interval is a fraction, round it up to the nearest integer.
+      interval = Math.ceil(term.interval * term.easiness);
+    }
+  } else {
+    //If response quality is lower than 3, start repiritions from beginning without changing easiness
+    interval = 0;
+    term.repititions = 0;
   }
 
   term.interval = interval;
   //Update review date
   term.nextReview = addIntervalToDate(interval);
+  //Continue reviewing card if quality lower than 4
   term.completedForSession = responseQuality > 4;
 
   //Update db
