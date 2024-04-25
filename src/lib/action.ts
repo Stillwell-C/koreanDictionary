@@ -324,7 +324,7 @@ export const assessUserStudyResponse = async (
   const responseQuality = parseInt(formResponseQuality as string);
 
   //Create repetition interval for n-th repetition in days
-  let interval;
+  let interval: number;
 
   if (responseQuality >= 3) {
     //Calculate & update updated easiness
@@ -352,7 +352,7 @@ export const assessUserStudyResponse = async (
       interval = Math.ceil(term.interval * term.easiness);
     }
   } else {
-    //If response quality is lower than 3, start repiritions from beginning without changing easiness
+    //If response quality is lower than 3, start repetitions from beginning without changing easiness
     interval = 0;
     term.repititions = 0;
   }
