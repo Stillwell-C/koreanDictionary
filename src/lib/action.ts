@@ -346,7 +346,7 @@ export const assessUserStudyResponse = async (
     if (term.repititions === 1) {
       interval = 1;
     } else if (term.repititions === 2) {
-      interval = 6;
+      interval = 2;
     } else {
       //If interval is a fraction, round it up to the nearest integer.
       interval = Math.ceil(term.interval * term.easiness);
