@@ -19,7 +19,6 @@ const TextTranslation = () => {
         "Content-Type": "application/json",
       },
     });
-    console.log(response);
     const json = await response.json();
     setTranslation(json);
   };
