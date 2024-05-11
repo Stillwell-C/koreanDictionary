@@ -20,6 +20,10 @@ const Links = ({ userSession }: Props) => {
       path: "/",
     },
     {
+      name: "Translate",
+      path: "/translate",
+    },
+    {
       name: "About",
       path: "/about",
     },
