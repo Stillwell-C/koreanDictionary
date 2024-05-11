@@ -26,6 +26,16 @@ When users have completed their flashcards for the day, they are given the optio
 
 A new study session will begin the following day at 3 a.m. in the user's timezone. No date management package is being used for these calculations. The Intl API is used to send the user's timezone from the front end (this is not perfect, but supported by over 95% of browsers). If the user cannot provide their local timezone, a new study session will start 24 hours after the previous study session was started.
 
+### Translation and AI Chatbot
+
+On the translation page, you can submit sentences and have them translated for you. This is powered by Google Translate (mainly for cost reasons). Below the translation, external links are shown for Google Translate and Papago.
+
+Below the translation is an AI chatbot that uses LangChain and is powered by OpenAI.
+
+It has been prompted to answer questions pertaining to the Korean language and can answer questions about the sentence the user submitted for translation (it is given both the original sentence and the translation). If a user asks about specific words (and, in many cases, grammatical forms), the chatbot should give the user a link to the search page for that term on this website.
+
+LangChain allows for RAG to better inform chatbot responses to user queries. I have experimented with providing frequency data from the National Institute of Korean Language in CSV format, but the data seems to be too large for gpt-3.5-turbo and is causing rate limit errors. If I can find a source of copyright-free data in the future, especially with regard to grammar, I would like to feed this to the AI to better inform its responses.
+
 ### Making target words bold
 
 The API does not provide information for which word in an example sentence should be bold, something which can be difficult due to the complex conjugation possible in Korean. The dictionary does, however, provide the part of speech and origin for words, which I have used to display the target word in bold. This seems accurate, but I'm sure it is far from perfect. I will continue trying to improve any errors I see with this. I have not extended it to cover terms classed as "품사 없음(어근, 줄어든 말 등)" (Part of speech not applicable (a root, an abbreviated word, etc.)) as there are a range of different parts of speech in this group, and I have not been able to figure out if they can be differentiated by API data alone. I may keep this current system going forward or create a back end and use an open-source package such as [OKT](https://github.com/open-korean-text/open-korean-text) for stemming (어근화).
@@ -38,7 +48,7 @@ Most of the routes in this project lead to pages that would not make sense to bu
 
 #### Dialog sentences
 
-Target words can have different types of examples. Among these are dialog sentences between two parties. I have yet to find any API data denoting the order that these should be put in. Sentences ending with question marks are, to my knowledge, always the first sentence, but I have not investigated this thoroughly. Currently they are displayed in the order recieved from the API. In many cases, this appears to be correct; however, I have found some cases where they are misordered. I hope to find a more accurate solution for ordering these in the near future.
+Target words can have different types of examples. Among these are dialog sentences between two parties (beginning with 가 or 나). I have yet to find any API data denoting the order that these should be put in. Sentences ending with question marks are, to my knowledge, always the first sentence, but I have not investigated this thoroughly. Currently they are displayed in the order recieved from the API. In many cases, this appears to be correct; however, I have found some cases where they are misordered. I hope to find a more accurate solution for ordering these in the near future.
 
 ## Overview
 
