@@ -3,7 +3,7 @@
 import { useChat } from "ai/react";
 import styles from "./chatInterface.module.css";
 import { useEffect, useRef, useState } from "react";
-import { Message as ChatMessage } from "ai";
+import ChatMessage from "../chatMessage/ChatMessage";
 
 type PropType = {
   sentenceQuery?: string;
@@ -36,11 +36,13 @@ const ChatInterface = ({ sentenceQuery, translatedSentence }: PropType) => {
 
   return (
     <div className={styles.container}>
-      <h3>Need help?</h3>
-      <p>
-        Ask our chatbot about the sentence you translated or anything else about
-        Korean
-      </p>
+      <div className={styles.textDiv}>
+        <h3>Need help?</h3>
+        <p>
+          Ask our chatbot about the sentence you translated or anything else
+          about Korean
+        </p>
+      </div>
       <form onSubmit={handleSubmit}>
         <input
           className={styles.input}
@@ -52,14 +54,7 @@ const ChatInterface = ({ sentenceQuery, translatedSentence }: PropType) => {
       <div className={styles.messageContainer} ref={messageContainer}>
         <ul className={styles.messageList}>
           {messages.map((m) => (
-            <li
-              key={m.id}
-              className={`${styles.messages} ${
-                m.role === "user" ? styles.messageRight : styles.messageLeft
-              }`}
-            >
-              {m.content}
-            </li>
+            <ChatMessage key={m.id} message={m} />
           ))}
         </ul>
       </div>
