@@ -1,0 +1,19 @@
+.messages {
+  white-space: pre-wrap;
+  max-width: 90%;
+  padding: 0.6rem;
+  background-color: var(--bg);
+  border-radius: 0.5rem;
+}
+
+.messages a {
+  text-decoration: underline;
+}
+
+.messageLeft {
+  align-self: flex-start;
+}
+
+.messageRight {
+  align-self: flex-end;
+}
