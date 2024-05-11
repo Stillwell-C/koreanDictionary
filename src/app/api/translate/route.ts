@@ -11,7 +11,7 @@ export const POST = async (req: NextRequest) => {
 
     translations = Array.isArray(translations) ? translations : [translations];
 
-    return Response.json(translations);
+    return NextResponse.json(translations);
   } catch (err) {
     console.log("err: ", err);
   }
