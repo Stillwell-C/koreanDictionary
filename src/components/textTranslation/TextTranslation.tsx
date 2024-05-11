@@ -10,6 +10,7 @@ const TextTranslation = () => {
   const [translation, setTranslation] = useState("");
 
   const handleTranslate = async (text: string, target: string = "en") => {
+    if (!text.length) return;
     text = text.slice(0, 250);
     const response = await fetch("/api/translate", {
       method: "POST",
