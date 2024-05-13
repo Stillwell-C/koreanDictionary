@@ -2,8 +2,7 @@
   display: flex;
   margin-top: 1rem;
   flex-direction: column;
-  padding: 1rem;
-  max-width: 532px;
+  max-width: 500px;
 }
 
 .textDiv {
