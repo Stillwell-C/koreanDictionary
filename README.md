@@ -1,3 +1,5 @@
+[![kr](https://img.shields.io/badge/언어-한국어-red.svg)](https://github.com/Stillwell-C/koreanDictionary/blob/main/README-kr.md)
+
 # 꼬박꼬박 - Korean Dictionary and Flashcards
 
 This repository is the front end for a dictionary application that can be used to generate flashcards in programs such as Anki.
