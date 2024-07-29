@@ -57,7 +57,7 @@ export const organizeExamples = (
       let wordRoot = wordInfo.word;
 
       //Remove verb ending
-      if (origin === "한자고유어") {
+      if (wordInfo?.origin === "한자고유어") {
         const verbEndings = ["하다", "되다", "시키다"];
         for (const ending of verbEndings) {
           if (wordRoot.includes(ending))
