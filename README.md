@@ -69,3 +69,49 @@ You can copy and paste the following terms into the search bar to see how this a
 - 경감하다
 - 답답하다
 - 하다 (this will give you more than 700 pages of results)
+
+## Screenshots
+
+#### Homepage Search
+
+<img src="./ProjectImages/Homepage.png" alt="Homepage with search input">
+
+#### Search Results
+
+<img src="./ProjectImages/SearchResults.png" alt="Search Results" >
+
+#### Add To Collection Modal
+
+<img src="./ProjectImages/AddToCollection.png" alt="Add to collection modal" >
+
+#### Term Page
+
+<img src="./ProjectImages/Term.png" alt="term page">
+
+#### Language Toggle
+
+<img src="./ProjectImages/SearchLangToggle.png" alt="language toggle dropdown">
+
+#### Translation & AI Chat Page
+
+<img src="./ProjectImages/Translate.png" alt="sentence translation and ai chat page">
+
+#### Blog Page
+
+<img src="./ProjectImages/Blog.png" alt="blog page" >
+
+#### Profile Page With User Term Collections
+
+<img src="./ProjectImages/ProfileCollections.png" alt="profile page showing user term collections" >
+
+#### Term Collection Page
+
+<img src="./ProjectImages/CollectionPage.png" alt="term collection page">
+
+#### Flashcard Front
+
+<img src="./ProjectImages/FlashCardFront.png" alt="front of flashcard" >
+
+#### Flashcard Back With Spaced Repetition Options
+
+<img src="./ProjectImages/FlashCardBack.png" alt="back of flashcard with 4 spaced repetition options">
