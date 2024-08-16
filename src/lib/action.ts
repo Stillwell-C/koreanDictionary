@@ -8,6 +8,9 @@ import { CredentialsSignin } from "@auth/core/errors";
 import { revalidatePath } from "next/cache";
 import { addIntervalToDate } from "./utils";
 import {
+  createFirstTermCollection,
+  createNewUserWithCredentials,
+  getUserByUsername,
   increaseTodaysCards,
   startNewStudySession,
   updateManySavedTerms,
@@ -30,6 +33,12 @@ export const handleLogout = async () => {
   await signOut();
 };
 
+/**
+ * Register a new user
+ * @param prevState
+ * @param {username: string, email: string, password: string, passwordConfirmation: string} formData
+ * @returns {success?: boolean, error?: boolean, errorMsg?: string}
+ */
 export const registerUser = async (
   prevState: FormStateType | null,
   formData: FormData
@@ -46,32 +55,19 @@ export const registerUser = async (
   }
 
   try {
-    connectDB();
-
-    const user = await User.findOne({ username });
+    const user = await getUserByUsername(username as string);
 
     if (user) {
       return { error: true, errorMsg: "Username already in use." };
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password as string, salt);
+    const createdUser = await createNewUserWithCredentials(
+      username as string,
+      email as string,
+      password as string
+    );
 
-    const newUser = new User({
-      username,
-      email,
-      password: hashedPassword,
-    });
-
-    const createdUser = await newUser.save();
-
-    const myTermsList = new TermCollection({
-      userId: createdUser._id,
-      name: "My Terms",
-      noDelete: true,
-    });
-
-    myTermsList.save();
+    await createFirstTermCollection(createdUser._id);
 
     return { success: true };
   } catch (err) {
