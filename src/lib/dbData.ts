@@ -1,6 +1,87 @@
 import { connectDB } from "./dbUtils";
 import { FailedToFetchError } from "./exceptions";
-import { BlogPost, SavedTerm, TermCollection } from "./models";
+import { BlogPost, SavedTerm, TermCollection, User } from "./models";
+import bcrypt from "bcryptjs";
+
+//USERS & AUTHENTICATION
+
+/**
+ * Find user by username
+ * @param {string} username
+ * @returns {Promise<User>}
+ */
+export const getUserByUsername = async (username: string) => {
+  connectDB();
+
+  return await User.findOne({ username });
+};
+
+/**
+ * Encrypt password with Bcrypt
+ * @param {string} password
+ * @returns {Promise<string>}
+ */
+const encryptPassword = async (password: string) => {
+  const salt = await bcrypt.genSalt(10);
+  return await bcrypt.hash(password as string, salt);
+};
+
+/**
+ * Creates new user with the following credentials
+ * @param {string} username
+ * @param {string} email
+ * @param {string} password
+ * @returns {Promise<User>}
+ */
+export const createNewUserWithCredentials = async (
+  username: string,
+  email: string,
+  password: string
+) => {
+  try {
+    connectDB();
+
+    const hashedPassword = await encryptPassword(password);
+
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+    });
+
+    return await newUser.save();
+  } catch (err) {
+    if (err instanceof Error) {
+      throw new Error(err.message);
+    }
+    return err;
+  }
+};
+
+/**
+ * Creates a user's initial term collection called "My Terms",
+ * which cannot be deleted
+ * @param {string} userId
+ * @returns {Promise<TermCollection>}
+ */
+export const createFirstTermCollection = async (userId: string) => {
+  try {
+    connectDB();
+
+    const myTermsList = new TermCollection({
+      userId,
+      name: "My Terms",
+      noDelete: true,
+    });
+
+    await myTermsList.save();
+  } catch (err) {
+    if (err instanceof Error) {
+      throw new Error(err.message);
+    }
+    return err;
+  }
+};
 
 export const getTermCollection = async (termCollectionId: string) => {
   connectDB();
