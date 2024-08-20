@@ -295,6 +295,8 @@ export const deleteCollection = async (
     await removeAllTermsFromCollection(termCollectionId as string);
 
     revalidatePath("/userpage");
+
+    return { success: true };
   } catch (err) {
     //The following error messages originate from deleteTermCollection in @/lib/dbData.ts
     if (err instanceof Error && err.message === "collection not found") {
