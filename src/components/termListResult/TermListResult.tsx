@@ -40,7 +40,7 @@ const TermListResult = async ({
           </Link>
           <div className={styles.rmvTermMobile}>
             <RemoveTermContainer
-              targetCode={data.targetCode}
+              targetCode={resultData.targetCode}
               termCollectionId={collectionId}
             />
           </div>
@@ -58,7 +58,7 @@ const TermListResult = async ({
           )}
           <div className={styles.rmvTermDesktop}>
             <RemoveTermContainer
-              targetCode={data.targetCode}
+              targetCode={resultData.targetCode}
               termCollectionId={collectionId}
             />
           </div>
