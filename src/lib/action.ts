@@ -8,10 +8,17 @@ import { CredentialsSignin } from "@auth/core/errors";
 import { revalidatePath } from "next/cache";
 import { addIntervalToDate } from "./utils";
 import {
+  addTermToCollection,
   createFirstTermCollection,
   createNewUserWithCredentials,
+  createTermCollection,
+  deleteTermCollection,
+  getSavedTermFromCollection,
+  getTermCollection,
   getUserByUsername,
   increaseTodaysCards,
+  removeAllTermsFromCollection,
+  removeTermFromCollection,
   startNewStudySession,
   updateManySavedTerms,
   updateSavedTerm,
@@ -35,9 +42,9 @@ export const handleLogout = async () => {
 
 /**
  * Register a new user
- * @param prevState
+ * @param {FormStateType} prevState
  * @param {username: string, email: string, password: string, passwordConfirmation: string} formData
- * @returns {success?: boolean, error?: boolean, errorMsg?: string}
+ * @returns {FormStateType}
  */
 export const registerUser = async (
   prevState: FormStateType | null,
@@ -78,6 +85,12 @@ export const registerUser = async (
   }
 };
 
+/**
+ * Sign in user with username and password
+ * @param {FormStateType} prevState
+ * @param {username: string, password: string} formData
+ * @returns {FormStateType}
+ */
 export const credentialsLogin = async (
   prevState: FormStateType | null,
   formData: FormData
@@ -99,12 +112,18 @@ export const credentialsLogin = async (
   }
 };
 
+/**
+ * Add term to one of user's collections
+ * TODO: Possibly add function to check if target code is valid.
+ * @param {FormStateType} prevState
+ * @param { userId: string, targetCode: string, termCollectionId:string } formData
+ * @returns {FormStateType}
+ */
 export const addTermToList = async (
   prevState: FormStateType | null,
   formData: FormData
 ) => {
   try {
-    connectDB();
     //Keep error messages short as they will appear on one line on front end.
     const { userId, targetCode, termCollectionId } =
       Object.fromEntries(formData);
@@ -116,9 +135,7 @@ export const addTermToList = async (
       };
     }
 
-    const termCollection = await TermCollection.findOne({
-      _id: termCollectionId,
-    });
+    const termCollection = await getTermCollection(termCollectionId as string);
 
     if (!termCollection) {
       return {
@@ -127,10 +144,10 @@ export const addTermToList = async (
       };
     }
 
-    const existingTermCheck = await SavedTerm.findOne({
-      termCollectionId,
-      targetCode,
-    });
+    const existingTermCheck = await getSavedTermFromCollection(
+      termCollectionId as string,
+      targetCode as string
+    );
 
     if (existingTermCheck) {
       return {
@@ -139,10 +156,7 @@ export const addTermToList = async (
       };
     }
 
-    await SavedTerm.create({
-      termCollectionId,
-      targetCode,
-    });
+    await addTermToCollection(termCollectionId as string, targetCode as string);
 
     revalidatePath(`/userpage/collection/${termCollectionId}`);
 
@@ -152,23 +166,27 @@ export const addTermToList = async (
   }
 };
 
+/**
+ * Remove term from user's collection
+ * @param {FormStateType} prevState
+ * @param { termCollectionId: string, targetCode: string } formData
+ * @returns {FormStateType}
+ */
 export const removeTermFromList = async (
   prevState: FormStateType | null,
   formData: FormData
 ) => {
   try {
-    connectDB();
-
     const { termCollectionId, targetCode } = Object.fromEntries(formData);
 
     if (!termCollectionId || !targetCode) {
       throw new Error("Must submit termCollectionId and target_code");
     }
 
-    const deletedTerm = await SavedTerm.findOneAndDelete({
-      termCollectionId,
-      targetCode,
-    });
+    const deletedTerm = await removeTermFromCollection(
+      termCollectionId as string,
+      targetCode as string
+    );
 
     if (!deletedTerm) {
       return {
@@ -185,16 +203,18 @@ export const removeTermFromList = async (
   }
 };
 
+/**
+ * Create a new user collection
+ * @param {FormStateType} prevState
+ * @param { userId: string, collectionName: string } formData
+ * @returns {FormStateType}
+ */
 export const createNewTermCollection = async (
   prevState: FormStateType | null,
   formData: FormData
 ) => {
   try {
-    connectDB();
-
     const { userId, collectionName } = Object.fromEntries(formData);
-
-    console.log(collectionName);
 
     if (!collectionName) {
       return {
@@ -210,10 +230,10 @@ export const createNewTermCollection = async (
       };
     }
 
-    const createdList = await TermCollection.create({
-      userId,
-      name: collectionName,
-    });
+    const createdList = await createTermCollection(
+      userId as string,
+      collectionName as string
+    );
 
     if (!createdList) {
       return {
@@ -229,6 +249,12 @@ export const createNewTermCollection = async (
   }
 };
 
+/**
+ * Remove a term collection
+ * @param {FormStateType} prevState
+ * @param { termCollectionId: string, userId: string } formData
+ * @returns {FormStateType}
+ */
 export const deleteCollection = async (
   prevState: FormStateType | null,
   formData: FormData
@@ -252,33 +278,10 @@ export const deleteCollection = async (
       };
     }
 
-    //Locate term collection & make necessary checks before deletion
-    const termCollection = await TermCollection.findById(termCollectionId);
-
-    if (!termCollection) {
-      return {
-        error: true,
-        errorMsg: "Error. Collection not found.",
-      };
-    }
-
-    if (termCollection?.noDelete) {
-      return {
-        error: true,
-        errorMsg: "Error. This collection cannot be deleted.",
-      };
-    }
-
-    if (termCollection.userId.toString() !== userId) {
-      return {
-        error: true,
-        errorMsg: "Error. Cannot delete another user's collection.",
-      };
-    }
-
     //Delete collection
-    const deletedCollection = await TermCollection.findByIdAndDelete(
-      termCollectionId
+    const deletedCollection = await deleteTermCollection(
+      termCollectionId as string,
+      userId as string
     );
 
     if (!deletedCollection) {
@@ -289,13 +292,35 @@ export const deleteCollection = async (
     }
 
     //Delete all terms from collection
-    await SavedTerm.deleteMany({ termCollectionId });
+    await removeAllTermsFromCollection(termCollectionId as string);
 
     revalidatePath("/userpage");
   } catch (err) {
-    throw new Error("Something went wrong");
-  } finally {
-    redirect("/userpage");
+    //The following error messages originate from deleteTermCollection in @/lib/dbData.ts
+    if (err instanceof Error && err.message === "collection not found") {
+      return {
+        error: true,
+        errorMsg: "Error. Collection not found.",
+      };
+    } else if (
+      err instanceof Error &&
+      err.message === "collection cannot be deleted"
+    ) {
+      return {
+        error: true,
+        errorMsg: "Error. This collection cannot be deleted.",
+      };
+    } else if (err instanceof Error && err.message === "unauthorized request") {
+      return {
+        error: true,
+        errorMsg: "Error. Unauthorized request.",
+      };
+    } else {
+      return {
+        error: true,
+        errorMsg: "Error. Unauthorized request.",
+      };
+    }
   }
 };
 

@@ -58,6 +58,8 @@ export const createNewUserWithCredentials = async (
   }
 };
 
+//TERM COLLECTIONS
+
 /**
  * Creates a user's initial term collection called "My Terms",
  * which cannot be deleted
@@ -83,13 +85,45 @@ export const createFirstTermCollection = async (userId: string) => {
   }
 };
 
+/**
+ * Create a user term collection
+ * @param {string} userId
+ * @param {string} name
+ * @returns
+ */
+export const createTermCollection = async (userId: string, name: string) => {
+  if (!userId || !name) {
+    throw new Error("Must provide a user ID and collection name.");
+  }
+
+  try {
+    connectDB();
+
+    return await TermCollection.create({
+      userId,
+      name,
+    });
+  } catch (err) {
+    if (err instanceof Error) {
+      throw new Error(err.message);
+    }
+    return err;
+  }
+};
+
+/**
+ * Get single term collection by its ID
+ * @param {string} termCollectionId
+ * @returns
+ */
 export const getTermCollection = async (termCollectionId: string) => {
-  connectDB();
   if (!termCollectionId) {
     throw new Error("Term collection ID must be provided");
   }
 
   try {
+    connectDB();
+
     const termCollection = await TermCollection.findOne({
       _id: termCollectionId,
     });
@@ -100,12 +134,21 @@ export const getTermCollection = async (termCollectionId: string) => {
   }
 };
 
+/**
+ * Get a multiple collections for a user
+ * Returns a paginated list
+ * Start dictates start of page
+ * Results dictates number of results per page
+ * @param {string} userId
+ * @param {string} start
+ * @param {string} results
+ * @returns
+ */
 export const getTermCollections = async (
   userId: string,
   start: string = "1",
   results: string = "10"
 ) => {
-  connectDB();
   const startNum = parseInt(start);
   const resultsNum = parseInt(results);
   const skipNum = (startNum - 1) * resultsNum;
@@ -115,6 +158,8 @@ export const getTermCollections = async (
   }
 
   try {
+    connectDB();
+
     const termCollections = await TermCollection.find({ userId })
       .limit(resultsNum)
       .skip(skipNum)
@@ -134,15 +179,169 @@ export const getTermCollections = async (
       },
     };
   } catch (err) {
-    // return {
-    //   results: [],
-    //   searchData: {
-    //     total: "0",
-    //     start: "1",
-    //     num: "0",
-    //   },
-    // };
     throw new FailedToFetchError();
+  }
+};
+
+/**
+ * Delete a user's term collection
+ * Function checks to confirm that requesting user is the owner before deletion
+ * @param {string} termCollectionId
+ * @param {string} userId
+ * @returns
+ */
+export const deleteTermCollection = async (
+  termCollectionId: string,
+  userId: string
+) => {
+  try {
+    connectDB();
+
+    const termCollection = await getTermCollection(termCollectionId);
+
+    /**
+     * ! - DO NOT CHANGE THE FOLLOWING ERROR MESSAGES UNLESS ALSO UPDATING FUNCTIONS USING THIS FUNCTION.
+     * This is to ensure error messages are handled correctly
+     */
+    if (!termCollection) {
+      throw new Error("collection not found");
+    }
+
+    if (termCollection?.noDelete) {
+      throw new Error("collection cannot be deleted");
+    }
+
+    if (termCollection.userId.toString() !== userId) {
+      throw new Error("unauthorized request");
+    }
+
+    return await TermCollection.findByIdAndDelete(termCollectionId);
+  } catch (err) {
+    if (err instanceof Error) {
+      throw new Error(err.message);
+    }
+    return err;
+  }
+};
+
+//TERMS
+
+/**
+ * Returns a saved term from a given collection
+ * @param {string} termCollectionId
+ * @param {string} targetCode
+ * @returns {SavedTermResponse || Null}
+ */
+export const getSavedTermFromCollection = async (
+  termCollectionId: string,
+  targetCode: string
+) => {
+  connectDB();
+
+  if (!termCollectionId) {
+    throw new Error("Term collection ID must be provided");
+  }
+
+  if (!targetCode) {
+    throw new Error("Term target code must be provided");
+  }
+
+  try {
+    return await SavedTerm.findOne({
+      termCollectionId,
+      targetCode,
+    });
+  } catch (err) {
+    throw new FailedToFetchError();
+  }
+};
+
+/**
+ * Adds target code to specified term collection
+ * @param {string} termCollectionId
+ * @param {string} targetCode
+ * @returns
+ */
+export const addTermToCollection = async (
+  termCollectionId: string,
+  targetCode: string
+) => {
+  connectDB();
+
+  if (!termCollectionId) {
+    throw new Error("Term collection ID must be provided");
+  }
+
+  if (!targetCode) {
+    throw new Error("Term target code must be provided");
+  }
+
+  try {
+    return await SavedTerm.create({
+      termCollectionId,
+      targetCode,
+    });
+  } catch (err) {
+    if (err instanceof Error) {
+      throw new Error(err.message);
+    }
+    return err;
+  }
+};
+
+/**
+ * Removes target code from specified term collection
+ * @param {string} termCollectionId
+ * @param {string} targetCode
+ * @returns
+ */
+export const removeTermFromCollection = async (
+  termCollectionId: string,
+  targetCode: string
+) => {
+  if (!termCollectionId) {
+    throw new Error("Term collection ID must be provided");
+  }
+
+  if (!targetCode) {
+    throw new Error("Term target code must be provided");
+  }
+
+  try {
+    connectDB();
+    return await SavedTerm.findOneAndDelete({
+      termCollectionId,
+      targetCode,
+    });
+  } catch (err) {
+    if (err instanceof Error) {
+      throw new Error(err.message);
+    }
+    return err;
+  }
+};
+
+/**
+ * Remove all terms saved under specified termCollectionId from database
+ * @param {string} termCollectionId
+ * @returns
+ */
+export const removeAllTermsFromCollection = async (
+  termCollectionId: string
+) => {
+  if (!termCollectionId) {
+    throw new Error("Term collection ID must be provided");
+  }
+
+  try {
+    connectDB();
+
+    return await SavedTerm.deleteMany({ termCollectionId });
+  } catch (err) {
+    if (err instanceof Error) {
+      throw new Error(err.message);
+    }
+    return err;
   }
 };
 
@@ -245,17 +444,6 @@ export const getSavedTermForStudy = async (
   } catch (err) {
     throw new FailedToFetchError();
   }
-};
-
-export const createTermCollection = async (userId: string, name: string) => {
-  if (!userId || !name) {
-    throw new Error("Must provide a user ID and collection name.");
-  }
-
-  return await TermCollection.create({
-    userId,
-    name,
-  });
 };
 
 export const updateTermCollection = async (
