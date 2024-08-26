@@ -397,6 +397,8 @@ const template = ` Your job is to parse Korean setences.
     A JavaScript object with the fields Wiktionary_POS, Detail, Korean_POS from the partsOfSpeechContext
 
     5. The dictionary_form field should show the dictionary form for each word.
+
+    6. Return as valid JSON, not a code block. Only use 1 set of quotations. The JSON should contain an array with the key of "parsed" which includes all of the data you parsed.
   `;
 
 export const POST = async (req: Request) => {
@@ -407,7 +409,7 @@ export const POST = async (req: Request) => {
 
     const model = new ChatOpenAI({
       apiKey: process.env.OPENAI_API_KEY,
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
       temperature: 0.5,
     });
 
@@ -430,7 +432,13 @@ export const POST = async (req: Request) => {
       partsOfSpeech: partsOfSpeech,
     });
 
-    return NextResponse.json(JSON.parse(result));
+    const parsedResult = JSON.parse(result);
+
+    try {
+      return NextResponse.json(parsedResult);
+    } catch (e: any) {
+      return NextResponse.json(result);
+    }
   } catch (e: any) {
     return Response.json({ error: e.message }, { status: e.status ?? 500 });
   }
