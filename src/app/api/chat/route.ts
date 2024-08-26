@@ -5,8 +5,8 @@ import {
 } from "ai";
 import { ChatOpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
-import { RunnableSequence } from "@langchain/core/runnables";
 import { HttpResponseOutputParser } from "langchain/output_parsers";
+import { CSVLoader } from "langchain/document_loaders/fs/csv";
 
 export const dynamic = "force-dynamic";
 
@@ -24,11 +24,14 @@ If the user asks to translate any word, try to provide a translation for the wor
 
 https://korean-dictionary.vercel.app/search/[QUERY_WORD_HERE]?translation=true&transLang=1
 
-
 Current conversation: {chat_history}
 
 user: {question}
 assistant:`;
+
+// If the user asks about the frequency of a word, you can refer to the frequency context. Here, the first column 차례 shows the frequency rank of the word, and the second column 항목 shows the word. There are multiple definitions for words, so you can ignore the numbers next to words and just give the highest rank for any identical word. Do not refer to this document for questions about topics other than word frequency.
+
+// Frequency context: {frequencyContext}
 
 const formatMessage = (message: ChatMessage) => {
   return `${message.role}: ${message.content}`;
@@ -39,6 +42,10 @@ export const POST = async (req: Request) => {
     const { messages, sentenceQuery, translatedSentence } = await req.json();
     const formattedMessageHistory = messages.slice(0, -1).map(formatMessage);
     const currentMessageContent = messages[messages.length - 1].content;
+
+    // const loader = new CSVLoader("src/app/data/Korean Frequency - 단어.csv", );
+
+    // const docs = await loader.load();
 
     const prompt = PromptTemplate.fromTemplate(template);
 
@@ -51,18 +58,6 @@ export const POST = async (req: Request) => {
 
     const parser = new HttpResponseOutputParser();
 
-    // const chain = RunnableSequence.from([
-    //   {
-    //     question: (input) => input.question,
-    //     chat_history: (input) => input.chat_history,
-    //     sentenceQuery: () => sentenceQuery,
-    //     translatedSentence: () => translatedSentence,
-    //   },
-    //   prompt,
-    //   model,
-    //   parser,
-    // ]);
-
     const chain = prompt.pipe(model).pipe(parser);
 
     // Convert the response into a friendly text-stream
@@ -71,6 +66,7 @@ export const POST = async (req: Request) => {
       question: currentMessageContent,
       sentenceQuery: sentenceQuery,
       translatedSentence: translatedSentence,
+      // frequencyContext: docs.toString(),
     });
 
     // Respond with the stream
