@@ -7,6 +7,10 @@
   justify-content: center;
 }
 
+.errorDiv {
+  margin-top: 1rem;
+}
+
 .loadingDiv {
   display: flex;
   flex-direction: column;
