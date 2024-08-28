@@ -28,15 +28,15 @@ When users have completed their flashcards for the day, they are given the optio
 
 A new study session will begin the following day at 3 a.m. in the user's timezone. No date management package is being used for these calculations. The Intl API is used to send the user's timezone from the front end (this is not perfect, but supported by over 95% of browsers). If the user cannot provide their local timezone, a new study session will start 24 hours after the previous study session was started.
 
-### Translation and AI Chatbot
+### Translation, AI Sentence Parsing, and AI Chatbot
 
 On the translation page, you can submit sentences and have them translated for you. This is powered by Google Translate (mainly for cost reasons). Below the translation, external links are shown for Google Translate and Papago.
 
-Below the translation is an AI chatbot that uses LangChain and is powered by OpenAI.
+When a user translates a sentence, they will be shown a Parse Sentence button. Sentence parsing is done through Retrieval Augmented Generation (RAG) using LangChain and OpenAI's Chat GPT. This is a slow process and the results are not always perfect. In the future, I may try to optimize the speed of this process by using an external package to analyze the sentence and then rely on the RAG technique to generate links and provide additional information. I may also supply more data to Chat GPT, especially about grammar, to improve accuracy. Currently, Chat GPT is being fed information on parts of speech, the sentence in Korean, and the English translation for the sentence. It breaks down sentences into individual words and grammar structures and indentifies the meaning and part of speech of each part. It also generates links to the application itself or Google in the case of non-Korean words for users to find more information. It returns all of this data as JSON.
+
+Below the translation and sentence parsing section is an AI chatbot that also uses LangChain and OpenAI.
 
 It has been prompted to answer questions pertaining to the Korean language and can answer questions about the sentence the user submitted for translation (it is given both the original sentence and the translation). If a user asks about specific words (and, in many cases, grammatical forms), the chatbot should give the user a link to the search page for that term on this website.
-
-LangChain allows for RAG to better inform chatbot responses to user queries. I have experimented with providing frequency data from the National Institute of Korean Language in CSV format, but the data seems to be too large for gpt-3.5-turbo and is causing rate limit errors. If I can find a source of copyright-free data in the future, especially with regard to grammar, I would like to feed this to the AI to better inform its responses.
 
 ### Making target words bold
 
@@ -95,6 +95,10 @@ You can copy and paste the following terms into the search bar to see how this a
 #### Translation & AI Chat Page
 
 <img src="./ProjectImages/Translate.png" alt="sentence translation and ai chat page">
+
+#### Sentence Parsing
+
+<img src="./ProjectImages/SentenceParser.png" alt="sentence translation and ai chat page with parsed sentence">
 
 #### Blog Page
 
