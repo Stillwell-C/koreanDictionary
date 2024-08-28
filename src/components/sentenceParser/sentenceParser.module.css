@@ -1,0 +1,80 @@
+.container {
+  margin: 2rem 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sentenceContainer {
+  margin: 1rem 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.sentenceWrapper {
+  padding: 1rem 0;
+  display: flex;
+  justify-content: start;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 2rem;
+}
+
+.sentenceDisclaimer {
+  padding: 1rem 0;
+}
+
+.wordHeader {
+  border-bottom: 1px solid white;
+  padding-bottom: 3px;
+  white-space: nowrap;
+}
+
+.componentsWrapper {
+  display: flex;
+  gap: 1rem;
+  padding: 0 1rem;
+  margin-top: 10px;
+}
+
+.singleComponent {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 10px;
+}
+
+.componentHeader {
+  font-size: 1.3rem;
+  white-space: nowrap;
+}
+
+.componentMeaning {
+  white-space: nowrap;
+}
+
+.componentPOS {
+  font-size: 0.8rem;
+  color: var(--greyBtn);
+}
+
+.componentLink:hover .componentHeader {
+  color: var(--btnLight);
+}
+
+.singleComponent:hover .componentPOS,
+.singleComponent:hover .componentMeaning {
+  text-shadow: 0 0 0.01px white, 0 0 0.01px white;
+}
