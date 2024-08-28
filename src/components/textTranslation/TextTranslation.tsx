@@ -4,13 +4,16 @@ import React, { useState } from "react";
 import styles from "./textTranslation.module.css";
 import { MdOutlineGTranslate } from "react-icons/md";
 import ChatInterface from "../chatInterface/ChatInterface";
+import SentenceParser from "../sentenceParser/SentenceParser";
 
 const TextTranslation = () => {
   const [text, setText] = useState("");
   const [translation, setTranslation] = useState("");
+  const [translationOriginal, setTranslationOriginal] = useState("");
 
   const handleTranslate = async (text: string, target: string = "en") => {
     if (!text.length) return;
+    setTranslationOriginal("");
     text = text.slice(0, 250);
     const response = await fetch("/api/translate", {
       method: "POST",
@@ -21,6 +24,7 @@ const TextTranslation = () => {
     });
     const json = await response.json();
     setTranslation(json);
+    setTranslationOriginal(text);
   };
 
   const googleTranslateLink = `https://translate.google.com/?sl=ko&tl=en&text=${encodeURI(
@@ -86,7 +90,16 @@ const TextTranslation = () => {
           </div>
         )}
       </div>
-      <ChatInterface sentenceQuery={text} translatedSentence={translation} />
+      {translation && (
+        <SentenceParser
+          sentenceQuery={translationOriginal}
+          translatedSentence={translation}
+        />
+      )}
+      <ChatInterface
+        sentenceQuery={translationOriginal}
+        translatedSentence={translation}
+      />
     </div>
   );
 };
