@@ -1,0 +1,26 @@
+.btn {
+  padding: 0.8rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: bold;
+  color: var(--text);
+  border: none;
+  border-radius: 0.25rem;
+  background-color: var(--btn);
+}
+
+.lightBtn {
+  background-color: var(--btnLight);
+}
+
+.greyBtn {
+  background-color: var(--greyBtn);
+}
+
+.darkBtn {
+  background-color: var(--darkBtn);
+}
+
+.darkerBtn {
+  background-color: var(--darkerBtn);
+}
