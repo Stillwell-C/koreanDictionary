@@ -36,7 +36,6 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
       });
       const json = await response.json();
       setParasedSentenceData(json?.parsed);
-      console.log(json);
       setLoading(false);
     } catch (err) {
       setAllowParse(true);
@@ -112,10 +111,9 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
   );
 
   const errorDiv = (
-    <div>
+    <div className={styles.errorDiv}>
       <p>An error occurred.</p>
       <p>Please try again</p>
-      {parseSentenceBtn}
     </div>
   );
 
