@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
 //partsOfSpeech borrowed form this project https://github.com/l337Rooster/Korean-language-parser
 
 const partsOfSpeech = {
-  //  POS-tag    [Wiktionary POS, Khaiii class,         Detail,                          Korean POS]
+  //  POS-tag    [Wiktionary POS, Khaiii class,         POS Detail,                          Korean POS]
   NNG: ["Noun", "Substantive", "General noun", "체언: 일반 명사"],
   NNP: ["Proper Noun", "Substantive", "Proper noun", "체언: 고유 명사"],
   NNB: ["Noun", "Substantive", "Bound noun, e.g. 것", "체언: 의존 명사"],
@@ -219,117 +219,6 @@ const partsOfSpeech = {
   VMS: ["Verb-modifying\nsuffix", "Post-position", "Verb-modifying suffix", ""],
 };
 
-const exampleJSON = {
-  sentence: "어제 비가 왔다.",
-  translation: "It rained yesterday.",
-  parsed: [
-    {
-      text: "어제",
-      POS: "MAG",
-      explanation: {
-        Wiktionary_POS: "Adverb",
-        Khaiii_Class: "Modifier",
-        Detail: "General adverb",
-        Korean_POS: "수식언: 일반 부사",
-      },
-      meaning_in_english: "yesterday",
-      dictionary_form: "어제",
-      link: "https://korean-dictionary.vercel.app/search/[DICTIONARY_FORM_HERE]?translation=true&transLang=1",
-      components: [],
-    },
-    {
-      text: "비가",
-      components: [
-        {
-          text: "비",
-          POS: "NNG",
-          explanation: {
-            Wiktionary_POS: "Noun",
-            Khaiii_Class: "Substantive",
-            Detail: "General noun",
-            Korean_POS: "체언: 일반 명사",
-          },
-          meaning_in_english: "rain",
-          dictionary_form: "비",
-          link: "https://korean-dictionary.vercel.app/search/[DICTIONARY_FORM_HERE]?translation=true&transLang=1",
-          components: [],
-        },
-        {
-          text: "가",
-          POS: "JKS",
-          explanation: {
-            Wiktionary_POS: "Particle",
-            Khaiii_Class: "Post-position",
-            Detail: "Subject-marking particle",
-            Korean_POS: "관계언: 주격 조사",
-          },
-          meaning_in_english: "subject marker",
-          dictionary_form: "가",
-          link: "https://korean-dictionary.vercel.app/search/[DICTIONARY_FORM_HERE]?translation=true&transLang=1",
-          components: [],
-        },
-      ],
-    },
-    {
-      text: "왔다.",
-      POS: "VV",
-      explanation: {
-        Wiktionary_POS: "Verb",
-        Khaiii_Class: "Inflectional",
-        Detail: "Verb",
-        Korean_POS: "용언: 동사",
-      },
-      meaning_in_english: "come",
-      dictionary_form: "오다",
-      link: "https://korean-dictionary.vercel.app/search/[DICTIONARY_FORM_HERE]?translation=true&transLang=1",
-      components: [
-        {
-          text: "오다",
-          POS: "VV",
-          explanation: {
-            Wiktionary_POS: "Verb",
-            Khaiii_Class: "Inflectional",
-            Detail: "Verb",
-            Korean_POS: "용언: 동사",
-          },
-          meaning_in_english: "come",
-          dictionary_form: "오다",
-          link: "https://korean-dictionary.vercel.app/search/[DICTIONARY_FORM_HERE]?translation=true&transLang=1",
-          components: [],
-        },
-        {
-          text: "았",
-          POS: "EP",
-          explanation: {
-            Wiktionary_POS: "Suffix",
-            Khaiii_Class: "Dependent form",
-            Detail: "Suffix-head",
-            Korean_POS: "의존 형태: 선어말 어미",
-          },
-          meaning_in_english: "past tense marker",
-          dictionary_form: "았",
-          link: "https://korean-dictionary.vercel.app/search/[DICTIONARY_FORM_HERE]?translation=true&transLang=1",
-          components: [],
-        },
-        {
-          text: "다",
-          POS: "EF",
-          explanation: {
-            Wiktionary_POS: "Suffix",
-            Khaiii_Class: "Dependent form",
-            Detail: "Predicate-closing suffix",
-            Korean_POS: "의존 형태: 종결 어미",
-          },
-          meaning_in_english: "-다 (declarative ending)",
-          dictionary_form: "다",
-          link: "https://korean-dictionary.vercel.app/search/[DICTIONARY_FORM_HERE]?translation=true&transLang=1",
-          components: [],
-        },
-      ],
-    },
-  ],
-};
-
 const outputJSON = {
   parsed: [
     {
@@ -337,8 +226,7 @@ const outputJSON = {
       POS: "[POS]",
       explanation: {
         Wiktionary_POS: "[Wiktionary POS]",
-        Khaiii_Class: "[Khaiii class]",
-        Detail: "[Detail]",
+        POS_Detail: "[Detail]",
         Korean_POS: "[Korean class:POS]",
       },
       meaning_in_english: "[English meaning]",
@@ -350,8 +238,7 @@ const outputJSON = {
           POS: "[Component POS]",
           explanation: {
             Wiktionary_POS: "[Component Wiktionary POS]",
-            Khaiii_Class: "[Component Khaiii class]",
-            Detail: "[Component Detail]",
+            POS_Detail: "[Component Detail]",
             Korean_POS: "[Component Korean class:POS]",
           },
           meaning_in_english: "[Component English meaning]",
@@ -373,7 +260,7 @@ const template = ` Your job is to parse Korean setences.
 
     Sentence Query: {sentenceQuery}
 
-    The translation for the query is the sentence translation. This was done through machine translation, so it may not be perfect. Please use this to inform the meaning_in_english. If a word's POS is "SL" please do your best to provide additional description for the word in meaning_in_english in your repsonse.
+    The translation for the query is the sentence translation. This was done through machine translation, so it may not be perfect. Please use this to inform the meaning_in_english, but you may add more context or description. If a word's POS is "SL" please do your best to provide additional description for the word in meaning_in_english in your repsonse.
 
     Sentence Translation: {translatedSentence}
 
@@ -387,19 +274,22 @@ const template = ` Your job is to parse Korean setences.
 
     1. Fill in each placeholder within the parsed array with the parsed details for each word and its components.
     
-    2. If a word can be broken down into parts, parse each part and include text, POS, explanation, meaning_in_english, dictionary_form, link fields for each part in the components array. If a word cannot be broken down further, leave the components array empty. Only provide a entries into the components array if you can break down a word into multiple parts.
+    2. If a word can be broken down into parts, parse each part and include text, POS, explanation, meaning_in_english, dictionary_form, link fields for each part in the components array. If a word cannot be broken down further, leave the components array empty. Only provide a entries into the components array if you can break down a word into multiple parts. Make a maximum of 2 levels of parsed data.
     
-    3. The link field should follow the following instructions:
-    Link format: "https://korean-dictionary.vercel.app/search/[DICTIONARY_FORM_HERE]?translation=true&transLang=1"
-    Make sure to put the dictionary_form in the DICTIONARY_FORM_HERE area of the link. If the POS is "SL" please provide a Google search link that includes a search for the word "Korea" along with the word from the meaning_in_english instead of the link format provided below. If no dictionary form can be found, just use the text. Include an empty link field for punctuation, symbol, numeral, number, guess, and unknown parts of speech. 
+    3. ALWAYS PROVIDE A LINK. 
+    The link field should follow the following instructions:
+    Default link: "/search/[DICTIONARY_FORM_HERE]?translation=true&transLang=1"
+    Put the dictionary_form in the DICTIONARY_FORM_HERE area of the link. If there is no dictionary_form, replace DICTIONARY_FORM_HERE area with the text field. ONLY if the POS is SL, provide a Google search link that includes a search for the word "Korea" along with the word from the meaning_in_english instead of the link format above. NEVER LEAVE THE LINK FIELD BLANK EXCEPT FOR NUMERALS and PUNCTUATION.
 
     4. The explanation field should follow the following instructions:
-    A JavaScript object with the fields Wiktionary_POS, Detail, Korean_POS from the partsOfSpeechContext
+    A JavaScript object with the fields Wiktionary_POS, POS_Detail, Korean_POS from the partsOfSpeechContext
 
     5. The dictionary_form field should show the dictionary form for each word.
 
     6. Return as valid JSON, not a code block. Only use 1 set of quotations. The JSON should contain an array with the key of "parsed" which includes all of the data you parsed.
   `;
+
+//Leave the link field blank only if the POS is NR, SF, SP, SS, SE, SO, SW, SN, ZN, ZV, or ZZ.
 
 export const POST = async (req: Request) => {
   try {
