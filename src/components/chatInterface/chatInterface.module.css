@@ -11,7 +11,8 @@
 
 .input {
   padding: 0.5rem;
-  border-radius: 0.25rem;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
   color: var(--text);
   background-color: var(--bgSoft);
   border: 1px solid transparent;
@@ -24,9 +25,10 @@
   height: 200px;
   max-width: 500px;
   overflow-y: auto;
-  margin-top: 5px;
   background-color: var(--bgSoft);
-  border-radius: 0.25rem;
+  border-top: 3px solid black;
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
 }
 
 .messageList {
