@@ -11,6 +11,7 @@ import DeleteCollectionDialog from "@/components/deleteCollectionDialog/DeleteCo
 import DeleteCollectionButton from "@/components/Buttons/deleteCollectionButton/DeleteCollectionButton";
 import StudyCollectionButton from "@/components/Buttons/studyCollectionButton/StudyCollectionButton";
 import { notFound } from "next/navigation";
+import BounceLoader from "react-spinners/BounceLoader";
 
 type Props = {
   params: {
@@ -91,7 +92,13 @@ const CollectionPage = async ({
 
   return (
     <div className={styles.container}>
-      <Suspense fallback={<p>Retrieving terms...</p>}>
+      <Suspense
+        fallback={
+          <div className={styles.loading}>
+            <BounceLoader color='white' size={30} />
+          </div>
+        }
+      >
         <div className={styles.collectionTop}>
           <h2>{collectionName}</h2>
           <div className={styles.btnContainer}>
