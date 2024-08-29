@@ -113,10 +113,10 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
   const errorDiv = (
     <div className={styles.errorDiv}>
       <p>An error occurred.</p>
-      <p>Please try again</p>
+      <p>If this persists, try a shorter sentence.</p>
       <p>
-        Your sentence may be too long for the free host of this website. Try a
-        shorter sentence.
+        Your sentence may require an api call too long for the free hosting used
+        by this website.
       </p>
     </div>
   );
