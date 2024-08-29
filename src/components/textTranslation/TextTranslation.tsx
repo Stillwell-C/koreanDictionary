@@ -5,26 +5,35 @@ import styles from "./textTranslation.module.css";
 import { MdOutlineGTranslate } from "react-icons/md";
 import ChatInterface from "../chatInterface/ChatInterface";
 import SentenceParser from "../sentenceParser/SentenceParser";
+import BounceLoader from "react-spinners/BounceLoader";
 
 const TextTranslation = () => {
   const [text, setText] = useState("");
   const [translation, setTranslation] = useState("");
+  const [loading, setLoading] = useState(false);
   const [translationOriginal, setTranslationOriginal] = useState("");
 
   const handleTranslate = async (text: string, target: string = "en") => {
     if (!text.length) return;
-    setTranslationOriginal("");
-    text = text.slice(0, 250);
-    const response = await fetch("/api/translate", {
-      method: "POST",
-      body: JSON.stringify({ text, target }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const json = await response.json();
-    setTranslation(json);
-    setTranslationOriginal(text);
+    try {
+      setLoading(true);
+      setTranslationOriginal("");
+      text = text.slice(0, 250);
+      const response = await fetch("/api/translate", {
+        method: "POST",
+        body: JSON.stringify({ text, target }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const json = await response.json();
+      setTranslation(json);
+      setTranslationOriginal(text);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
   };
 
   const googleTranslateLink = `https://translate.google.com/?sl=ko&tl=en&text=${encodeURI(
@@ -49,13 +58,18 @@ const TextTranslation = () => {
             <span>{text.length} / 250</span>
           </div>
         </div>
-        <button
-          className={styles.formButton}
-          type='button'
-          onClick={() => handleTranslate(text, "en")}
-        >
-          Translate
-        </button>
+        {!loading ? (
+          <button
+            className={styles.formButton}
+            type='button'
+            onClick={() => handleTranslate(text, "en")}
+            disabled={loading}
+          >
+            Translate
+          </button>
+        ) : (
+          <BounceLoader color='white' size={30} />
+        )}
       </form>
       <div>
         {translation && (
