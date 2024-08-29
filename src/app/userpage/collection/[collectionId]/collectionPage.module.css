@@ -37,3 +37,7 @@
 .link {
   text-decoration: underline;
 }
+
+.loading {
+  padding-top: 2rem;
+}
