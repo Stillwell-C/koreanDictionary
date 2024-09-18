@@ -29,11 +29,9 @@ declare module "next-auth/jwt" {
 interface SentenceData {
   text?: string;
   POS?: string;
-  explanation?: {
-    Wiktionary_POS?: string;
-    POS_Detail?: string;
-    Korean_POS?: string;
-  };
+  detailed_POS?: string[];
+  start?: number;
+  end?: number;
   meaning_in_english?: string;
   dictionary_form?: string;
   link?: string;
