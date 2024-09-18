@@ -6,6 +6,7 @@ import btnStyles from "../../styles/buttons.module.css";
 import { SentenceData } from "../../../types/next-auth";
 import Link from "next/link";
 import ClipLoader from "react-spinners/ClipLoader";
+import formatparsedSentence from "@/lib/formatParsedSentence";
 
 type PropType = {
   sentenceQuery?: string;
@@ -27,15 +28,31 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
     setLoading(true);
     setError(false);
     try {
+      const parsedResponse = await fetch("http://127.0.0.1:8080/parse", {
+        body: JSON.stringify({ sentence: sentenceQuery }),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const parsedJSON = await parsedResponse.json();
+
       const response = await fetch("/api/sentenceParser", {
         method: "POST",
-        body: JSON.stringify({ sentenceQuery, translatedSentence }),
+        body: JSON.stringify({
+          translatedSentence,
+          parsedSentence: parsedJSON.results,
+        }),
         headers: {
           "Content-Type": "application/json",
         },
       });
       const json = await response.json();
-      setParasedSentenceData(json?.parsed);
+      const formattedParsedSentence = formatparsedSentence({
+        sentenceQuery,
+        parsedArr: json?.parsed,
+      });
+      setParasedSentenceData(formattedParsedSentence);
       setLoading(false);
     } catch (err) {
       setAllowParse(true);
@@ -50,7 +67,8 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
   }, [sentenceQuery]);
 
   const componentDisplay = (component: SentenceData) => {
-    const displayDetail = component?.explanation?.Wiktionary_POS === "Suffix";
+    const displayDetail =
+      component?.detailed_POS && component?.detailed_POS[0] === "Suffix";
 
     const componentDiv = (
       <div className={styles.singleComponent}>
@@ -61,11 +79,11 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
           {component?.meaning_in_english}
         </span>
         <span className={styles.componentPOS}>
-          {component?.explanation?.Wiktionary_POS}
+          {component?.detailed_POS ? component?.detailed_POS[0] : ""}
         </span>
         {displayDetail && (
           <span className={styles.componentPOS}>
-            {component?.explanation?.POS_Detail}
+            {component?.detailed_POS ? component?.detailed_POS[2] : ""}
           </span>
         )}
       </div>
