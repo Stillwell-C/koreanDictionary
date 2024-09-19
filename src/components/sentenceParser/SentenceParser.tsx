@@ -28,10 +28,12 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
     setLoading(true);
     setError(false);
     try {
+      const trimmedSentenceQuery = sentenceQuery.trim();
+
       const parsedResponse = await fetch(
         "https://mecabparseapi-production.up.railway.app/parse",
         {
-          body: JSON.stringify({ sentence: sentenceQuery }),
+          body: JSON.stringify({ sentence: trimmedSentenceQuery }),
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -52,7 +54,7 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
       });
       const json = await response.json();
       const formattedParsedSentence = formatparsedSentence({
-        sentenceQuery,
+        sentenceQuery: trimmedSentenceQuery,
         parsedArr: json?.parsed,
       });
       setParasedSentenceData(formattedParsedSentence);
