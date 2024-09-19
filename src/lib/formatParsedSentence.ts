@@ -45,8 +45,28 @@ const formatparsedSentence = ({ sentenceQuery, parsedArr }: PropType) => {
      * This should generate dictionary forms without AI assistance
      * TODO: Continue to develop for all verb contingencies
      */
-
-    const verbPOSTypes = ["VV", "VA", "VX", "VCP", "VCN"];
+    const consonants = [
+      "ㄱ",
+      "ㄴ",
+      "ㄷ",
+      "ㄹ",
+      "ㅁ",
+      "ㅂ",
+      "ㅅ",
+      "ㅇ",
+      "ㅈ",
+      "ㅊ",
+      "ㅋ",
+      "ㅌ",
+      "ㅍ",
+      "ㅎ",
+      "ㄲ",
+      "ㄸ",
+      "ㅃ",
+      "ㅆ",
+      "ㅉ",
+    ];
+    const verbPOSTypes = ["VV", "VA", "VX", "VCP", "VCN", "XSA", "XSV"];
     //For all verbs
     if (posArr[0] !== "" && verbPOSTypes.includes(posArr[0])) {
       //For Verb-to-adjective transforming suffixes
@@ -71,6 +91,7 @@ const formatparsedSentence = ({ sentenceQuery, parsedArr }: PropType) => {
           parsedArr.splice(i + 1, 0, finalCharData);
       } else if (posArr[1] === "EC") {
         //This section may only be relevant for VCP+EC & 'VV+EC'
+        //TODO: text: '눌러', POS: 'VV+EC'
 
         const endingData: SentenceData = {
           text: "",
@@ -144,44 +165,150 @@ const formatparsedSentence = ({ sentenceQuery, parsedArr }: PropType) => {
         }
         //If something has been added to text field, push to arr
         if (endingData?.text?.length) parsedArr.splice(i + 1, 0, endingData);
+      } else if (posArr[1] === "EP") {
+        const exploded = explode(component.text || "").join("");
+
+        const suffixData: SentenceData = {
+          text: "",
+          meaning_in_english: partsOfSpeech[posArr[1] as posKey][0] || "",
+          POS: posArr[1],
+          start: component.end || 0 - 1,
+          end: component.end || -1,
+          dictionary_form: "",
+        };
+
+        if (
+          //This should handle past-past like 었았
+          exploded.slice(-4).match("ㅆㅇㅓㅆ") &&
+          (!exploded.slice(-5, -4).match("ㅣ") ||
+            (exploded.slice(-6, -5).match(/[ㅜㅗㅡ]/) &&
+              exploded.slice(-5, -4).match("ㅣ")))
+        ) {
+          //TODO: Add conditionals
+        } else if (
+          //This should handle past tense words
+          exploded.slice(-1).match("ㅆ") &&
+          (!exploded.slice(-2, -1).match("ㅣ") ||
+            (exploded.slice(-3, -2).match(/[ㅜㅗㅡ]/) &&
+              exploded.slice(-2, -1).match("ㅣ")))
+        ) {
+          if (exploded.slice(-2, -1).match("ㅏ")) {
+            suffixData.text = "-았";
+            suffixData.dictionary_form = "-았";
+          } else {
+            suffixData.text = "-었";
+            suffixData.dictionary_form = "-었";
+          }
+          suffixData.meaning_in_english = "Past Tense Suffix";
+
+          if (
+            consonants.includes(exploded.slice(-4, -3)) &&
+            !exploded.slice(-3, -1).match(/[ㅗㅏ|ㅜㅓ]/)
+          ) {
+            //Word preceded by consonant not including those with 와 or 워
+            //Remove single char block
+            component.dictionary_form = implode(exploded.slice(0, -3)) + "다";
+          } else if (
+            consonants.includes(exploded.slice(-3, -2)) &&
+            exploded.slice(-2, -1).match(/[ㅏㅓ]/)
+          ) {
+            //Words ending in ㅏ or ㅓ
+            //Remove 1 letter
+            component.dictionary_form = implode(exploded.slice(0, -1)) + "다";
+          } else if (exploded.slice(-3, -1).match("ㅗㅏ")) {
+            //Words ending in ㅗ
+            //Remove 2 letters
+            component.dictionary_form = implode(exploded.slice(0, -2)) + "다";
+          } else if (exploded.slice(-3, -1).match("ㅎㅐ")) {
+            //했 -> 하
+            component.dictionary_form = "하다";
+          } else if (exploded.slice(-2, -1).match("ㅐ")) {
+            component.dictionary_form = implode(exploded.slice(0, -1)) + "다";
+          } else if (exploded.slice(-3, -1).match("ㅜㅓ")) {
+            //Words ending in ㅜ
+            //Remove 2 letters
+            component.dictionary_form = implode(exploded.slice(0, -2)) + "다";
+          } else if (exploded.slice(-2, -1).match("ㅕ")) {
+            //Words ending in ㅕ
+            //Change ㅕ to ㅣ
+            component.dictionary_form =
+              implode([...exploded.slice(0, -2), "ㅣ"]) + "다";
+          }
+
+          //TODO: Add conditions for verbs ending in ㅡ & irregulars if possible
+        } else if (exploded.slice(-2).match("ㅅㅣ")) {
+          component.dictionary_form = implode(exploded.slice(0, -2)) + "다";
+          suffixData.text = "-시";
+          suffixData.dictionary_form = "-시";
+          suffixData.meaning_in_english = "Respectful Suffix";
+        } else if (
+          exploded.slice(-5).match("ㅅㅣㅇㅓㅆ") ||
+          exploded.slice(-3).match("ㅅㅕㅆ")
+        ) {
+          if (exploded.slice(-5).match("ㅅㅣㅇㅓㅆ")) {
+            component.dictionary_form = implode(exploded.slice(0, -5)) + "다";
+          } else {
+            component.dictionary_form = implode(exploded.slice(0, -3)) + "다";
+          }
+
+          parsedArr.splice(i + 1, 0, {
+            text: "-시",
+            meaning_in_english: "Respectful Suffix",
+            POS: posArr[1],
+            start: component.end || 0 - 2,
+            end: component.end || 0 - 1,
+            dictionary_form: "-시",
+          });
+          parsedArr.splice(i + 2, 0, {
+            text: "-었",
+            meaning_in_english: "Past Tense Suffix",
+            POS: posArr[1],
+            start: component.end || 0 - 1,
+            end: component.end || -1,
+            dictionary_form: "-었",
+          });
+        }
+
+        //If something has been added to text field, push to arr
+        if (suffixData?.text?.length) parsedArr.splice(i + 1, 0, suffixData);
+      } else if (
+        (posArr[0] === "XSA" || posArr[0] === "XSV") &&
+        posArr.length > 0
+      ) {
+        const exploded = explode(component.text || "").join("");
+
+        const suffixData: SentenceData = {
+          text: "",
+          meaning_in_english: partsOfSpeech[posArr[1] as posKey][0] || "",
+          POS: posArr[1],
+          start: component.end || 0 - 1,
+          end: component.end || -1,
+          dictionary_form: "",
+        };
+
+        //Match with ending
+        //Remove ending and add 다
+        //Add relevent data to ending data object
+        if (exploded.match("ㅅㅣㅋㅣ") || exploded.match("ㅅㅣㅋㅕ")) {
+          const index = exploded.lastIndexOf("ㅅㅣㅋ");
+          component.dictionary_form = implode(exploded.slice(0, index)) + "다";
+          suffixData.text = "-" + implode(exploded.slice(index));
+          suffixData.dictionary_form = "-" + implode(exploded.slice(index));
+        } else if (exploded.slice(-3).match("ㄴㅡ ㄴ")) {
+          component.dictionary_form = implode(exploded.slice(0, -3)) + "다";
+          suffixData.text = "-는";
+          suffixData.dictionary_form = "-는";
+        } else if (exploded.slice(-1).match("ㄴ")) {
+          component.dictionary_form = implode(exploded.slice(0, -1)) + "다";
+          suffixData.text = "-ㄴ";
+          suffixData.dictionary_form = "-ㄴ";
+        }
+
+        //If something has been added to text field, push to arr
+        if (suffixData?.text?.length) parsedArr.splice(i + 1, 0, suffixData);
       } else {
         component.dictionary_form = component.text + "다";
       }
-    } else if (
-      posArr[0] === "XSA" ||
-      (posArr[0] === "XSV" && posArr.length > 0)
-    ) {
-      const exploded = explode(component.text || "").join("");
-
-      const suffixData: SentenceData = {
-        text: "",
-        meaning_in_english: partsOfSpeech[posArr[1] as posKey][0] || "",
-        POS: posArr[1],
-        start: component.end || 0 - 1,
-        end: component.end || -1,
-        dictionary_form: "",
-      };
-
-      //Match with ending
-      //Remove ending and add 다
-      //Add relevent data to ending data object
-      if (exploded.match("ㅅㅣㅋㅣ") || exploded.match("ㅅㅣㅋㅕ")) {
-        const index = exploded.lastIndexOf("ㅅㅣㅋ");
-        component.dictionary_form = implode(exploded.slice(0, index));
-        suffixData.text = "-" + implode(exploded.slice(index));
-        suffixData.dictionary_form = "-" + implode(exploded.slice(index));
-      } else if (exploded.slice(-3).match("ㄴㅡ ㄴ")) {
-        component.dictionary_form = implode(exploded.slice(0, -3));
-        suffixData.text = "-는";
-        suffixData.dictionary_form = "-는";
-      } else if (exploded.slice(-1).match("ㄴ")) {
-        component.dictionary_form = implode(exploded.slice(0, -1));
-        suffixData.text = "-ㄴ";
-        suffixData.dictionary_form = "-ㄴ";
-      }
-
-      //If something has been added to text field, push to arr
-      if (suffixData?.text?.length) parsedArr.splice(i + 1, 0, suffixData);
     } else {
       component.dictionary_form = component.text;
     }
@@ -215,6 +342,9 @@ const formatparsedSentence = ({ sentenceQuery, parsedArr }: PropType) => {
       }
     }
   }
+
+  console.log(parsedArr);
+  console.log(sentenceArr);
 
   return sentenceArr;
 };
