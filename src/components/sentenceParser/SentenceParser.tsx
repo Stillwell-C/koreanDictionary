@@ -136,6 +136,10 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
         Your sentence may require an api call too long for the free hosting used
         by this website.
       </p>
+      <p>
+        무료 호스팅 서비스를 이용하여 긴 문장 분석은 불가능합니다. 짧은 문장 해
+        보세요.
+      </p>
     </div>
   );
 
