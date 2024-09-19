@@ -1,8 +1,3 @@
-import {
-  Message as ChatMessage,
-  StreamingTextResponse,
-  createStreamDataTransformer,
-} from "ai";
 import { ChatOpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RunnableSequence } from "@langchain/core/runnables";
@@ -19,11 +14,14 @@ Parsed Sentence: {parsedSentence}
 You will also be given a translation of the sentence.
 Translated Sentence: {translatedSentence}
 
-For each entry in the parsed sentence array, add a field called meaning_in_english and give a meaning in English. Then add a field called dictionary_form and provide the dictionary form for each word.
+For each entry in the parsed sentence array, add a field called meaning_in_english and give a meaning in English. 
 
 Return as valid JSON, not a code block. Only use 1 set of quotations. The JSON should contain an array with the key of "parsed" which includes all of the data you parsed.
 
 `;
+
+//Removed, but can add in if issues with creating dictionary_form
+//Then add a field called dictionary_form and provide the dictionary form for each word.
 
 export const POST = async (req: Request) => {
   try {
