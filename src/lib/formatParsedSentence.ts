@@ -343,8 +343,8 @@ const formatparsedSentence = ({ sentenceQuery, parsedArr }: PropType) => {
     }
   }
 
-  console.log(parsedArr);
-  console.log(sentenceArr);
+  //console.log(parsedArr);
+  //console.log(sentenceArr);
 
   return sentenceArr;
 };
