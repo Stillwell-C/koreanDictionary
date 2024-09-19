@@ -18,7 +18,7 @@ const TextTranslation = () => {
     try {
       setLoading(true);
       setTranslationOriginal("");
-      text = text.slice(0, 250);
+      text = text.slice(0, 250).trim();
       const response = await fetch("/api/translate", {
         method: "POST",
         body: JSON.stringify({ text, target }),
