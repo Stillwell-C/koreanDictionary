@@ -5,8 +5,8 @@ import styles from "./sentenceParser.module.css";
 import btnStyles from "../../styles/buttons.module.css";
 import { SentenceData } from "../../../types/next-auth";
 import Link from "next/link";
-import ClipLoader from "react-spinners/ClipLoader";
 import formatparsedSentence from "@/lib/formatParsedSentence";
+import BounceLoader from "react-spinners/BounceLoader";
 
 type PropType = {
   sentenceQuery?: string;
@@ -122,7 +122,7 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
 
   const loadingDiv = (
     <div className={styles.loadingDiv}>
-      <ClipLoader color='white' speedMultiplier={0.7} />
+      <BounceLoader color='white' size={30} />
       <p>Parsing...</p>
       <p>This may take a moment.</p>
     </div>
