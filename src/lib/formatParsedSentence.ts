@@ -14,7 +14,6 @@ type parsedEntry = {
 };
 
 const formatparsedSentence = ({ sentenceQuery, parsedArr }: PropType) => {
-  console.log(parsedArr);
   let sentenceArr = [];
   let currWord: parsedEntry = { text: "", components: [], start: -1, end: -1 };
   for (let i = 0; i < sentenceQuery.length; i++) {
@@ -46,8 +45,6 @@ const formatparsedSentence = ({ sentenceQuery, parsedArr }: PropType) => {
      * This should generate dictionary forms without AI assistance
      * TODO: Continue to develop for all verb contingencies
      */
-
-    //Need text: '된', POS: 'XSV+ETM'
 
     const verbPOSTypes = ["VV", "VA", "VX", "VCP", "VCN"];
     //For all verbs
@@ -219,7 +216,6 @@ const formatparsedSentence = ({ sentenceQuery, parsedArr }: PropType) => {
     }
   }
 
-  console.log(sentenceArr);
   return sentenceArr;
 };
 
