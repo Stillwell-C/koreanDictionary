@@ -28,13 +28,16 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
     setLoading(true);
     setError(false);
     try {
-      const parsedResponse = await fetch("http://127.0.0.1:8080/parse", {
-        body: JSON.stringify({ sentence: sentenceQuery }),
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const parsedResponse = await fetch(
+        "https://mecabparseapi-production.up.railway.app/parse",
+        {
+          body: JSON.stringify({ sentence: sentenceQuery }),
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const parsedJSON = await parsedResponse.json();
 
       const response = await fetch("/api/sentenceParser", {
