@@ -35,5 +35,6 @@ interface SentenceData {
   meaning_in_english?: string;
   dictionary_form?: string;
   link?: string;
+  expression?: string;
   components?: SentenceData[];
 }
