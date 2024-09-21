@@ -88,18 +88,22 @@ const translateWithGPT = async (
   component: SentenceData,
   sentenceQuery: string
 ) => {
-  const response = await fetch("/api/sentenceParser", {
-    method: "POST",
-    body: JSON.stringify({
-      component,
-      sentenceQuery,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const json = await response.json();
-  return json.meaning;
+  try {
+    const response = await fetch("/api/sentenceParser", {
+      method: "POST",
+      body: JSON.stringify({
+        component,
+        sentenceQuery,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const json = await response.json();
+    return json.meaning;
+  } catch (err) {
+    return err;
+  }
 };
 
 export const handleRemainingTranslation = async (
@@ -109,10 +113,14 @@ export const handleRemainingTranslation = async (
   for (const wordEntry of parsedSentence) {
     for (const componentEntry of wordEntry.components) {
       if (!componentEntry?.meaning_in_english) {
-        componentEntry.meaning_in_english = await translateWithGPT(
-          componentEntry,
-          sentenceQuery
-        );
+        try {
+          componentEntry.meaning_in_english = await translateWithGPT(
+            componentEntry,
+            sentenceQuery
+          );
+        } catch (err) {
+          componentEntry.meaning_in_english = "";
+        }
       }
     }
   }
