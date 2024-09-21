@@ -15,11 +15,12 @@ type parsedEntry = {
 
 type posKey = keyof typeof partsOfSpeech;
 
-const formatparsedSentence = ({ sentenceQuery, parsedArr }: PropType) => {
+//Split sentence into individual words with components array & stop & end indexes
+const createSentenceArray = (sentence: string) => {
   let sentenceArr = [];
   let currWord: parsedEntry = { text: "", components: [], start: -1, end: -1 };
-  for (let i = 0; i < sentenceQuery.length; i++) {
-    if (sentenceQuery[i].match(/\s/)) {
+  for (let i = 0; i < sentence.length; i++) {
+    if (sentence[i].match(/\s/)) {
       if (currWord.text.length) {
         currWord.end = i;
         sentenceArr.push(currWord);
@@ -30,18 +31,107 @@ const formatparsedSentence = ({ sentenceQuery, parsedArr }: PropType) => {
       if (currWord.start === -1) {
         currWord.start = i;
       }
-      currWord.text += sentenceQuery[i];
+      currWord.text += sentence[i];
     }
   }
-  currWord.end = sentenceQuery.length;
+  currWord.end = sentence.length;
   sentenceArr.push(currWord);
 
-  for (let i = 0; i < parsedArr.length; i++) {
+  return sentenceArr;
+};
+
+const generateComponentLink = (component: SentenceData) => {
+  //Add link
+  //Add google link if foreign term
+  //Do not add link for punctuation, numerals, etc.
+  const noLink = [
+    "SF",
+    "SP",
+    "SS",
+    "SE",
+    "SO",
+    "SW",
+    "SN",
+    "UNKNOWN",
+    "SSO",
+    "SSC",
+  ];
+  if (component.POS === "SL") {
+    return `https://www.google.com/search?q=${component.dictionary_form}%20Korean`;
+  } else if (component.POS && noLink.includes(component.POS)) {
+    return "";
+  } else {
+    return `/search/${component.dictionary_form}?translation=true&transLang=1`;
+  }
+};
+
+//Similar is also used in text translate, maybe use that here
+const translateWithGoogle = async (
+  component: SentenceData,
+  target: string = "en"
+) => {
+  try {
+    const response = await fetch("/api/translate", {
+      method: "POST",
+      body: JSON.stringify({ text: component.text, target }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return await response.json();
+  } catch (err) {
+    return err;
+  }
+};
+
+const translateWithGPT = async (
+  component: SentenceData,
+  sentenceQuery: string
+) => {
+  const response = await fetch("/api/sentenceParser", {
+    method: "POST",
+    body: JSON.stringify({
+      component,
+      sentenceQuery,
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const json = await response.json();
+  return json.meaning;
+};
+
+export const handleRemainingTranslation = async (
+  parsedSentence: parsedEntry[],
+  sentenceQuery: string
+) => {
+  for (const wordEntry of parsedSentence) {
+    for (const componentEntry of wordEntry.components) {
+      if (!componentEntry?.meaning_in_english) {
+        componentEntry.meaning_in_english = await translateWithGPT(
+          componentEntry,
+          sentenceQuery
+        );
+      }
+    }
+  }
+
+  return parsedSentence;
+};
+
+const formatparsedSentence = async ({ sentenceQuery, parsedArr }: PropType) => {
+  let sentenceArr = createSentenceArray(sentenceQuery);
+
+  for (let i = 0; i < parsedArr?.length; i++) {
     const component = parsedArr[i];
     const verbPOSTypes = ["VV", "VA", "VX", "VCP", "VCN", "XSA", "XSV"];
 
     //If there are expressions, multiple grammar structures are sent together
-    if (component.expression && component.expression !== "None") {
+    if (
+      component.expression &&
+      (component.expression !== "None" || component.expression !== null)
+    ) {
       //If there are components, they will be split into their two parts
       const componentPartsArr = component.expression
         .replace(/(\/\*)/g, "")
@@ -85,10 +175,10 @@ const formatparsedSentence = ({ sentenceQuery, parsedArr }: PropType) => {
         if (additionalComponentPOS === "ETM") {
           additionalComponent.text = "-" + additionalComponent.text;
         } else if (additionalComponentPOS === "EC") {
-          additionalComponent.meaning_in_english = "Sentence ending";
+          //additionalComponent.meaning_in_english = "Sentence ending";
           additionalComponent.text = "-" + additionalComponent.text;
         } else if (additionalComponentPOS === "EF") {
-          console.log(exploded.charCodeAt(0));
+          additionalComponent.text = "-" + additionalComponent.text;
         } else if (additionalComponentPOS === "EP") {
           if (additionalComponentText.match(/[었았]/g)) {
             additionalComponent.meaning_in_english = "Past tense suffix";
@@ -105,27 +195,46 @@ const formatparsedSentence = ({ sentenceQuery, parsedArr }: PropType) => {
     if (component.POS && verbPOSTypes.includes(component.POS))
       component.dictionary_form += "다";
 
-    //Determine primary POS & use to add detailed_POS
-
-    //Split POS since some may have 2
-
     //Determine POS
     //Split if there are multiple
-
+    //Add detailed_POS
     const posArr = component.POS?.split("+") || [];
-    const posKey = posArr[0].slice(0, 3) || "ZZ";
+    const posKey = posArr[0]?.slice(0, 3) || "ZZ";
     component.detailed_POS = partsOfSpeech[posKey as posKey] || [];
 
-    //Add link
-    //Add google link if foreign term
-    //Do not add link for punctuation, numerals, etc.
-    const noLink = ["SF", "SP", "SS", "SE", "SO", "SW", "SN"];
-    if (component.POS === "SL") {
-      component.link = `https://www.google.com/search?q=${component.dictionary_form}%20Korean`;
-    } else if (component.POS && noLink.includes(component.POS)) {
-      component.link = "";
-    } else {
-      component.link = `/search/${component.dictionary_form}?translation=true&transLang=1`;
+    //Create link
+    component.link = generateComponentLink(component);
+
+    //Maybe remove nnb
+    const googleTranslatePOS = [
+      "NNG",
+      "NNP",
+      "NNB",
+      "NP",
+      "NR",
+      "VV",
+      "VA",
+      "VX",
+      "VCP",
+      "VCN",
+      "MM",
+      "MAG",
+      "MAJ",
+      "IC",
+      "XR",
+      "XSV",
+      "SF",
+      "SP",
+      "SS",
+      "SE",
+      "SO",
+      "SL",
+      "SW",
+      "SWK",
+      "SN",
+    ];
+    if (googleTranslatePOS.includes(posKey)) {
+      component.meaning_in_english = await translateWithGoogle(component);
     }
 
     //Add to the components array of sentenceArr at location in sentence
@@ -141,9 +250,6 @@ const formatparsedSentence = ({ sentenceQuery, parsedArr }: PropType) => {
       }
     }
   }
-
-  console.log(parsedArr);
-  console.log(sentenceArr);
 
   return sentenceArr;
 };
