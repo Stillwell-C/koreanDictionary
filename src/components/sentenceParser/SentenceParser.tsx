@@ -5,7 +5,9 @@ import styles from "./sentenceParser.module.css";
 import btnStyles from "../../styles/buttons.module.css";
 import { SentenceData } from "../../../types/next-auth";
 import Link from "next/link";
-import formatparsedSentence from "@/lib/formatParsedSentence";
+import formatparsedSentence, {
+  handleRemainingTranslation,
+} from "@/lib/formatParsedSentence";
 import BounceLoader from "react-spinners/BounceLoader";
 
 type PropType = {
@@ -19,6 +21,7 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
     []
   );
   const [loading, setLoading] = useState(false);
+  const [translating, setTranslating] = useState(false);
   const [error, setError] = useState(false);
 
   const handleParse = async () => {
@@ -26,6 +29,7 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
     setAllowParse(false);
     setParasedSentenceData([]);
     setLoading(true);
+    setTranslating(true);
     setError(false);
     try {
       const trimmedSentenceQuery = sentenceQuery.trim();
@@ -42,24 +46,22 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
       );
       const parsedJSON = await parsedResponse.json();
 
-      const response = await fetch("/api/sentenceParser", {
-        method: "POST",
-        body: JSON.stringify({
-          translatedSentence,
-          parsedSentence: parsedJSON.results,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const json = await response.json();
-      const formattedParsedSentence = formatparsedSentence({
+      //console.log(parsedJSON);
+
+      const formattedParsedSentence = await formatparsedSentence({
         sentenceQuery: trimmedSentenceQuery,
-        parsedArr: json?.parsed,
+        parsedArr: parsedJSON?.results,
       });
       setParasedSentenceData(formattedParsedSentence);
       setLoading(false);
+      const translatedSentence = await handleRemainingTranslation(
+        formattedParsedSentence,
+        trimmedSentenceQuery
+      );
+      setParasedSentenceData(translatedSentence);
+      setTranslating(false);
     } catch (err) {
+      console.log(err);
       setAllowParse(true);
       setError(true);
       setParasedSentenceData([]);
@@ -128,7 +130,8 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
   const loadingDiv = (
     <div className={styles.loadingDiv}>
       <BounceLoader color='white' size={30} />
-      <p>Parsing...</p>
+      {loading && <p>Parsing...</p>}
+      {!loading && translating && <p>Finishing translation...</p>}
       <p>This may take a moment.</p>
     </div>
   );
@@ -183,7 +186,7 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
   return (
     <div className={styles.container}>
       {allowParse && parseSentenceBtn}
-      {loading && loadingDiv}
+      {(loading || translating) && loadingDiv}
       {error && errorDiv}
       {parsedSentenceData.length > 0 && parsedSentence}
     </div>
