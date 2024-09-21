@@ -73,7 +73,7 @@ const translateWithGoogle = async (
   try {
     const response = await fetch("/api/translate", {
       method: "POST",
-      body: JSON.stringify({ text: component.text, target }),
+      body: JSON.stringify({ text: component.dictionary_form, target }),
       headers: {
         "Content-Type": "application/json",
       },
