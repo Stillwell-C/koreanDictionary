@@ -68,6 +68,7 @@
 
 .componentMeaning {
   white-space: nowrap;
+  min-height: 19px;
 }
 
 .componentPOS {
