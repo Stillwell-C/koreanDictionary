@@ -1,65 +1,32 @@
-import { ChatOpenAI } from "@langchain/openai";
-import { PromptTemplate } from "@langchain/core/prompts";
-import { RunnableSequence } from "@langchain/core/runnables";
-import { StringOutputParser } from "@langchain/core/output_parsers";
 import { NextResponse } from "next/server";
+
+import { generateText } from "ai";
+import { openai } from "@ai-sdk/openai";
 
 export const dynamic = "force-dynamic";
 
-const template = `Your job is to add context to parsed Korean sentences.
-
-You will be given an array of words from a parsed sentence that includes the text and its part of speech.
-Parsed Sentence: {parsedSentence}
-
-You will also be given a translation of the sentence.
-Translated Sentence: {translatedSentence}
-
-For each entry in the parsed sentence array, add a field called meaning_in_english and give a meaning in English. 
-
-Return as valid JSON, not a code block. Only use 1 set of quotations. The JSON should contain an array with the key of "parsed" which includes all of the data you parsed.
-
-`;
-
-//Removed, but can add in if issues with creating dictionary_form
-//Then add a field called dictionary_form and provide the dictionary form for each word.
-
 export const POST = async (req: Request) => {
   try {
-    const { translatedSentence, parsedSentence } = await req.json();
+    const { component, sentenceQuery } = await req.json();
 
-    const prompt = PromptTemplate.fromTemplate(template);
+    const prompt = `I need you to translate something from a Korean sentence.
 
-    const model = new ChatOpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-      model: "gpt-4o-mini",
-      temperature: 0.5,
-    });
+    Here is the sentence it is from: ${sentenceQuery}
 
-    const parser = new StringOutputParser();
+    The text I want you to translate is ${component.text}. It's starting index in the Korean sentence is ${component.start} and it's ending index is ${component.end}. Here is it's part of speech ${component.detailed_POS}.
 
-    const chain = RunnableSequence.from([
-      {
-        translatedSentence: () => translatedSentence,
-        parsedSentence: () => parsedSentence,
-      },
+    Please give me a short translation. Do not give an explanation. In the case of grammar such as a particle or sentence ending, you can give a few word explanation. E.g. Topic Particle for 는 or Formal Sentence Ending for 습니다. Do not wrap in quotation marks. Never return Korean in your response.
+    `;
+
+    const { text } = await generateText({
+      model: openai("gpt-4o-mini"),
       prompt,
-      model,
-      parser,
-    ]);
-
-    const result = await chain.invoke({
-      parsedSentence: parsedSentence,
-      translatedSentence: translatedSentence,
+      temperature: 0.1,
     });
 
-    const parsedResult = JSON.parse(result);
-
-    try {
-      return NextResponse.json(parsedResult);
-    } catch (e: any) {
-      return NextResponse.json(result);
-    }
+    return NextResponse.json({ meaning: text });
   } catch (e: any) {
+    console.log(e.message);
     return Response.json({ error: e.message }, { status: e.status ?? 500 });
   }
 };
