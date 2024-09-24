@@ -25,16 +25,3 @@ declare module "next-auth/jwt" {
     username: string;
   }
 }
-
-interface SentenceData {
-  text?: string;
-  POS?: string;
-  detailed_POS?: string[];
-  start?: number;
-  end?: number;
-  meaning_in_english?: string;
-  dictionary_form?: string;
-  link?: string;
-  expression?: string;
-  components?: SentenceData[];
-}
