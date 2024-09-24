@@ -123,3 +123,22 @@ interface BlogPost extends BlogPostData {
   createdAt: string;
   postContent: string;
 }
+
+type MatchingGammarElement = {
+  description: string;
+  grammarForm: string;
+  link: string;
+};
+
+interface SentenceData {
+  text?: string;
+  POS?: string;
+  detailed_POS?: string[];
+  start?: number;
+  end?: number;
+  meaning_in_english?: string;
+  dictionary_form?: string;
+  link?: string;
+  expression?: string;
+  components?: SentenceData[];
+}
