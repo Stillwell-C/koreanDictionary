@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import styles from "./sentenceParser.module.css";
 import btnStyles from "../../styles/buttons.module.css";
-import { SentenceData } from "../../../types/next-auth";
 import Link from "next/link";
 import formatparsedSentence, {
   handleRemainingTranslation,
+  matchingGrammarCheck,
 } from "@/lib/formatParsedSentence";
 import BounceLoader from "react-spinners/BounceLoader";
 
@@ -22,6 +22,9 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
   );
   const [loading, setLoading] = useState(false);
   const [translating, setTranslating] = useState(false);
+  const [matchingGrammar, setMatchingGrammar] = useState<
+    MatchingGammarElement[]
+  >([]);
   const [error, setError] = useState(false);
 
   const handleParse = async () => {
@@ -35,7 +38,8 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
       const trimmedSentenceQuery = sentenceQuery.trim();
 
       const parsedResponse = await fetch(
-        "https://mecabparseapi-production.up.railway.app/parse",
+        //"https://mecabparseapi-production.up.railway.app/parse",
+        "http://127.0.0.1:8080/parse",
         {
           body: JSON.stringify({ sentence: trimmedSentenceQuery }),
           method: "POST",
@@ -46,7 +50,7 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
       );
       const parsedJSON = await parsedResponse.json();
 
-      //console.log(parsedJSON);
+      console.log(parsedJSON);
 
       const formattedParsedSentence = await formatparsedSentence({
         sentenceQuery: trimmedSentenceQuery,
@@ -60,6 +64,11 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
       );
       setParasedSentenceData(translatedSentence);
       setTranslating(false);
+      const matchingGrammar = await matchingGrammarCheck(
+        trimmedSentenceQuery,
+        parsedJSON.possibleGrammarMatches
+      );
+      setMatchingGrammar(matchingGrammar);
     } catch (err) {
       console.log(err);
       setAllowParse(true);
@@ -119,6 +128,18 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
     } else {
       return componentDiv;
     }
+  };
+
+  const matchingGrammarLink = (matchingGrammar: MatchingGammarElement) => {
+    return (
+      <a
+        className={styles.matchingGrammar}
+        href={matchingGrammar.link}
+        target='_blank'
+      >
+        {matchingGrammar.grammarForm}
+      </a>
+    );
   };
 
   const parseSentenceBtn = (
@@ -183,12 +204,24 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
     </div>
   );
 
+  const grammarMatches = (
+    <div>
+      <p>These grammars may appear in your sentence</p>
+      {matchingGrammar?.map((grammar, index) => (
+        <div key={`${index}${grammar.link}`}>
+          {matchingGrammarLink(grammar)}
+        </div>
+      ))}
+    </div>
+  );
+
   return (
     <div className={styles.container}>
       {allowParse && parseSentenceBtn}
       {(loading || translating) && loadingDiv}
       {error && errorDiv}
       {parsedSentenceData.length > 0 && parsedSentence}
+      {matchingGrammar.length > 0 && grammarMatches}
     </div>
   );
 };
