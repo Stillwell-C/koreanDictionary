@@ -4,18 +4,21 @@ import { useEffect, useState } from "react";
 import styles from "./sentenceParser.module.css";
 import btnStyles from "../../styles/buttons.module.css";
 import Link from "next/link";
-import formatparsedSentence, {
+import {
   handleRemainingTranslation,
   matchingGrammarCheck,
-} from "@/lib/formatParsedSentence";
+  formatParsedSentence,
+  fetchParsedSentence,
+} from "@/lib/parseSentence";
 import BounceLoader from "react-spinners/BounceLoader";
+import { Disclosure } from "@headlessui/react";
+import { FiChevronDown } from "react-icons/fi";
 
 type PropType = {
   sentenceQuery?: string;
-  translatedSentence?: string;
 };
 
-const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
+const SentenceParser = ({ sentenceQuery }: PropType) => {
   const [allowParse, setAllowParse] = useState(true);
   const [parsedSentenceData, setParasedSentenceData] = useState<SentenceData[]>(
     []
@@ -25,56 +28,53 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
   const [matchingGrammar, setMatchingGrammar] = useState<
     MatchingGammarElement[]
   >([]);
+  const [parsingGrammar, setParsingGrammar] = useState(false);
   const [error, setError] = useState(false);
 
   const handleParse = async () => {
     if (!sentenceQuery?.length) return;
+    //Reset all data & loading states
     setAllowParse(false);
     setParasedSentenceData([]);
+    setMatchingGrammar([]);
     setLoading(true);
     setTranslating(true);
+    setParsingGrammar(true);
     setError(false);
     try {
       const trimmedSentenceQuery = sentenceQuery.trim();
-
-      const parsedResponse = await fetch(
-        //"https://mecabparseapi-production.up.railway.app/parse",
-        "http://127.0.0.1:8080/parse",
-        {
-          body: JSON.stringify({ sentence: trimmedSentenceQuery }),
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const parsedJSON = await parsedResponse.json();
-
-      console.log(parsedJSON);
-
-      const formattedParsedSentence = await formatparsedSentence({
+      //Get parsed sentence
+      const parsedJSON = await fetchParsedSentence(trimmedSentenceQuery);
+      //Format for display
+      const formattedParsedSentence = await formatParsedSentence({
         sentenceQuery: trimmedSentenceQuery,
         parsedArr: parsedJSON?.results,
       });
       setParasedSentenceData(formattedParsedSentence);
       setLoading(false);
+      //Translate any remaining words with GPT
       const translatedSentence = await handleRemainingTranslation(
         formattedParsedSentence,
         trimmedSentenceQuery
       );
       setParasedSentenceData(translatedSentence);
       setTranslating(false);
+      //Check matching grammars with GPT
       const matchingGrammar = await matchingGrammarCheck(
         trimmedSentenceQuery,
         parsedJSON.possibleGrammarMatches
       );
+      setParsingGrammar(false);
       setMatchingGrammar(matchingGrammar);
     } catch (err) {
       console.log(err);
+      //Reset all data & loading states
       setAllowParse(true);
       setError(true);
       setParasedSentenceData([]);
       setLoading(false);
+      setTranslating(false);
+      setParsingGrammar(false);
     }
   };
 
@@ -88,9 +88,9 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
 
     const componentDiv = (
       <div className={styles.singleComponent}>
-        <span className={styles.componentHeader}>
-          {component?.dictionary_form || component?.text}
-        </span>
+        <div className={styles.componentHeader}>
+          <span>{component?.dictionary_form || component?.text}</span>
+        </div>
         <span className={styles.componentMeaning}>
           {component?.meaning_in_english}
         </span>
@@ -133,11 +133,11 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
   const matchingGrammarLink = (matchingGrammar: MatchingGammarElement) => {
     return (
       <a
-        className={styles.matchingGrammar}
-        href={matchingGrammar.link}
+        className={styles.matchingGrammarLink}
+        href={matchingGrammar?.link}
         target='_blank'
       >
-        {matchingGrammar.grammarForm}
+        {matchingGrammar?.grammarForm}
       </a>
     );
   };
@@ -153,6 +153,9 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
       <BounceLoader color='white' size={30} />
       {loading && <p>Parsing...</p>}
       {!loading && translating && <p>Finishing translation...</p>}
+      {!loading && !translating && parsingGrammar && (
+        <p>Looking for grammar points...</p>
+      )}
       <p>This may take a moment.</p>
     </div>
   );
@@ -205,20 +208,40 @@ const SentenceParser = ({ sentenceQuery, translatedSentence }: PropType) => {
   );
 
   const grammarMatches = (
-    <div>
-      <p>These grammars may appear in your sentence</p>
-      {matchingGrammar?.map((grammar, index) => (
-        <div key={`${index}${grammar.link}`}>
-          {matchingGrammarLink(grammar)}
-        </div>
-      ))}
+    <div className={styles.matchingGrammarContainer}>
+      <Disclosure>
+        {({ open }) => (
+          <>
+            <Disclosure.Button className={styles.matchingGrammarButton}>
+              <div className={styles.matchingGrammarTitle}>
+                <span>Grammar Help</span>
+                <div className={styles.matchingGrammarChevron} data-open={open}>
+                  <FiChevronDown></FiChevronDown>
+                </div>
+              </div>
+            </Disclosure.Button>
+            <Disclosure.Panel className={styles.matchingGrammarPanel}>
+              <p className={styles.matchingGrammarWarning}>
+                *The following grammar may be in your sentence.
+              </p>
+              <div className={styles.matchingGrammarResults}>
+                {matchingGrammar?.map((grammar, index) => (
+                  <div key={`${index}${grammar?.link}`}>
+                    {matchingGrammarLink(grammar)}
+                  </div>
+                ))}
+              </div>
+            </Disclosure.Panel>
+          </>
+        )}
+      </Disclosure>
     </div>
   );
 
   return (
     <div className={styles.container}>
       {allowParse && parseSentenceBtn}
-      {(loading || translating) && loadingDiv}
+      {(loading || translating || parsingGrammar) && loadingDiv}
       {error && errorDiv}
       {parsedSentenceData.length > 0 && parsedSentence}
       {matchingGrammar.length > 0 && grammarMatches}
