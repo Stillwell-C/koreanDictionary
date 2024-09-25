@@ -10,6 +10,10 @@
 
 애플리케이션은 [여기](https://korean-dictionary.vercel.app/)에서 사용할 수 있습니다.
 
+## 백엔드 코드
+
+백엔드 코드는 이 [리포지토리](https://github.com/Stillwell-C/mecabParseApi)를 참조해 주세요.
+
 ## 상세 내용
 
 이 플로젝트는 Next.js으로 개발하었습다. 현재 백엔드가 사용되지 않았지만, 필요에 따라 여러 가지 데이터를 통합하기 위해 별도로 만들 수 있습니다. 현재는 API와 데이터베이스 접속을 모두 Next.js의 서버 액션과 API 엔드포인트로 처리하고 있습니다.
