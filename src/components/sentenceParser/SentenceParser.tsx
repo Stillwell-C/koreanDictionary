@@ -66,6 +66,7 @@ const SentenceParser = ({ sentenceQuery }: PropType) => {
       );
       setParsingGrammar(false);
       setMatchingGrammar(matchingGrammar);
+      console.log(matchingGrammar);
     } catch (err) {
       console.log(err);
       //Reset all data & loading states
