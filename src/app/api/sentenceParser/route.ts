@@ -9,6 +9,10 @@ export const POST = async (req: Request) => {
   try {
     const { component, sentenceQuery } = await req.json();
 
+    if (!component || !sentenceQuery) {
+      return NextResponse.json({ meaning: "" });
+    }
+
     const prompt = `I need you to translate something from a Korean sentence.
 
     Here is the sentence it is from: ${sentenceQuery}
