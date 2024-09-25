@@ -104,12 +104,7 @@ const TextTranslation = () => {
           </div>
         )}
       </div>
-      {translation && (
-        <SentenceParser
-          sentenceQuery={translationOriginal}
-          translatedSentence={translation}
-        />
-      )}
+      {translation && <SentenceParser sentenceQuery={translationOriginal} />}
       <ChatInterface
         sentenceQuery={translationOriginal}
         translatedSentence={translation}
