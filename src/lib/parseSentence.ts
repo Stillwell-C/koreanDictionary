@@ -146,7 +146,7 @@ export const matchingGrammarCheck = async (
     const confirmedMatches: MatchingGammarElement[] = [];
 
     for (let i = 0; i < resArr.length; i++) {
-      if (resArr[i]) {
+      if (resArr[i] && grammarArray[i]?.link?.length) {
         confirmedMatches.push(grammarArray[i]);
       }
     }
