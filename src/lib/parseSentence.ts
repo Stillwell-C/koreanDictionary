@@ -1,10 +1,4 @@
-import { SentenceData } from "../../types/next-auth";
 import { explode, implode } from "korean-regexp";
-
-type PropType = {
-  sentenceQuery: string;
-  parsedArr: SentenceData[];
-};
 
 type parsedEntry = {
   text: string;
@@ -14,6 +8,8 @@ type parsedEntry = {
 };
 
 type posKey = keyof typeof partsOfSpeech;
+
+//TODO: REORGNIZE FILE FOR MORE CLARITY
 
 //Split sentence into individual words with components array & stop & end indexes
 const createSentenceArray = (sentence: string) => {
@@ -128,7 +124,61 @@ export const handleRemainingTranslation = async (
   return parsedSentence;
 };
 
-const formatparsedSentence = async ({ sentenceQuery, parsedArr }: PropType) => {
+export const matchingGrammarCheck = async (
+  sentenceQuery: string,
+  grammarArray: MatchingGammarElement[]
+): Promise<MatchingGammarElement[]> => {
+  try {
+    const response = await fetch("/api/grammarParser", {
+      method: "POST",
+      body: JSON.stringify({
+        sentenceQuery,
+        grammarArray,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const json = await response.json();
+
+    const resArr: Boolean[] = JSON.parse(json.grammar);
+
+    const confirmedMatches: MatchingGammarElement[] = [];
+
+    for (let i = 0; i < resArr.length; i++) {
+      if (resArr[i]) {
+        confirmedMatches.push(grammarArray[i]);
+      }
+    }
+
+    return confirmedMatches;
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+};
+
+export const fetchParsedSentence = async (sentenceQuery: string) => {
+  const parsedResponse = await fetch(
+    "https://mecabparseapi-production.up.railway.app/parse",
+    {
+      body: JSON.stringify({ sentence: sentenceQuery }),
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return await parsedResponse.json();
+};
+
+export const formatParsedSentence = async ({
+  sentenceQuery,
+  parsedArr,
+}: {
+  sentenceQuery: string;
+  parsedArr: SentenceData[];
+}) => {
   let sentenceArr = createSentenceArray(sentenceQuery);
 
   for (let i = 0; i < parsedArr?.length; i++) {
@@ -517,5 +567,3 @@ const partsOfSpeech = {
   AVS: ["Adverbial\nsuffix", "Post-position", "Adverbial suffix", ""],
   VMS: ["Verb-modifying\nsuffix", "Post-position", "Verb-modifying suffix", ""],
 };
-
-export default formatparsedSentence;
