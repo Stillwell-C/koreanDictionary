@@ -10,6 +10,10 @@ This project is currently under development, and I am working to improve it when
 
 The application is live [here](https://korean-dictionary.vercel.app/).
 
+## BackEnd
+
+The backend code can be found [here](https://github.com/Stillwell-C/mecabParseApi).
+
 ## Detailed Description
 
 This is a Next.js project. There is currently no back end being used, but I may create one if I need to integrate data from multiple sources. For now, all calls to APIs and databases are being handled by Next.js with sever actions and API endpoints.
@@ -28,15 +32,13 @@ When users have completed their flashcards for the day, they are given the optio
 
 A new study session will begin the following day at 3 a.m. in the user's timezone. No date management package is being used for these calculations. The Intl API is used to send the user's timezone from the front end (this is not perfect, but supported by over 95% of browsers). If the user cannot provide their local timezone, a new study session will start 24 hours after the previous study session was started.
 
-### Translation, AI Sentence Parsing, and AI Chatbot
+### Translation, Natural Language Processing Based Sentence Parsing, and AI Chatbot
 
 On the translation page, you can submit sentences and have them translated for you. This is powered by Google Translate (mainly for cost reasons). Below the translation, external links are shown for Google Translate and Papago.
 
-When a user translates a sentence, they will be shown a Parse Sentence button. Sentence parsing is done through Retrieval Augmented Generation (RAG) using LangChain and OpenAI's Chat GPT. This is a slow process and the results are not always perfect. In the future, I may try to optimize the speed of this process by using an external package to analyze the sentence and then rely on the RAG technique to generate links and provide additional information. I may also supply more data to Chat GPT, especially about grammar, to improve accuracy. Currently, Chat GPT is being fed information on parts of speech, the sentence in Korean, and the English translation for the sentence. It breaks down sentences into individual words and grammar structures and indentifies the meaning and part of speech of each part. It also generates links to the application itself or Google in the case of non-Korean words for users to find more information. It returns all of this data as JSON.
+When a user translates a sentence, they will be shown a Parse Sentence button. Sentence parsing is initially done through a backend server. This is a small microservice API built with Flask that uses the python-mecab-ko package, a natural language processing package, to parse the sentence and identify parts of speech. This is formatted on the frontend and primary translation is done through Google translate for words corresponding to most types of grammar. Some grammar types which are difficult for conventional machine translation are skipped during the initial translation step and are then translated by Chat GPT. Chat GPT is significantly slower than Google Translate, which is why a mix of the two services are used. The backend also looks for specific grammar forms with regexes. If these are detected, they are sent to the front end along with the parsed sentence data. Since regexes alone are not an accurate method for determining if these grammar structures are present in the sentence, the possible grammar matches are sent to Chat GPT for confirmation before being displayed to the user. The grammar points are displayed as links to grammar resources below the parsed sentence.
 
-Below the translation and sentence parsing section is an AI chatbot that also uses LangChain and OpenAI.
-
-It has been prompted to answer questions pertaining to the Korean language and can answer questions about the sentence the user submitted for translation (it is given both the original sentence and the translation). If a user asks about specific words (and, in many cases, grammatical forms), the chatbot should give the user a link to the search page for that term on this website.
+Below the translation and sentence parsing section is an AI chatbot that uses Retrieval Augmented Generation (RAG) using LangChain and OpenAI's Chat GPT. It has been prompted to answer questions pertaining to the Korean language and can answer questions about the sentence the user submitted for translation (it is given both the original sentence and the translation). If a user asks about specific words (and, in many cases, grammatical forms), the chatbot should give the user a link to the search page for that term on this website.
 
 ### Making target words bold
 
@@ -52,13 +54,19 @@ Most of the routes in this project lead to pages that would not make sense to bu
 
 Target words can have different types of examples. Among these are dialog sentences between two parties (beginning with 가 or 나). I have yet to find any API data denoting the order that these should be put in. Sentences ending with question marks are, to my knowledge, always the first sentence, but I have not investigated this thoroughly. Currently they are displayed in the order recieved from the API. In many cases, this appears to be correct; however, I have found some cases where they are misordered. I hope to find a more accurate solution for ordering these in the near future.
 
-## Overview
+## Front End
 
 - TypeScript
 - Next.js
+- LangChain
 - SWR (for client side data fetching)
 - NextAuth.js
 - CSS modules
+
+## Back End
+
+- Flask
+- Mecab
 
 ## Example Korean Words
 
