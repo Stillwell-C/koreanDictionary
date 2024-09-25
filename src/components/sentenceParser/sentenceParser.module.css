@@ -57,13 +57,16 @@
   text-align: center;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
   gap: 10px;
 }
 
 .componentHeader {
   font-size: 1.3rem;
+  min-height: 31px;
   white-space: nowrap;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .componentMeaning {
@@ -83,4 +86,60 @@
 .singleComponent:hover .componentPOS,
 .singleComponent:hover .componentMeaning {
   text-shadow: 0 0 0.01px white, 0 0 0.01px white;
+}
+
+.matchingGrammarContainer {
+  padding: 1rem;
+  border: 1px solid var(--btnLight);
+  border-radius: 0.5rem;
+  max-width: 500px;
+  width: 100%;
+}
+
+.matchingGrammarButton {
+  background-color: transparent;
+  border: none;
+  outline: transparent;
+  cursor: pointer;
+  width: 100%;
+}
+
+.matchingGrammarChevron {
+  margin: auto 0;
+  color: var(--greyBtn);
+}
+
+.matchingGrammarChevron[data-open="true"] {
+  transform: rotate(180deg);
+}
+
+.matchingGrammarTitle {
+  font-size: 1rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.matchingGrammarPanel {
+  padding-top: 1rem;
+}
+
+.matchingGrammarResults {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding-top: 1rem;
+}
+
+.matchingGrammarLink {
+  border: 1px solid var(--greyBtn);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.matchingGrammarWarning {
+  font-size: 0.8rem;
+  color: var(--greyBtn);
 }
