@@ -11,100 +11,9 @@ type parsedEntry = {
 
 type posKey = keyof typeof partsOfSpeech;
 
-//TODO: REORGNIZE FILE FOR MORE CLARITY
+//EXPORTED FUNCTIONS
 
-//Split sentence into individual words with components array & stop & end indexes
-const createSentenceArray = (sentence: string) => {
-  let sentenceArr = [];
-  let currWord: parsedEntry = { text: "", components: [], start: -1, end: -1 };
-  for (let i = 0; i < sentence.length; i++) {
-    if (sentence[i].match(/\s/)) {
-      if (currWord.text.length) {
-        currWord.end = i;
-        sentenceArr.push(currWord);
-      }
-
-      currWord = { text: "", components: [], start: -1, end: -1 };
-    } else {
-      if (currWord.start === -1) {
-        currWord.start = i;
-      }
-      currWord.text += sentence[i];
-    }
-  }
-  currWord.end = sentence.length;
-  sentenceArr.push(currWord);
-
-  return sentenceArr;
-};
-
-const generateComponentLink = (component: SentenceData) => {
-  //Add link
-  //Add google link if foreign term
-  //Do not add link for punctuation, numerals, etc.
-  const noLink = [
-    "SF",
-    "SP",
-    "SS",
-    "SE",
-    "SO",
-    "SW",
-    "SN",
-    "SC",
-    "UNKNOWN",
-    "SSO",
-    "SSC",
-  ];
-  if (component.POS === "SL") {
-    return `https://www.google.com/search?q=${component.dictionary_form}%20Korean`;
-  } else if (component.POS && noLink.includes(component.POS)) {
-    return "";
-  } else {
-    return `/search/${component.dictionary_form}?translation=true&transLang=1`;
-  }
-};
-
-//Similar is also used in text translate, maybe use that here
-const translateWithGoogle = async (
-  component: SentenceData,
-  target: string = "en"
-) => {
-  try {
-    const response = await fetch("/api/translate", {
-      method: "POST",
-      body: JSON.stringify({ text: component.dictionary_form, target }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    return await response.json();
-  } catch (err) {
-    return err;
-  }
-};
-
-const translateWithGPT = async (
-  component: SentenceData,
-  sentenceQuery: string
-) => {
-  try {
-    const response = await fetch("/api/sentenceParser", {
-      method: "POST",
-      body: JSON.stringify({
-        component,
-        sentenceQuery,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const json = await response.json();
-    return json.meaning;
-  } catch (err) {
-    return err;
-  }
-};
-
+// Identify untranslated words
 export const handleRemainingTranslation = async (
   parsedSentence: parsedEntry[],
   sentenceQuery: string
@@ -127,6 +36,8 @@ export const handleRemainingTranslation = async (
   return parsedSentence;
 };
 
+// Send sentence & possible matching grammars to grammarParser API route
+// to confirm grammar is in the sentence
 export const matchingGrammarCheck = async (
   sentenceQuery: string,
   grammarArray: MatchingGammarElement[]
@@ -343,6 +254,102 @@ export const formatParsedSentence = async ({
     }
   }
 
-  console.log(parsedArr);
   return sentenceArr;
+};
+
+// formatParsedSentence HELPER FUNCTIONS
+
+// Split sentence into individual words with components array & stop & end indices
+const createSentenceArray = (sentence: string) => {
+  let sentenceArr = [];
+  let currWord: parsedEntry = { text: "", components: [], start: -1, end: -1 };
+  for (let i = 0; i < sentence.length; i++) {
+    if (sentence[i].match(/\s/)) {
+      if (currWord.text.length) {
+        currWord.end = i;
+        sentenceArr.push(currWord);
+      }
+
+      currWord = { text: "", components: [], start: -1, end: -1 };
+    } else {
+      if (currWord.start === -1) {
+        currWord.start = i;
+      }
+      currWord.text += sentence[i];
+    }
+  }
+  currWord.end = sentence.length;
+  sentenceArr.push(currWord);
+
+  return sentenceArr;
+};
+
+// Generate links for components
+// Add google link if foreign term
+// Do not add link for punctuation, numerals, etc.
+const generateComponentLink = (component: SentenceData) => {
+  const noLink = [
+    "SF",
+    "SP",
+    "SS",
+    "SE",
+    "SO",
+    "SW",
+    "SN",
+    "SC",
+    "UNKNOWN",
+    "SSO",
+    "SSC",
+  ];
+
+  if (component.POS === "SL") {
+    return `https://www.google.com/search?q=${component.dictionary_form}%20Korean`;
+  } else if (component.POS && noLink.includes(component.POS)) {
+    return "";
+  } else {
+    return `/search/${component.dictionary_form}?translation=true&transLang=1`;
+  }
+};
+
+//Similar is also used in text translate, maybe use that here
+const translateWithGoogle = async (
+  component: SentenceData,
+  target: string = "en"
+) => {
+  try {
+    const response = await fetch("/api/translate", {
+      method: "POST",
+      body: JSON.stringify({ text: component.dictionary_form, target }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return await response.json();
+  } catch (err) {
+    return err;
+  }
+};
+
+// handleRemainingTranslation HELPER FUNCTION
+// Send untranslated terms to sentenceParser API route for Chat GPT translation
+const translateWithGPT = async (
+  component: SentenceData,
+  sentenceQuery: string
+) => {
+  try {
+    const response = await fetch("/api/sentenceParser", {
+      method: "POST",
+      body: JSON.stringify({
+        component,
+        sentenceQuery,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const json = await response.json();
+    return json.meaning;
+  } catch (err) {
+    return err;
+  }
 };
