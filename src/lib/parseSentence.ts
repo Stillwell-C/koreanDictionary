@@ -1,3 +1,4 @@
+import { hangulLetters } from "@/data/hangulLetters";
 import { partialConsonantsMap } from "@/data/partialConsonantsMap";
 import { partsOfSpeech } from "@/data/partsOfSpeech";
 import { explode, implode } from "korean-regexp";
@@ -201,7 +202,9 @@ export const formatParsedSentence = async ({
       "SSC",
     ];
 
-    //If there are expressions, multiple grammar structures are sent together
+    // HANDLE ANY ELEMENTS WITH EXPRESSION FIELDS
+    //Expressions mean that multiple grammar structures are sent together
+    //and need to be split
     if (
       component.expression &&
       (component.expression !== "None" || component.expression !== null)
@@ -238,8 +241,6 @@ export const formatParsedSentence = async ({
             additionalComponentText.slice(1);
         }
 
-        const exploded = explode(additionalComponentText || "").join("");
-
         additionalComponent.text = additionalComponentText;
         additionalComponent.dictionary_form = additionalComponentText;
         additionalComponent.POS = additionalComponentPOS;
@@ -266,15 +267,31 @@ export const formatParsedSentence = async ({
       component.dictionary_form = component.text;
     }
 
+    //HANDLE ADDITIONAL PROCESSING FOR INVIDIDUAL ELEMENTS
     //Add end for dictionary_forms of verbs as this is not included
     if (component.POS && verbPOSTypes.includes(component.POS)) {
       component.dictionary_form += "다";
     }
-
+    //Make meaning_in_english Punctuation for all punctuation types
+    //This avoids weird translation errors
     if (component.POS && punctuationPOSTypes.includes(component.POS)) {
       component.meaning_in_english = "Punctuation";
     }
+    //This will set meaning & POS for single hangul Characters
+    if (
+      (component.POS && component.POS === "NNG") ||
+      component.POS === "UNKNOWN"
+    ) {
+      if (
+        component?.text?.length === 1 &&
+        hangulLetters.includes(component?.text)
+      ) {
+        component.POS = "SWK";
+        component.meaning_in_english = "Hangul Letter";
+      }
+    }
 
+    //HANDLE POS
     //Determine POS
     //Split if there are multiple
     //Add detailed_POS
@@ -282,13 +299,14 @@ export const formatParsedSentence = async ({
     const posKey = posArr[0]?.slice(0, 3) || "ZZ";
     component.detailed_POS = partsOfSpeech[posKey as posKey] || [];
 
-    //Create link
+    //GENERATE LINK
     component.link = generateComponentLink(component);
 
-    //Maybe remove nnb
+    //INITIAL TRANSLATION WITH GOOGLE TRANSLATE
     const googleTranslatePOS = [
       "NNG",
       "NNP",
+      //Maybe remove nnb
       "NNB",
       "NP",
       "NR",
@@ -307,11 +325,12 @@ export const formatParsedSentence = async ({
       "SWK",
     ];
 
-    if (googleTranslatePOS.includes(posKey)) {
+    if (googleTranslatePOS.includes(posKey) && !component.meaning_in_english) {
       component.meaning_in_english = await translateWithGoogle(component);
     }
 
-    //Add to the components array of sentenceArr at location in sentence
+    //INSERT ELEMENT INTO COMPONENTS ARRAY AT PROPER POSITION IN THE SENTENCE ARRAY
+    //This insures that it will display below parent word
     for (const word of sentenceArr) {
       if (
         component.start !== undefined &&
@@ -325,5 +344,6 @@ export const formatParsedSentence = async ({
     }
   }
 
+  console.log(parsedArr);
   return sentenceArr;
 };
