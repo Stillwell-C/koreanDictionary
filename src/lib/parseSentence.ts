@@ -48,6 +48,7 @@ const generateComponentLink = (component: SentenceData) => {
     "SO",
     "SW",
     "SN",
+    "SC",
     "UNKNOWN",
     "SSO",
     "SSC",
@@ -184,6 +185,19 @@ export const formatParsedSentence = async ({
   for (let i = 0; i < parsedArr?.length; i++) {
     const component = parsedArr[i];
     const verbPOSTypes = ["VV", "VA", "VX", "VCP", "VCN", "XSA", "XSV"];
+    const punctuationPOSTypes = [
+      "SF",
+      "SP",
+      "SS",
+      "SE",
+      "SO",
+      "SC",
+      "SW",
+      "SN",
+      "SY",
+      "SSO",
+      "SSC",
+    ];
 
     //If there are expressions, multiple grammar structures are sent together
     if (
@@ -250,8 +264,14 @@ export const formatParsedSentence = async ({
       component.dictionary_form = component.text;
     }
 
-    if (component.POS && verbPOSTypes.includes(component.POS))
+    //Add end for dictionary_forms of verbs as this is not included
+    if (component.POS && verbPOSTypes.includes(component.POS)) {
       component.dictionary_form += "다";
+    }
+
+    if (component.POS && punctuationPOSTypes.includes(component.POS)) {
+      component.meaning_in_english = "Punctuation";
+    }
 
     //Determine POS
     //Split if there are multiple
@@ -281,16 +301,10 @@ export const formatParsedSentence = async ({
       "IC",
       "XR",
       "XSV",
-      "SF",
-      "SP",
-      "SS",
-      "SE",
-      "SO",
       "SL",
-      "SW",
       "SWK",
-      "SN",
     ];
+
     if (googleTranslatePOS.includes(posKey)) {
       component.meaning_in_english = await translateWithGoogle(component);
     }
