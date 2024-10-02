@@ -1,7 +1,6 @@
 import { hangulLetters } from "@/data/hangulLetters";
 import { partialConsonantsMap } from "@/data/partialConsonantsMap";
 import { partsOfSpeech } from "@/data/partsOfSpeech";
-import { explode, implode } from "korean-regexp";
 
 type parsedEntry = {
   text: string;
